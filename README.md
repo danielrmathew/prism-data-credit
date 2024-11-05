@@ -47,15 +47,35 @@ Complex Preprocessing:
 * Eliminate location addresses.
 * TODO: Remove email addresses.
 * TODO: Handle transactions in the format "trans 1 @ $1.00".
-* 
+  
 Simple Preprocessing:
 * Convert text to lowercase.
 * Remove punctuation (e.g., ,-*#_').
 * Remove "XXXX" and any sequence of X's.
 * Remove phrases "purchase authorized on" and "purchase, checkcard".
-* 
+  
 Exclusion Criteria:
 * Skip preprocessing for memos that match the category.
+
+
+### Feature Creation and Model Training:
+Feature Creation:
+* TF-IDF: Extract features from cleaned_memo using TfidfVectorizer.
+* Date Features: Create month, weekday, and day-of-month features; apply one-hot encoding.
+* Amount Features: Identify even/odd amounts and bin into deciles; apply one-hot encoding.
+* Combine Features: Merge original dataset with TF-IDF, date, and amount features.
+  
+Train-Test Split:
+* Split dataset into training and testing sets (X_train, y_train, X_test, y_test).
+  
+Model Training:
+* Logistic Regression: Fit model, evaluate training/testing accuracy.
+* XGBoost: Fit model with encoded labels, evaluate accuracy.
+* Random Forest: Fit model, evaluate accuracy.
+  
+Model Evaluation:
+* Predictions: Generate and print accuracy for each model.
+* Confusion Matrices: Visualize training/testing predictions with heatmaps.
 
 
 
