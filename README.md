@@ -20,6 +20,8 @@ Credit scores are pivotal in today’s financial landscape, influencing everythi
 
 ### Dataset Explanation:
 
+The outflows dataset provides a detailed record of consumer transactions, capturing various attributes that contribute to a comprehensive understanding of spending patterns and financial behavior. Each row represents a unique transaction associated with a specific consumer account
+
 |Column	                 |Description|
 |---                     |---        |
 |`'prism_consumer_id'	`  |ID of Prism consumer|
@@ -28,6 +30,32 @@ Credit scores are pivotal in today’s financial landscape, influencing everythi
 |`'amount'`	         |Transaction amount|
 |`'posted_date'`	     |Date the transaction was posted|
 |`'category'`	             |Category assigned to the transaction|
+
+For the purpoe of this project, we only work with outflows_with_memo because that is the subset of the data we were told to work with. This doesn't include rows where memo == category, and thereby includes rows that are pivotal to our prediction task.
+
+###  Train Test Split by Customers:
+* Function Definition: Creates dataset_split to divide a dataset into training (75%) and testing (25%) sets based on unique prism_consumer_id.
+* Data Filtering: Generates outflows_with_memo by excluding rows where memo equals category.
+* Data Splitting: Splits outflows_with_memo into training (outflows_memo_train) and testing (outflows_memo_test) sets.
+* Unique IDs Count: Counts and prints unique consumer IDs in the original, training, and testing datasets.
+* Descriptive Statistics: Computes and formats descriptive statistics for the original, training, and testing datasets.
+* Category Distribution Visualization: Plots horizontal bar charts to visualize category distributions in both training and testing sets.
+
+###  Memo Cleaning:
+Complex Preprocessing:
+* Remove dates using regex (mm/yy).
+* Eliminate location addresses.
+* TODO: Remove email addresses.
+* TODO: Handle transactions in the format "trans 1 @ $1.00".
+* 
+Simple Preprocessing:
+* Convert text to lowercase.
+* Remove punctuation (e.g., ,-*#_').
+* Remove "XXXX" and any sequence of X's.
+* Remove phrases "purchase authorized on" and "purchase, checkcard".
+* 
+Exclusion Criteria:
+* Skip preprocessing for memos that match the category.
 
 
 
