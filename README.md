@@ -11,8 +11,7 @@ Credit scores are pivotal in today’s financial landscape, influencing everythi
 
 ### Executing program
 
-* Run all cells to ensure the code executes sequentially and that all dependencies and variables are initialized properly.
-* This will verify that outputs display as expected throughout the notebook.
+* The dataset has been removed for confidentiality, as it is proprietary data provided by Prism Data.
 * Master.ipynb contains the culmination of our finalized work.
 * For individual contributions, refer to the notebooks labeled with our respective names.
 
@@ -76,7 +75,6 @@ Model Training:
 Model Evaluation:
 * Predictions: Generate and print accuracy for each model.
 * Confusion Matrices: Visualize training/testing predictions with heatmaps.
-
 
 
 ## Authors
