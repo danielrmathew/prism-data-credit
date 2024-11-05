@@ -1,6 +1,5 @@
 # prism-data-credit
 
-
 Simple overview of use/purpose.
 
 ## Description
@@ -9,16 +8,6 @@ Credit scores are pivotal in today’s financial landscape, influencing everythi
 
 
 ## Getting Started
-
-### Dependencies
-
-* Describe any prerequisites, libraries, OS version, etc., needed before installing program.
-* ex. Windows 10
-
-### Installing
-
-* How/where to download your program
-* Any modifications needed to be made to files/folders
 
 ### Executing program
 
@@ -37,6 +26,6 @@ command to run if program contains helper info
 
 ## Authors
 
-Aman Kar, akar@ucsd.edu
-Daniel Mathew, drmathew@ucsd.edu
-Tracy Pham, tnp003@ucsd.edu
+* Aman Kar, akar@ucsd.edu 
+* Daniel Mathew, drmathew@ucsd.edu
+* Tracy Pham, tnp003@ucsd.edu
