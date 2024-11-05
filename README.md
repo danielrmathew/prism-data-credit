@@ -16,6 +16,21 @@ Credit scores are pivotal in today’s financial landscape, influencing everythi
 * Master.ipynb contains the culmination of our finalized work.
 * For individual contributions, refer to the notebooks labeled with our respective names.
 
+## Progress
+
+### Dataset Explanation:
+
+|Column	                 |Description|
+|---                     |---        |
+|`'prism_consumer_id'	`  |ID of Prism consumer|
+|`'prism_account_id'`	   |ID of Prism account|
+|`'memo'`	         |Description of the transaction|
+|`'amount'`	         |Transaction amount|
+|`'posted_date'`	     |Date the transaction was posted|
+|`'category'`	             |Category assigned to the transaction|
+
+
+
 ## Authors
 
 * Aman Kar, akar@ucsd.edu 
