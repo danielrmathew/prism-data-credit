@@ -1,6 +1,6 @@
-# prism-data-credit
+# Building Better Credit Scores: Machine Learning and NLP for Optimized Risk Assessment
 
-Simple overview of use/purpose.
+This project aims to enhance credit scoring by using machine learning and NLP to analyze transaction data, creating a fairer, more comprehensive measure of creditworthiness.
 
 ## Description
 
@@ -11,18 +11,10 @@ Credit scores are pivotal in today’s financial landscape, influencing everythi
 
 ### Executing program
 
-* How to run the program
-* Step-by-step bullets
-```
-code blocks for commands
-```
-
-## Help
-
-Any advise for common problems or issues.
-```
-command to run if program contains helper info
-```
+* Run all cells to ensure the code executes sequentially and that all dependencies and variables are initialized properly.
+* This will verify that outputs display as expected throughout the notebook.
+* Master.ipynb contains the culmination of our finalized work.
+* For individual contributions, refer to the notebooks labeled with our respective names.
 
 ## Authors
 
