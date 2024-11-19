@@ -1,0 +1,12 @@
+pandas
+numpy
+matplotlib
+seaborn 
+sklearn
+tensorflow
+torch
+nltk
+xgboost
+fasttext
+gensim
+plotly
