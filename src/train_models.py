@@ -23,12 +23,6 @@ import csv
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 ######################################################################
 
-## read in model features
-model_type = ...
-
-
-train, test = ...
-
 def predict(X, y, model, le=None):
     """
     Makes predictions using the trained model and evaluates accuracy.
@@ -255,6 +249,16 @@ def fit_model(train, test, model_type):
         make_confusion_matrix(y_test, test_preds, model_type, train=False)
         
     return model, {'Train Accuracy': train_acc, 'Test Accuracy': test_acc}
+
+model_type = ...
+
+train, test = ...
+
+output_ = fit_model(train, test, model_type)
+
+
+    
+## read in model features
 
 ## depending on model, train model functions 
 
