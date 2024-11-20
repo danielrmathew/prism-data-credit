@@ -10,3 +10,4 @@ xgboost
 fasttext
 gensim
 plotly
+transformers
