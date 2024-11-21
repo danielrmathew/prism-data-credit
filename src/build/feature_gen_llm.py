@@ -23,7 +23,8 @@ def encode_labels(dataset):
     Returns:
         tuple:
             pd.DataFrame: Updated dataset with an additional `encoded_category` column containing numerical labels.
-            LabelEncoder: Fitted label encoder for decoding or mapping future labels.
+            dict: id2label which maps category ids to the category labels.
+            dict: label2id which maps category labels to the category ids.
     """
     unique_categories = dataset.category.unique()
     id2label = {i : unique_categories[i] for i in range(len(unique_categories))}
@@ -74,6 +75,12 @@ def train_test_split_llm(dataset):
     Args:
         dataset (pd.DataFrame): Input dataset containing a `category` column with categorical labels 
             and `encoded_category` column with the categories encoded.
+
+    Returns:
+        tuple: train test split of the pre-tokenized data
+        tuple:
+            torch.Dataset of tokenized train dataset
+            torch.Dataset of tokenized test dataset
     """
     X_train, X_test, y_train, y_test = train_test_split(
         dataset.drop(columns='encoded_category'), dataset['encoded_category'].tolist(), test_size=0.25
@@ -85,7 +92,7 @@ def train_test_split_llm(dataset):
     train_dataset = MemoDataset(X_train_tokenized, y_train)
     test_dataset = MemoDataset(X_test_tokenized, y_test)
 
-    return train_dataset, test_dataset
+    return (X_train, X_test, y_train, y_test), (train_dataset, test_dataset)
     
 def prepare_fasttext_data(dataset, output_path):
     """
