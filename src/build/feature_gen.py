@@ -141,7 +141,7 @@ def get_amount_features(dataset):
     return amount_one_hot_df
 
 ## returns model features
-def get_features_df(dataset, tfidf_max_features):
+def get_features_df(dataset, tfidf_max_features, include_date, include_amount):
     """
     Generates a combined feature set for the dataset.
 
@@ -153,15 +153,23 @@ def get_features_df(dataset, tfidf_max_features):
     Args:
         dataset (pd.DataFrame): Input dataset with transaction data.
         tfidf_max_features (int): Maximum number of TF-IDF features.
+        include_date (bool): Flag to include date features.
+        include_amount (bool): Flag to include amount features.
 
     Returns:
         pd.DataFrame: Dataset with added features.
     """
-    tfidf_df = get_tfidf_features(dataset, tfidf_max_features)
-    date_df = get_date_features(dataset)
-    amount_df = get_amount_features(dataset)
 
-    features_df =  pd.concat([dataset, tfidf_df, date_df, amount_df], axis=1)
+    tfidf_df = get_tfidf_features(dataset, tfidf_max_features)
+    raw_df = [dataset, tfidf_df]
+    if include_date:
+        date_df = get_date_features(dataset)
+        raw_df.append(date_df)
+    if amount_df:
+        amount_df = get_amount_features(dataset)
+        raw_df.append(amount_df)
+
+    features_df =  pd.concat(raw_df, axis=1)
     return features_df
 
 def train_test_split_features(features_df):
