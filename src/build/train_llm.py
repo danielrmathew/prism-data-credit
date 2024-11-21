@@ -48,13 +48,13 @@ def make_confusion_matrix(y, preds, model_type, train=True):
     plt.show()
 
 
-def fit_bert(train, test):
+def fit_bert(train_dataset, test_dataset, id2label, label2id):
 
     tokenizer = AutoTokenizer.from_pretrained("distilbert/distilbert-base-uncased")
     accuracy = evaluate.load('accuracy')
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
-    dataset, id2label, label2id = ...
+    # dataset, id2label, label2id = ...
 
     model = AutoModelForSequenceClassification.from_pretrained(
         'distilbert/distilbert-base-uncased', num_labels=9, id2label=id2label, label2id=label2id
