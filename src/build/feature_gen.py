@@ -10,7 +10,7 @@ import re
 import csv
 
 ## read data generate clean memos
-def read_outflows(path)
+def read_outflows(path):
     """
     Reads the outflows dataset from a given path and filters out rows where the `memo` column matches the `category` column. 
     Resets the index and removes the redundant `index` column.
