@@ -133,7 +133,7 @@ model_type = ...
 
 X_train, y_train, X_test, y_test = ...
 
-output_ = fit_model(train, test, model_type)
+output_ = fit_model(X_train, y_train, X_test, y_test, model_type)
 
 
 
