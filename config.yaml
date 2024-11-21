@@ -1,0 +1,36 @@
+################################################################
+#               CONFIGURATION VARIABLES HERE                   #
+################################################################
+
+######################
+#   DATASET CONFIG   #
+######################
+    # num tfidf
+    # include amount and date features 
+    # save train and test datasets to not repeat these steps
+
+FEATURES:
+    num_tfidf: 5000
+    include_amount_features: True
+    include_date_features: True
+
+# include file path to save features.pkl to
+SAVE_FEATURES: data/features_data.pkl
+
+######################
+#    MODEL CONFIG    #
+######################
+    # hyperparameters
+
+# select the models that you would like to be trained
+MODELS:
+    NON_LLM:
+        log_reg: True
+        random_forest: False
+        xgboost: False
+        svm: False
+        multnb: False
+    LLM:
+        bert: False
+        fasttext: False
+    
