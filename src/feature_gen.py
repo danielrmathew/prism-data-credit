@@ -140,66 +140,6 @@ def get_amount_features(dataset):
     
     return amount_one_hot_df
 
-
-## llm features
-    # just clean memo, tagging if possible
-def encode_labels(dataset):
-    """
-    Encodes category labels into numerical format for modeling purposes.
-
-    Args:
-        dataset (pd.DataFrame): Input dataset containing a `category` column with categorical labels.
-
-    Returns:
-        tuple:
-            pd.DataFrame: Updated dataset with an additional `encoded_category` column containing numerical labels.
-            LabelEncoder: Fitted label encoder for decoding or mapping future labels.
-    """
-    le = LabelEncoder()
-    dataset['encoded_category'] = le.fit_transform(dataset['category'])
-    return dataset, le
-
-def tokenize_for_bert(dataset, tokenizer_name="distilbert-base-uncased"):
-    """
-    Prepares tokenized input from the `cleaned_memo` column for BERT-based models.
-
-    Args:
-        dataset (pd.DataFrame): Input dataset containing a `cleaned_memo` column with preprocessed text.
-        tokenizer_name (str, optional): The name of the BERT tokenizer to use. Defaults to "distilbert-base-uncased".
-
-    Returns:
-        dict: Tokenized data in PyTorch tensor format, including input IDs, attention masks, and other necessary components.
-    """
-    tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
-    tokenized_data = tokenizer(
-        dataset['cleaned_memo'].tolist(),
-        truncation=True,
-        padding=True,
-        return_tensors="pt"
-    )
-    return tokenized_data
-    
-def prepare_fasttext_data(dataset, output_path):
-    """
-    Prepares text data in FastText-compatible format for supervised text classification.
-
-    Args:
-        dataset (pd.DataFrame): Input dataset with `category` and `cleaned_memo` columns.
-        output_path (str): Path to save the formatted FastText data file.
-
-    Returns:
-        str: Path to the saved FastText-compatible text file.
-    """
-    ft_data = dataset.copy()
-    ft_data['category'] = ft_data['category'].apply(lambda x: '__label__' + x)
-    ft_data['cleaned_memo_proc'] = ft_data['cleaned_memo']
-    
-    ft_data[['category', 'cleaned_memo_proc']].to_csv(
-        output_path, index=False, sep=' ', header=None, 
-        quoting=csv.QUOTE_NONE, quotechar="", escapechar=" "
-    )
-    return output_path
-
 ## returns model features
 def get_features_df(dataset, tfidf_max_features):
     """
