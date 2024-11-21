@@ -1,4 +1,3 @@
-## imports
 from sklearn.linear_model import LogisticRegression
 from xgboost import XGBClassifier
 from sklearn.preprocessing import LabelEncoder
@@ -18,6 +17,10 @@ import torch
 import fasttext
 from gensim.utils import simple_preprocess
 import csv
+
+from feature_gen import (
+    read_outflows, clean_memos, get_features_df, encode_labels, prepare_fasttext_data, train_test_split_features
+)
 
 ######################################################################
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -218,21 +221,8 @@ def fit_model(train, test, model_type):
         return pipe
 
     elif model_type == 'fasttext':
-        ## supposed to have train UNSPLIT from y_true
-
-        ################################ SHOULD BE IN FEATURE GEN ########################################
-        #################################################################################################
-        ft_data = outflows_with_memo.copy()[['prism_consumer_id', 'cleaned_memo', 'category']]
-        ft_data.category = ft_data.category.apply(lambda x: '__label__' + x)
-        ft_data['clean_memo_proc'] = ft_data.cleaned_memo.apply(lambda x: ' '.join(simple_preprocess(x)))
-
-        train.to_csv('../data/train.txt', index = False, sep = ' ', header = None, quoting = csv.QUOTE_NONE, quotechar = "", escapechar = " ")
-
-        y_train = train.category.values
-        y_test = test.category.values
-        #################################################################################################
-
-        model = fasttext.train_supervised('../data/train.txt', wordNgrams = 2)
+        train_path = prepare_fasttext_data(train_df, "train.txt")
+        model = fasttext.train_supervised(train_path, wordNgrams=2)
 
         train_preds = []
         for i in range(len(train.clean_memo_proc.values)):
