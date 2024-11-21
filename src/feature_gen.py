@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from transformers import AutoTokenizer
 import re
@@ -20,8 +21,8 @@ def read_outflows(path)
     Returns:
         pd.DataFrame: A DataFrame containing the filtered outflows data, excluding rows where `memo` equals `category`.
     """
-    outflows = pd.read_parquet("../data/ucsd-outflows.pqt")
-    outflows_with_memo = outflows[~(outflows.memo == outflows.category)].reset_index().drop(columns='index')
+    outflows = pd.read_parquet(path)
+    outflows_with_memo = outflows[~(outflows.memo == outflows.category)].reset_index(drop=True)
     return outflows_with_memo
 
 def clean_memos(dataset):
@@ -58,7 +59,7 @@ def clean_memos(dataset):
 
 
 ## non-llm features
-    # tfidf, date features, amount features, etc.
+    
 def get_tfidf_features(dataset, max_features):
     """
     Generates a dataset of TF-IDF (Term Frequency-Inverse Document Frequency) features from the `cleaned_memo` column 
@@ -177,6 +178,7 @@ def tokenize_for_bert(dataset, tokenizer_name="distilbert-base-uncased"):
         return_tensors="pt"
     )
     return tokenized_data
+    
 def prepare_fasttext_data(dataset, output_path):
     """
     Prepares text data in FastText-compatible format for supervised text classification.
