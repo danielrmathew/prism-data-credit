@@ -177,7 +177,7 @@ def train_test_split_features(features_df):
     """
     train_df, test_df = dataset_split(features_df)
     
-    X_train = train_df.iloc[:, 8:]
+    X_train = train_df.iloc[:, 8:]   # TODO: refactor to dynamically select columns
     y_train = train_df['category']
     X_test = test_df.iloc[:, 8:]
     y_test = test_df['category']
