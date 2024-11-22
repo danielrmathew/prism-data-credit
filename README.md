@@ -55,16 +55,25 @@ For the purpose of this project, we only work with outflows_with_memo because th
    - Metrics: accuracy, precision, recall, and confusion matrices.
    - Visualization: Charts for feature importance, category distribution, and prediction performance.
 
----
 
 # **Set Up Instructions**
 
 To ensure reproducibility of the project and its results, follow the steps below:
 
----
-
 ## **1. Clone the Repository**
 Start by cloning the repository to your local machine:
 ```bash
 git clone https://github.com/danielrmathew/prism-data-credit.git
-cd prism-data-credit-
+cd prism-data-credit
+```
+
+## **2. Set Up the Environment**
+Ensure you have Python 3.8 or later installed. Create a virtual environment and activate it:
+```bash
+python -m venv .prism_env
+source .prism_env/bin/activate
+```
+Install the required dependencies:
+```bash
+pip install -r requirements.txt
+```
