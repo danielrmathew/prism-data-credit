@@ -30,55 +30,41 @@ The outflows dataset provides a detailed record of consumer transactions, captur
 |`'posted_date'`	     |Date the transaction was posted|
 |`'category'`	             |Category assigned to the transaction|
 
-For the purpoe of this project, we only work with outflows_with_memo because that is the subset of the data we were told to work with. This doesn't include rows where memo == category, and thereby includes rows that are pivotal to our prediction task.
+For the purpose of this project, we only work with outflows_with_memo because that is the subset of the data we were told to work with. This doesn't include rows where memo == category, and thereby includes rows that are pivotal to our prediction task.
 
-###  Train Test Split by Customers:
-* Function Definition: Creates dataset_split to divide a dataset into training (75%) and testing (25%) sets based on unique prism_consumer_id.
-* Data Filtering: Generates outflows_with_memo by excluding rows where memo equals category.
-* Data Splitting: Splits outflows_with_memo into training (outflows_memo_train) and testing (outflows_memo_test) sets.
-* Unique IDs Count: Counts and prints unique consumer IDs in the original, training, and testing datasets.
-* Descriptive Statistics: Computes and formats descriptive statistics for the original, training, and testing datasets.
-* Category Distribution Visualization: Plots horizontal bar charts to visualize category distributions in both training and testing sets.
+## **Features**
 
-###  Memo Cleaning:
-Complex Preprocessing:
-* Remove dates using regex (mm/yy).
-* Eliminate location addresses.
-* TODO: Remove email addresses.
-* TODO: Handle transactions in the format "trans 1 @ $1.00".
-  
-Simple Preprocessing:
-* Convert text to lowercase.
-* Remove punctuation (e.g., ,-*#_').
-* Remove "XXXX" and any sequence of X's.
-* Remove phrases "purchase authorized on" and "purchase, checkcard".
-  
-Exclusion Criteria:
-* Skip preprocessing for memos that match the category.
+### **Core Capabilities**
+1. **Data Cleaning & Preprocessing**
+   - Removes sensitive and irrelevant data like dates, addresses, and email patterns.
+   - Handles text standardization (e.g., lowercase conversion, punctuation removal).
+   - Filters transactions for relevant memos using exclusion criteria.
 
+2. **Feature Engineering**
+   - **NLP Features**: TF-IDF vectorization for transaction descriptions.
+   - **Date Features**: Extracted and one-hot encoded month, weekday, and day-of-month.
+   - **Amount Features**: Categorized even/odd amounts and deciles with one-hot encoding.
 
-### Feature Creation and Model Training:
-Feature Creation:
-* TF-IDF: Extract features from cleaned_memo using TfidfVectorizer.
-* Date Features: Create month, weekday, and day-of-month features; apply one-hot encoding.
-* Amount Features: Identify even/odd amounts and bin into deciles; apply one-hot encoding.
-* Combine Features: Merge original dataset with TF-IDF, date, and amount features.
-  
-Train-Test Split:
-* Split dataset into training and testing sets (X_train, y_train, X_test, y_test).
-  
-Model Training:
-* Logistic Regression: Fit model, evaluate training/testing accuracy.
-* XGBoost: Fit model with encoded labels, evaluate accuracy.
-* Random Forest: Fit model, evaluate accuracy.
-  
-Model Evaluation:
-* Predictions: Generate and print accuracy for each model.
-* Confusion Matrices: Visualize training/testing predictions with heatmaps.
+3. **Model Development**
+   - **Traditional Models**: Implemented Logistic Regression, Random Forest, and XGBoost for baseline performance and benchmark comparisons.
+   - **LLM-Based Models**: 
+     - **DistilBERT**: Leveraged the lightweight and efficient DistilBERT model for NLP tasks, balancing performance and computational cost.
+   - **FastText**: Integrated FastText for fast, efficient, and interpretable word embeddings, particularly useful for handling out-of-vocabulary words and generating robust text representations.
 
+4. **Evaluation**
+   - Metrics: accuracy, precision, recall, and confusion matrices.
+   - Visualization: Charts for feature importance, category distribution, and prediction performance.
 
-## Authors
+---
 
-* Aman Kar, akar@ucsd.edu 
-* Daniel Mathew, drmathew@ucsd.edu
-* Tracy Pham, tnp003@ucsd.edu
+# **Set Up Instructions**
+
+To ensure reproducibility of the project and its results, follow the steps below:
+
+---
+
+## **1. Clone the Repository**
+Start by cloning the repository to your local machine:
+```bash
+git clone https://github.com/danielrmathew/prism-data-credit.git
+cd prism-data-credit-
