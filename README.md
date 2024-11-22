@@ -77,3 +77,10 @@ Install the required dependencies:
 ```bash
 pip install -r requirements.txt
 ```
+## **3. Configure the Project**
+Modify the config.yaml file to match your local setup. Update file paths, dataset locations, and any other necessary parameters:
+
+## **4. Running the Script**
+```bash
+python src/build/run.py
+```
