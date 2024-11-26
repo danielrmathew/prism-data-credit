@@ -23,17 +23,26 @@ SAVE_FEATURES: data/features_data.pkl
 ######################
 #    MODEL CONFIG    #
 ######################
-    # hyperparameters
 
 # select the models that you would like to be trained
+# TODO: add hyperparameters to rest of models
 MODELS:
     NON_LLM: 
-        log_reg: True
-        random_forest: False
-        xgboost: False
-        svm: False
-        multnb: False
+        log_reg:
+            train: True
+            hyperparameters:
+                penalty: l2
+                C: 1.0
+        random_forest: 
+            train: False
+        xgboost: 
+            train: False
+        svm: 
+            train: False
+        multnb: 
+            train: False
     LLM: 
-        bert: False
-        fasttext: False
-    
+        bert: 
+            train: False
+        fasttext: 
+            train: False
