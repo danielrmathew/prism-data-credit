@@ -11,3 +11,5 @@ fasttext
 gensim
 plotly
 transformers
+tf-keras
+evaluate
