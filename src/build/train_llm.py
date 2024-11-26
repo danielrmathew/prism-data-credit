@@ -9,52 +9,18 @@ import fasttext
 from gensim.utils import simple_preprocess
 import csv
 
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.model_selection import train_test_split
-import seaborn as sns
 
 
 ######################################################################
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 ######################################################################
 
-
-def make_confusion_matrix(y, preds, model_type, train=True):
-    """
-    Generates and displays a confusion matrix with precision scores.
-
-    Args:
-        y (pd.Series): True labels.
-        preds (numpy.ndarray): Predicted labels.
-
-    Returns:
-        None: Displays a heatmap of the confusion matrix.
-    """
-    conf_matrix = confusion_matrix(y, preds, labels=y.unique(), normalize='pred')
-    classes = y.value_counts().sort_values(ascending=False).index
-    conf_matrix_df = pd.DataFrame(conf_matrix, index=classes, columns=classes)
-
-    fig, ax1 = plt.subplots(1, 1, figsize=(7, 7))
-    
-    sns.heatmap(conf_matrix_df, annot=True, fmt=".3f", cmap="YlGnBu", cbar=True, 
-                linewidths=0.5, linecolor='gray', square=True, annot_kws={"size": 8}, ax=ax1)
-    ax1.set_title('Precision')
-    ax1.set_xlabel('Predicted Labels')
-    ax1.set_ylabel('True Labels')
-
-    title = 'train' if train else 'test'
-    plt.savefig(f'{model_type}_{title}_cm.png',)
-
-    plt.show()
-
-
-def fit_bert(train_dataset, test_dataset, id2label, label2id):
+def fit_bert(X_train, X_test, train_dataset, test_dataset, id2label, label2id):
 
     tokenizer = AutoTokenizer.from_pretrained("distilbert/distilbert-base-uncased")
     accuracy = evaluate.load('accuracy')
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
-
-    # dataset, id2label, label2id = ...
 
     model = AutoModelForSequenceClassification.from_pretrained(
         'distilbert/distilbert-base-uncased', num_labels=9, id2label=id2label, label2id=label2id
@@ -65,7 +31,7 @@ def fit_bert(train_dataset, test_dataset, id2label, label2id):
         predictions = np.argmax(predictions, axis=1)
         return accuracy.compute(predictions=predictions, references=labels)
 
-    training_args = TrainingArguments(
+    training_args = TrainingArguments( # TODO: hyperparameter config
         output_dir="bert",
         learning_rate=2e-5,
         per_device_train_batch_size=256,
@@ -91,54 +57,21 @@ def fit_bert(train_dataset, test_dataset, id2label, label2id):
     trainer.train()
     pipe = TextClassificationPipeline(model=model, tokenizer=tokenizer, device=device)
 
-    train_preds = pipe(X_train)
-    train_preds = [dct['label'] for dct in train_preds]
-
-    test_preds = pipe(X_test)
-    test_preds = [dct['label'] for dct in test_preds]
-
-    y_test_cats = [id2label[cat_id] for cat_id in y_test]
-
-    make_confusion_matrix(y_train, train_preds, model_type, train=True)
-    make_confusion_matrix(y_test, test_preds, model_type, train=False)
-
-    return pipe, {'Train Accuracy': train_acc, 'Test Accuracy': test_acc}
+    return pipe
 
 
 
-def fit_fasttext(train_txt_fp, X_train, y_train, X_test, y_test):
+def fit_fasttext(train_txt_fp):
     
-    train.to_csv('train_txt_fp', index = False, sep = ' ', header = None, quoting = csv.QUOTE_NONE, quotechar = "", escapechar = " ")
+    train.to_csv(train_txt_fp, index=False, sep=' ', header=None, quoting=csv.QUOTE_NONE, quotechar="", escapechar=" ")
 
-    model = fasttext.train_supervised('../data/train.txt', wordNgrams = 2)
+    model = fasttext.train_supervised('../data/train.txt', wordNgrams=2) # TODO: hyperparameter config
 
-    train_preds = []
-    for i in range(len(X_train)):
-        train_preds.append(model.predict(X_train[i])[0][0])
+    # train_acc = (np.array(train_preds) == np.array(y_train)).mean()
+    # test_acc = (np.array(test_preds) == np.array(y_test)).mean()
 
-    test_preds = []
-    for i in range(len(X_test)):
-        test_preds.append(model.predict(X_test[i])[0][0])
+    return model
 
-    train_acc = (np.array(train_preds) == np.array(y_train)).mean()
-    test_acc = (np.array(test_preds) == np.array(y_test)).mean()
-
-    make_confusion_matrix(y_train, train_preds, model_type, train=True)
-    make_confusion_matrix(y_test, test_preds, model_type, train=False)
-    
-    return model, {'Train Accuracy': train_acc, 'Test Accuracy': test_acc}
-
-
-model_type = ...
-
-if model_type == 'bert':
-    train, test = ...
-elif model_type == 'fasttext':
-    train_txt_fp, X_train, y_train, X_test, y_test = ...
-else:
-    raise Exception('Invalid Model Type')
-    
-    return -1
 
 
 
