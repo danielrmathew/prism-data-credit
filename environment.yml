@@ -18,3 +18,5 @@ dependencies:
   - gensim
   - plotly
   - transformers
+  - pip:
+      - tf-keras
