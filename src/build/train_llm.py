@@ -48,13 +48,16 @@ def make_confusion_matrix(y, preds, model_type, train=True):
     plt.show()
 
 
-def fit_bert(train_dataset, test_dataset, id2label, label2id):
+def fit_bert(acc_data, trainer_data, id2label, label2id):
 
     tokenizer = AutoTokenizer.from_pretrained("distilbert/distilbert-base-uncased")
     accuracy = evaluate.load('accuracy')
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
     # dataset, id2label, label2id = ...
+    # acc_data, trainer_data = ...
+    # X_train, X_test, y_train, y_test = acc_data
+    # train_dataset, test_dataset = trainer_data
 
     model = AutoModelForSequenceClassification.from_pretrained(
         'distilbert/distilbert-base-uncased', num_labels=9, id2label=id2label, label2id=label2id
@@ -91,13 +94,22 @@ def fit_bert(train_dataset, test_dataset, id2label, label2id):
     trainer.train()
     pipe = TextClassificationPipeline(model=model, tokenizer=tokenizer, device=device)
 
+    #############################
+    ### ACCURACY CALCULATIONS ###
+    #############################
+    
+    X_train, X_test, y_train, y_test = acc_data
+
     train_preds = pipe(X_train)
     train_preds = [dct['label'] for dct in train_preds]
 
     test_preds = pipe(X_test)
     test_preds = [dct['label'] for dct in test_preds]
 
-    y_test_cats = [id2label[cat_id] for cat_id in y_test]
+    train_acc = (np.array(train_preds) == np.array(y_train)).mean()
+    test_acc = (np.array(test_preds) == np.array(y_test)).mean()
+
+    # y_test_cats = [id2label[cat_id] for cat_id in y_test]
 
     make_confusion_matrix(y_train, train_preds, model_type, train=True)
     make_confusion_matrix(y_test, test_preds, model_type, train=False)
@@ -106,11 +118,15 @@ def fit_bert(train_dataset, test_dataset, id2label, label2id):
 
 
 
-def fit_fasttext(train_txt_fp, X_train, y_train, X_test, y_test):
+def fit_fasttext(train_txt_fp, acc_data):
     
-    train.to_csv('train_txt_fp', index = False, sep = ' ', header = None, quoting = csv.QUOTE_NONE, quotechar = "", escapechar = " ")
+    model = fasttext.train_supervised(train_txt_fp, wordNgrams = 2)
 
-    model = fasttext.train_supervised('../data/train.txt', wordNgrams = 2)
+    #############################
+    ### ACCURACY CALCULATIONS ###
+    #############################
+    
+    X_train, X_test, y_train, y_test = acc_data
 
     train_preds = []
     for i in range(len(X_train)):
@@ -132,13 +148,18 @@ def fit_fasttext(train_txt_fp, X_train, y_train, X_test, y_test):
 model_type = ...
 
 if model_type == 'bert':
-    train, test = ...
+    dataset, id2label, label2id = ...
+    acc_data, trainer_data = (..., ...)
+    output_ = fit_bert(acc_data, trainer_data, id2label, label2id)
 elif model_type == 'fasttext':
-    train_txt_fp, X_train, y_train, X_test, y_test = ...
+    trainer_txt_fp, acc_data = (..., ...)
+    output_ = fit_fasttext(trainer_txt_fp, acc_data)
 else:
     raise Exception('Invalid Model Type')
     
     return -1
+
+return output_
 
 
 
