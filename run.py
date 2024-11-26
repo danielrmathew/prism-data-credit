@@ -4,17 +4,16 @@ from src.build.feature_gen import (
     train_test_split_features
 )
 from src.build.feature_gen_llm import encode_labels, train_test_split_llm, prepare_fasttext_data
+from src.build.train_traditional import fit_model
 from src.build.train_llm import fit_bert, fit_fasttext
-
+from src.build.evaluate_models import make_confusion_matrix 
 from sklearn.model_selection import train_test_split
-# from train_models import ...
-# from train_models_llm import ... 
 import yaml
 
 
 
 if __name__ == "__main__":
-    with open("config.yaml", "r") as f:
+    with open("config.yml", "r") as f:
         config = yaml.safe_load(f)
 
     print(config)
@@ -34,13 +33,29 @@ if __name__ == "__main__":
     outflows_with_memo = read_outflows(OUTFLOWS_PATH)
     outflows_with_memo = clean_memos(outflows_with_memo)
 
+    print(outflows_with_memo.shape)
+    print(outflows_with_memo.describe())
+
     ## train, test = output(feature_gen.py)
     if True in NON_LLM_MODELS.values():
+        # TODO: add check for features.pkl file
+        
         features_df = get_features_df(
             outflows_with_memo, num_tfidf_features, include_date_features, include_amount_features
         )
 
         X_train, y_train, X_test, y_test = train_test_split_features(features_df)
+
+        models = {}
+        
+        for model, train_model in NON_LLM_MODELS.items():
+            if train_model:
+                models[model] = fit_model(X_train, y_train, X_test, y_test, model)
+                # evaluate (predict and confusion matrix)
+
+                # make_confusion_matrix(y_train, train_preds, model_type, train=True)
+                # make_confusion_matrix(y_test, test_preds, model_type, train=False)
+    
 
     if train_bert:
         # generate bert features
