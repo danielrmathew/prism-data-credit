@@ -60,8 +60,8 @@ def fit_bert(X_train, X_test, train_dataset, test_dataset, id2label, label2id):
     return pipe
 
 
-def fit_fasttext(train_txt_fp, ngrams=2):
-    model = fasttext.train_supervised(train_txt_fp, wordNgrams=ngrams) # TODO: hyperparameter config
+def fit_fasttext(train_fp, ngrams=2):
+    model = fasttext.train_supervised(train_fp, wordNgrams=ngrams) # TODO: hyperparameter config
 
     return model
     
