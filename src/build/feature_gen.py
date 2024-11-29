@@ -185,7 +185,7 @@ def dataset_split(dataset, feature='prism_consumer_id'):
     """
     # get unique consumer ids
     ids = dataset[feature].unique()
-    train_ids, test_ids = train_test_split(ids, test_size=0.25)
+    train_ids, test_ids = train_test_split(ids, test_size=0.25, random_state=0)
 
     # split customer_ids into train and test sets
     train = dataset[dataset[feature].isin(train_ids)]
@@ -207,13 +207,13 @@ def train_test_split_features(features_df):
     train_df, test_df = dataset_split(features_df)
     first_tfidf_index = train_df.columns.get_loc(next(col for col in features_df.columns if 'tfidf' in col))
     
-    X_train = train_df.iloc[:, first_tfidf_index:]   
-    y_train = train_df['category']
+    X_train = train_df.iloc[:, first_tfidf_index:]
     X_test = test_df.iloc[:, first_tfidf_index:]
+    y_train = train_df['category']
     y_test = test_df['category']
 
     X_train.columns = X_train.columns.astype(str)
     X_test.columns = X_test.columns.astype(str)
 
-    return X_train, y_train, X_test, y_test
+    return X_train, X_test, y_train, y_test
     
