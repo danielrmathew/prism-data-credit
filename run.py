@@ -1,18 +1,22 @@
 ## imports config and relevant functions
 from src.build.feature_gen import (
     read_outflows, clean_memos, get_features_df,
-    train_test_split_features
+    dataset_split, train_test_split_features
 )
 from src.build.feature_gen_llm import encode_labels, train_test_split_llm, prepare_fasttext_data
 from src.build.train_traditional import fit_model
 from src.build.train_llm import fit_bert, fit_fasttext
 from src.build.evaluate_models import make_confusion_matrix 
+from src.build.predict_traditional import predict
 from sklearn.model_selection import train_test_split
 import yaml
+from pathlib import Path
+import pickle
 
 
 
 if __name__ == "__main__":
+    BASE_DIR = Path(__file__).resolve().parent
     with open("config.yml", "r") as f:
         config = yaml.safe_load(f)
 
@@ -27,16 +31,15 @@ if __name__ == "__main__":
     train_bert = config['MODELS']['LLM']['bert']
     train_fasttext = config['MODELS']['LLM']['fasttext']
     
-    
     assert 1 == 2
 
     outflows_with_memo = read_outflows(OUTFLOWS_PATH)
     outflows_with_memo = clean_memos(outflows_with_memo)
+    outflows_with_memo_train, outflows_with_memo_test = dataset_split(outflows_with_memo)
 
     print(outflows_with_memo.shape)
     print(outflows_with_memo.describe())
 
-    ## train, test = output(feature_gen.py)
     if True in NON_LLM_MODELS.values():
         # TODO: add check for features.pkl file
         
@@ -44,35 +47,68 @@ if __name__ == "__main__":
             outflows_with_memo, num_tfidf_features, include_date_features, include_amount_features
         )
 
-        X_train, y_train, X_test, y_test = train_test_split_features(features_df)
+        X_train, X_test, y_train, y_test = train_test_split_features(features_df)
 
         models = {}
         
         for model, train_model in NON_LLM_MODELS.items():
             if train_model:
-                models[model] = fit_model(X_train, y_train, X_test, y_test, model)
-                # evaluate (predict and confusion matrix)
+                # train models
+                model_instance = fit_model(X_train, y_train, X_test, y_test, model)
+                models[model] = model_instance # saving model object to dict
+                with open(f'result/{model}.pkl', 'wb') as f:
+                    pickle.dump(model_instance, f)
+                
+                # predict
+                train_preds = predict(X_train, y_train, model_instance)
+                test_preds = predict(X_test, y_test, model_instance)
 
-                # make_confusion_matrix(y_train, train_preds, model_type, train=True)
-                # make_confusion_matrix(y_test, test_preds, model_type, train=False)
-    
+                # evaluate (confusion matrix (DONE), classification report (TODO), roc curves (TODO))
+                make_confusion_matrix(y_train, train_preds, model, train=True)
+                make_confusion_matrix(y_test, test_preds, model, train=False)
 
-    if train_bert:
-        # generate bert features
+    if train_bert or train_fasttext:
+        # generate llm features -- labels are encoded to whole numbers
         outflows_with_memos_encoded, id2label, label2id = encode_labels(outflows_with_memos)
+        # pre_tokenized_split is train and test set with the memos not tokenized, train_dataset and test_dataset are torch.Datasets with memos tokenized
         pre_tokenized_split, (train_dataset, test_dataset) = train_test_split_llm(outflows_with_memos_encoded)
-        pipe, accuracy_dct = fit_bert(train_dataset, test_dataset, id2label, label2id)
+        X_train_llm, X_test_llm, y_train_llm, y_test_llm = pre_tokenized_split
+        # decoded categories back to their real labels
+        y_train_llm_cats = [id2label[cat_id] for cat_id in y_train_llm]
+        y_test_llm_cats = [id2label[cat_id] for cat_id in y_test_llm]
+        
+        
+    if train_bert:
+        # train bert model
+        pipe = fit_bert(train_dataset, test_dataset, id2label, label2id)
+
+        # TODO: save bert model
+
+        # predict
+        train_preds_bert = predict_bert(pipe, X_train_llm)
+        test_preds_bert = predict_bert(pipe, X_test_llm)
+
+        # evaluate (TODO: classification report)
+        make_confusion_matrix(np.array(y_train_llm), np.array(train_preds_bert), 'bert', train=True)
+        make_confusion_matrix(np.array(y_test_llm), np.array(test_preds_bert), 'bert', train=False)
         
     if train_fasttext:
-        # generate fasttext features
-        fasttext_data = prepare_fasttext_data(outflows_with_memo, fasttext_data) # TODO: define fasttext_data
+        # generate fasttext train file
+        fasttext_data_fp = prepare_fasttext_data(outflows_with_memo_train, Path('data/fasttext_train.txt'))
+        
+        # train fasttext
+        fasttext_model = fit_fasttext(fasttext_data_fp, ngrams=2)
 
+        # TODO: save fasttext model maybe
 
-    ## model, ... = output(train_models.py(train, test))
-    
+        # predict
+        train_preds_fastext = predict_fasttext(fasttext_model, X_train_llm)
+        test_preds_fasttext = predict_fasttext(fasttext_model, X_test_llm)
 
-
-
+        # evaluate (TODO: classification report)
+        make_confusion_matrix(np.array(y_train_llm_cats), np.array(train_preds_fastext), 'fasttext', train=True)
+        make_confusion_matrix(np.array(y_test_llm_cats), np.array(test_preds_fasttext), 'fasttext', train=False)
+        
 
 
 
