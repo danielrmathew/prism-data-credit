@@ -171,7 +171,28 @@ def get_features_df(dataset, tfidf_max_features, include_date, include_amount):
 
     features_df =  pd.concat(raw_df, axis=1)
     return features_df
+    
+def dataset_split(dataset, feature='prism_consumer_id'):
+    """
+    Creates a train-test split of the dataset with 25% test size, grouped by a given feature to avoid sampling bias
 
+    Args:
+        dataset (pd.DataFrame): entire dataset to be split
+        feature (str): dataset feature to split on, defaults to prism_consumer_id
+
+    Returns:
+        tuple[pd.DataFrame, pd.DataFrame]: 2 DataFrames, the first being the train dataset and the second the test dataset
+    """
+    # get unique consumer ids
+    ids = dataset[feature].unique()
+    train_ids, test_ids = train_test_split(ids, test_size=0.25)
+
+    # split customer_ids into train and test sets
+    train = dataset[dataset[feature].isin(train_ids)]
+    test = dataset[dataset[feature].isin(test_ids)]
+
+    return train, test
+    
 def train_test_split_features(features_df):
     """
     Splits the feature dataset into training and testing sets.
