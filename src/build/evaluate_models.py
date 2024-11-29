@@ -29,12 +29,12 @@ def make_confusion_matrix(y, preds, model_type, train=True):
     ax1.set_ylabel('True Labels')
 
     title = 'train' if train else 'test'
-    plt.savefig(f'{model_type}_{title}_confusion_matrix.png',)
+    plt.savefig(f'../../result/{model_type}_{title}_confusion_matrix.png',)
 
     plt.show()
 
 
-def classification_report(y_true, y_obs, output_dict=True, zero_div=1.0)
+def classification_report(y_true, y_obs, output_dict=True, zero_div=1.0):
     """
     Generate a classification report summarizing the main classification metrics.
 
