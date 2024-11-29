@@ -107,7 +107,7 @@ def prepare_fasttext_data(dataset, output_path):
     """
     ft_data = dataset.copy()
     ft_data['category'] = ft_data['category'].apply(lambda x: '__label__' + x)
-    ft_data['cleaned_memo_proc'] = ft_data['cleaned_memo']
+    ft_data['cleaned_memo_proc'] = ft_data['cleaned_memo'] # TODO: potential bug, already sent pic to Aman
     
     ft_data[['category', 'cleaned_memo_proc']].to_csv(
         output_path, index=False, sep=' ', header=None, 
