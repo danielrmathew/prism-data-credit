@@ -60,14 +60,8 @@ def fit_bert(X_train, X_test, train_dataset, test_dataset, id2label, label2id):
     return pipe
 
 
-
-def fit_fasttext(train_txt_fp):
-    
-    train.to_csv(train_txt_fp, index=False, sep=' ', header=None, quoting=csv.QUOTE_NONE, quotechar="", escapechar=" ")
-
-    model = fasttext.train_supervised('../data/train.txt', wordNgrams=2) # TODO: hyperparameter config
-
-    # train_acc = (np.array(train_preds) == np.array(y_train)).mean()
-    # test_acc = (np.array(test_preds) == np.array(y_test)).mean()
+def fit_fasttext(train_txt_fp, ngrams=2):
+    model = fasttext.train_supervised(train_txt_fp, wordNgrams=ngrams) # TODO: hyperparameter config
 
     return model
+    
