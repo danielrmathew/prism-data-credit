@@ -118,7 +118,7 @@ def roc_score_curve(X, y_true, y_obs, model, model_type):
     
     plt.xlabel("False Positive Rate")
     plt.ylabel("True Positive Rate")
-    plt.title("Multi-Class Receiver Operating Characteristic (ROC) Curve")
+    plt.title("Multi-Class ROC Curve")
     plt.legend(loc="lower right")
     plt.grid()
     plt.savefig(f'../../result/{model_type}_roc_auc_curve')
@@ -126,10 +126,103 @@ def roc_score_curve(X, y_true, y_obs, model, model_type):
 
     return fpr, tpr, roc_auc
 
-def output_metrics(y, preds, model_type, train=True):
+def output_metrics(y, preds, model_type, train=True,): 
     # TODO: add other metrics here or in other functions
-    make_confusion_matrix(y, preds, model_type, train=train)
+    make_confusion_matrix(y, preds, model_type, train=True)
 
     
     return {'Train Accuracy': train_acc, 'Test Accuracy': test_acc}
+
+#######################################
+###### FASTTEXT Evaluation Below ######
+#######################################
+
+def fasttext_data_prep(fp):
+    data = []
+    labels = []
+    unique_labels = set()
+    
+    with open(fp, 'r') as f:  # Adjust the test file path
+        for line in f:
+            line_sp = line.strip().split(' ')
+            text, label = ' '.join(line_sp[:-1]), line_sp[-1]
+    
+            data.append(text)
+            labels.append(label)
+            unique_labels.add(label)
+
+    return data, labels, unique_labels
+
+def roc_score_curve_fasttext(data, labels, unique_labels):    
+    unique_labels = sorted(unique_labels)  # Ensure consistent ordering
+    label_to_idx = {label: i for i, label in enumerate(unique_labels)}
+    true_label_indices = np.array([label_to_idx[label] for label in labels])
+    
+    predicted_probs = np.zeros((len(data), len(unique_labels)))
+    for i, text in enumerate(data):
+        labels, probs = model.predict(text, k=len(unique_labels))
+        for label, prob in zip(labels, probs):
+            predicted_probs[i, label_to_idx[label]] = prob
+    
+    # One-hot encode true labels
+    true_label_matrix = np.zeros_like(predicted_probs)
+    true_label_matrix[np.arange(len(data)), true_label_indices] = 1
+
+    # Calculate ROC-AUC for each class
+    fpr = {}
+    tpr = {}
+    roc_auc = {}
+    
+    for i, label in enumerate(unique_labels):
+        fpr[label], tpr[label], _ = roc_curve(true_label_matrix[:, i], predicted_probs[:, i])
+        roc_auc[label] = auc(fpr[label], tpr[label])
+    
+    # Calculate macro and micro ROC-AUC scores
+    macro_roc_auc = roc_auc_score(true_label_matrix, predicted_probs, multi_class="ovr", average="macro")
+    micro_roc_auc = roc_auc_score(true_label_matrix, predicted_probs, multi_class="ovr", average="micro")
+
+    roc_auc  = {"micro": micro_roc_auc, 'macro': macro_roc_auc}
+
+    # Plot ROC curve for each class
+    plt.figure(figsize=(10, 8))
+    for label in unique_labels:
+        plt.plot(fpr[label], tpr[label], lw=2, label=f'Class {label} (AUC = {roc_auc[label]:.2f})')
+    
+    # Add diagonal
+    plt.plot([0, 1], [0, 1], color='gray', linestyle='--')
+    plt.title('Multi-Class ROC Curve')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.legend(loc='lower right')
+    plt.grid()
+    plt.savefig(f'../../result/fasttext_roc_auc_curve')
+    plt.show()
+
+    return fpr, tpr, roc_auc
+
+def output_metrics_fasttext(train_fp, test_fp, model): # just feed model the filepaths and trained model -- everything should run from here
+
+    train_data, train_labels, _ = fasttext_data_prep(train_fp)
+    test_data, test_labels, unique_labels = fasttext_data_prep(test_fp)
+    
+    fpr, tpr, roc_auc = roc_score_curve_fasttext(test_data, test_labels, unique_labels)
+
+    train_preds = []
+    for i in range(len(train_data)):
+        p = model.predict(train_data[i])[0][0]
+        train_preds.append(p)
+
+    test_preds = []
+    for i in range(len(test_data)):
+        p = model.predict(test_data[i])[0][0]
+        test_preds.append(p)
+
+    train_acc = (np.array(train_preds) == np.array(train_labels)).mean()
+    test_acc = (np.array(test_preds) == np.array(test_labels)).mean()
+    acc = {'Train Accuracy': train_acc, 'Test Accuracy': test_acc}
+
+    make_confusion_matrix(pd.Series(train_labels), train_preds, 'fasttext', train=True)
+    make_confusion_matrix(pd.Series(test_labels), test_preds, 'fasttext', train=False)
+
+    return acc, fpr, tpr, roc_auc
     
