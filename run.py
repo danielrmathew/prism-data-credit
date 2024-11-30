@@ -1,4 +1,7 @@
 ## imports config and relevant functions
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 from src.build.feature_gen import (
     read_outflows, clean_memos, get_features_df,
     dataset_split, train_test_split_features
@@ -12,6 +15,7 @@ from sklearn.model_selection import train_test_split
 import yaml
 from pathlib import Path
 import pickle
+import pandas as pd
 
 
 
@@ -27,6 +31,7 @@ if __name__ == "__main__":
     num_tfidf_features = config['FEATURES']['num_tfidf_features']
     include_date_features = config['FEATURES']['include_date_features']
     include_amount_features = config['FEATURES']['include_amount_features']
+    features_fp = config['FEATURES']['SAVE_FILEPATH']
     NON_LLM_MODELS = config['MODELS']['NON_LLM']
     train_bert = config['MODELS']['LLM']['bert']
     train_fasttext = config['MODELS']['LLM']['fasttext']
@@ -37,15 +42,22 @@ if __name__ == "__main__":
     outflows_with_memo = clean_memos(outflows_with_memo)
     outflows_with_memo_train, outflows_with_memo_test = dataset_split(outflows_with_memo)
 
-    print(outflows_with_memo.shape)
-    print(outflows_with_memo.describe())
-
     if True in NON_LLM_MODELS.values():
-        # TODO: add check for features.pkl file
-        
-        features_df = get_features_df(
-            outflows_with_memo, num_tfidf_features, include_date_features, include_amount_features
-        )
+        if features_fp is not None:
+            features_fp = Path(features_fp)
+            if features_fp.is_file():
+                print('Existing features found, loading now')
+                features_df = pd.read_pickle(features_fp)
+            else:
+                print(f'No file exists, will save to {features_fp}')
+                features_df = get_features_df(
+                    outflows_with_memo, num_tfidf_features, include_date_features, include_amount_features
+                )
+                features_df.to_pickle(features_fp)
+        else:
+            features_df = get_features_df(
+                outflows_with_memo, num_tfidf_features, include_date_features, include_amount_features
+            )
 
         X_train, X_test, y_train, y_test = train_test_split_features(features_df)
 
@@ -54,16 +66,20 @@ if __name__ == "__main__":
         for model, train_model in NON_LLM_MODELS.items():
             if train_model:
                 # train models
+                print(f"Training {model}")
                 model_instance = fit_model(X_train, y_train, X_test, y_test, model)
                 models[model] = model_instance # saving model object to dict
+                print(f"{model} training done, saving to result/{model}.pkl")
                 with open(f'result/{model}.pkl', 'wb') as f:
                     pickle.dump(model_instance, f)
                 
                 # predict
+                print(f"Making {model} train and test inferences")
                 train_preds = predict(X_train, y_train, model_instance)
                 test_preds = predict(X_test, y_test, model_instance)
 
                 # evaluate (confusion matrix (DONE), classification report (TODO), roc curves (TODO))
+                print(f"Creating {model} confusion matrices")
                 make_confusion_matrix(y_train, train_preds, model, train=True)
                 make_confusion_matrix(y_test, test_preds, model, train=False)
 

@@ -5,9 +5,6 @@
 ######################
 #   DATASET CONFIG   #
 ######################
-    # num tfidf
-    # include amount and date features 
-    # save train and test datasets to not repeat these steps
 
 OUTFLOWS_PATH: data/ucsd-outflows.pqt
 INFLOWS_PATH: data/ucsd-inflows.pqt
@@ -16,9 +13,9 @@ FEATURES:
     num_tfidf_features: 5000
     include_date_features: True
     include_amount_features: True
+    # include pkl filepath to save features df, leave empty if you don't want to save it
+    SAVE_FILEPATH: data/features_data.pkl
 
-# include file path to save features.pkl to
-SAVE_FEATURES: data/features_data.pkl
 
 ######################
 #    MODEL CONFIG    #
