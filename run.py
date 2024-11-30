@@ -25,15 +25,23 @@ if __name__ == "__main__":
 
     print(config)
 
-    # GET CONFIG
+    #################### 
+    #### GET CONFIG ####
+    ####################
+
+    # features config
     OUTFLOWS_PATH = config['OUTFLOWS_PATH']
     num_tfidf_features = config['FEATURES']['num_tfidf_features']
     include_date_features = config['FEATURES']['include_date_features']
     include_amount_features = config['FEATURES']['include_amount_features']
     features_fp = config['FEATURES']['SAVE_FILEPATH']
+    # non llm config
     NON_LLM_MODELS = config['MODELS']['NON_LLM']
+    # llm config
     train_bert = config['MODELS']['LLM']['bert']
+    bert_hp = config['MODELS']['LLM']['bert']['hyperparameters']
     train_fasttext = config['MODELS']['LLM']['fasttext']
+    fasttext_ngrams = config['MODELS']['LLM']['fasttext']['hyperparameters']['ngrams']
     
     assert 1 == 2
 
@@ -96,7 +104,7 @@ if __name__ == "__main__":
     if train_bert:
         # train bert model
         print("Training DistilBert model")
-        pipe = fit_bert(train_dataset, test_dataset, id2label, label2id)
+        pipe = fit_bert(train_dataset, test_dataset, id2label, label2id, bert_hp)
         print("DistilBert training done, saving to result/models/bert")
         
         # predict
@@ -116,7 +124,7 @@ if __name__ == "__main__":
         
         # train fasttext
         print("Training fastText model")
-        fasttext_model = fit_fasttext(fasttext_train_fp, ngrams=2) # hyperparameter config
+        fasttext_model = fit_fasttext(fasttext_train_fp, ngrams=fasttext_ngrams) # hyperparameter config
         print("fastText training done, saving to result/models/fasttext.bin")
         fasttext_model.save_model('result/models/fasttext.bin')
         
