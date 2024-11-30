@@ -17,10 +17,9 @@ from pathlib import Path
 import pickle
 import pandas as pd
 
-
+BASE_DIR = Path(__file__).resolve().parent
 
 if __name__ == "__main__":
-    BASE_DIR = Path(__file__).resolve().parent
     with open("config.yml", "r") as f:
         config = yaml.safe_load(f)
 
@@ -70,7 +69,7 @@ if __name__ == "__main__":
                 model_instance = fit_model(X_train, y_train, X_test, y_test, model)
                 models[model] = model_instance # saving model object to dict
                 print(f"{model} training done, saving to result/{model}.pkl")
-                with open(f'result/{model}.pkl', 'wb') as f:
+                with open(f'result/models/{model}.pkl', 'wb') as f:
                     pickle.dump(model_instance, f)
                 
                 # predict
@@ -78,7 +77,7 @@ if __name__ == "__main__":
                 train_preds = predict(X_train, y_train, model_instance)
                 test_preds = predict(X_test, y_test, model_instance)
 
-                # evaluate (confusion matrix (DONE), classification report (TODO), roc curves (TODO))
+                # evaluate (classification report (TODO), roc curves (TODO))
                 print(f"Creating {model} confusion matrices")
                 make_confusion_matrix(y_train, train_preds, model, train=True)
                 make_confusion_matrix(y_test, test_preds, model, train=False)
@@ -96,35 +95,43 @@ if __name__ == "__main__":
         
     if train_bert:
         # train bert model
+        print("Training DistilBert model")
         pipe = fit_bert(train_dataset, test_dataset, id2label, label2id)
-
-        # TODO: save bert model
-
+        print("DistilBert training done, saving to result/models/bert")
+        
         # predict
+        print("Making DistilBert train and test inferences")
         train_preds_bert = predict_bert(pipe, X_train_llm)
         test_preds_bert = predict_bert(pipe, X_test_llm)
 
         # evaluate (TODO: classification report)
+        print("Creating DistilBert confusion matrices")
         make_confusion_matrix(np.array(y_train_llm), np.array(train_preds_bert), 'bert', train=True)
         make_confusion_matrix(np.array(y_test_llm), np.array(test_preds_bert), 'bert', train=False)
         
     if train_fasttext:
         # generate fasttext train file
-        fasttext_data_fp = prepare_fasttext_data(outflows_with_memo_train, Path('data/fasttext_train.txt'))
+        print("Creating fastText features")
+        fasttext_train_fp, fasttext_test_fp = prepare_fasttext_data(outflows_with_memo)
         
         # train fasttext
-        fasttext_model = fit_fasttext(fasttext_data_fp, ngrams=2)
-
-        # TODO: save fasttext model maybe
-
+        print("Training fastText model")
+        fasttext_model = fit_fasttext(fasttext_train_fp, ngrams=2) # hyperparameter config
+        print("fastText training done, saving to result/models/fasttext.bin")
+        fasttext_model.save_model('result/models/fasttext.bin')
+        
         # predict
+        print("Making fastText train and test inferences")
         train_preds_fastext = predict_fasttext(fasttext_model, X_train_llm)
         test_preds_fasttext = predict_fasttext(fasttext_model, X_test_llm)
 
-        # evaluate (TODO: classification report)
+        # evaluate (TODO: classification report, TODO: roc auc curves)
+        # acc, fpr, tpr, roc_auc = output_metrics_fasttext(fasttext_train_fp, fasttext_test_fp, fasttext_model)
         make_confusion_matrix(np.array(y_train_llm_cats), np.array(train_preds_fastext), 'fasttext', train=True)
         make_confusion_matrix(np.array(y_test_llm_cats), np.array(test_preds_fasttext), 'fasttext', train=False)
-        
+
+
+    # TODO: make final dataframe/csv of metrics of all models
 
 
 
