@@ -100,12 +100,12 @@ def roc_score_curve(X, y_true, y_obs, model, model_type):
     roc_auc = {}
     
     for i, class_label in enumerate(labels):
-        fpr[i], tpr[i], _ = roc_curve(y_test_bin[:, i], y_scores[:, i])
-        roc_auc[i] = roc_auc_score(y_test_bin[:, i], y_scores[:, i])
+        fpr[i], tpr[i], _ = roc_curve(y_test_bin[:, i], y_scores[:, i]) # undefined function?
+        roc_auc[i] = roc_auc_score(y_test_bin[:, i], y_scores[:, i]) # undefined function?
     
-    fpr["micro"], tpr["micro"], _ = roc_curve(y_test_bin.ravel(), y_scores.ravel())
-    roc_auc["micro"] = roc_auc_score(y_test_bin, y_scores, average="micro")
-    roc_auc["macro"] = roc_auc_score(y_test_bin, y_scores, average="macro")
+    fpr["micro"], tpr["micro"], _ = roc_curve(y_test_bin.ravel(), y_scores.ravel()) # undefined function?
+    roc_auc["micro"] = roc_auc_score(y_test_bin, y_scores, average="micro") # undefined function? 
+    roc_auc["macro"] = roc_auc_score(y_test_bin, y_scores, average="macro") # undefined function?
 
     plt.figure(figsize=(10, 8))
     
@@ -178,8 +178,8 @@ def roc_score_curve_fasttext(data, labels, unique_labels):
         roc_auc[label] = auc(fpr[label], tpr[label])
     
     # Calculate macro and micro ROC-AUC scores
-    macro_roc_auc = roc_auc_score(true_label_matrix, predicted_probs, multi_class="ovr", average="macro")
-    micro_roc_auc = roc_auc_score(true_label_matrix, predicted_probs, multi_class="ovr", average="micro")
+    macro_roc_auc = roc_auc_score(true_label_matrix, predicted_probs, multi_class="ovr", average="macro") # undefined function?
+    micro_roc_auc = roc_auc_score(true_label_matrix, predicted_probs, multi_class="ovr", average="micro") # undefined function?
 
     roc_auc  = {"micro": micro_roc_auc, 'macro': macro_roc_auc}
 
@@ -204,7 +204,9 @@ def output_metrics_fasttext(train_fp, test_fp, model): # just feed model the fil
 
     train_data, train_labels, _ = fasttext_data_prep(train_fp)
     test_data, test_labels, unique_labels = fasttext_data_prep(test_fp)
-    
+
+    # feed fastext train dataset too
+    # fpr, tpr, roc_auc = roc_score_curve_fasttext(train_data, train_labels, unique_labels)
     fpr, tpr, roc_auc = roc_score_curve_fasttext(test_data, test_labels, unique_labels)
 
     train_preds = []
