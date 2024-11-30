@@ -23,7 +23,6 @@ FEATURES:
 
 # select the models that you would like to be trained
 # TODO: add hyperparameters to rest of models
-# TODO: add option to save models
 MODELS:
     NON_LLM: 
         log_reg:
@@ -42,5 +41,12 @@ MODELS:
     LLM: 
         bert: 
             train: False
+            hyperparameters:
+                learning_rate: 0.00002
+                batch_size: 256
+                num_epochs: 2
+                weight_decay: 0.01
         fasttext: 
             train: False
+            hyperparameters:
+                ngrams: 2
