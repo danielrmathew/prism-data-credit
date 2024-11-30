@@ -32,7 +32,7 @@ def fit_bert(X_train, X_test, train_dataset, test_dataset, id2label, label2id):
         return accuracy.compute(predictions=predictions, references=labels)
 
     training_args = TrainingArguments( # TODO: hyperparameter config
-        output_dir="bert",
+        output_dir="../../result/models/bert",
         learning_rate=2e-5,
         per_device_train_batch_size=256,
         per_device_eval_batch_size=256,
