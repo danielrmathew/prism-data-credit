@@ -23,6 +23,7 @@ def read_outflows(path):
     """
     outflows = pd.read_parquet(path)
     outflows_with_memo = outflows[~(outflows.memo == outflows.category)].reset_index(drop=True)
+    outflows_with_memo['posted_date'] = pd.to_datetime(outflows_with_memo['posted_date'])
     return outflows_with_memo
 
 def clean_memos(dataset):
@@ -165,7 +166,7 @@ def get_features_df(dataset, tfidf_max_features, include_date, include_amount):
     if include_date:
         date_df = get_date_features(dataset)
         raw_df.append(date_df)
-    if amount_df:
+    if include_amount:
         amount_df = get_amount_features(dataset)
         raw_df.append(amount_df)
 
