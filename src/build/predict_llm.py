@@ -32,3 +32,4 @@ def predict_fasttext(model, X):
         preds.append(model.predict(text)[0][0])
 
     return preds
+
