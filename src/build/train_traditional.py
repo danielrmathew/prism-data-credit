@@ -8,7 +8,6 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 import seaborn as sns
 
-
 def fit_model(X_train, y_train, X_test, y_test, model_type):
     """
     Fits a machine learning model based on the specified type.
