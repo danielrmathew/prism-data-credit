@@ -9,6 +9,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from gensim.utils import simple_preprocess
 from transformers import AutoTokenizer
+from pathlib import Path
 import torch
 import re
 import csv
@@ -87,8 +88,8 @@ def train_test_split_llm(dataset):
         dataset.drop(columns='encoded_category'), dataset['encoded_category'].tolist(), test_size=0.25
     )
     
-    X_train_tokenized = tokenize_for_bert(X_train, truncation=True, padding=True)
-    X_test_tokenized = tokenize_for_bert(X_test, truncation=True, padding=True)
+    X_train_tokenized = tokenize_for_bert(X_train)
+    X_test_tokenized = tokenize_for_bert(X_test)
     
     train_dataset = MemoDataset(X_train_tokenized, y_train)
     test_dataset = MemoDataset(X_test_tokenized, y_test)
@@ -107,13 +108,13 @@ def prepare_fasttext_data(dataset):
              hard-coded to 'train.txt' and 'test.txt'
     """
     ##################################
-    train_fp = '../../data/train.txt'
-    test_fp = '../../data/test.txt'
+    train_fp = 'data/train.txt'
+    test_fp = 'data/test.txt'
     ##################################
     
     ft_data = dataset.copy()
     ft_data['category'] = ft_data['category'].apply(lambda x: '__label__' + x)
-    ft_data['cleaned_memo_proc'] = ft_data.clean_memo.apply(lambda x: ' '.join(simple_preprocess(x)))
+    ft_data['cleaned_memo_proc'] = ft_data.cleaned_memo.apply(lambda x: ' '.join(simple_preprocess(x)))
 
     ids = ft_data.prism_consumer_id.unique() ## CHECK IF THIS IS POSSIBLE FOR FT_DATA BASED ON DATASET.COPY()
     test_ratio = 0.25
@@ -121,10 +122,10 @@ def prepare_fasttext_data(dataset):
     
     test_ids = np.random.choice(ids, size=test_size, replace=False)
     
-    train = ft_data[~ft_data.prism_consumer_id.isin(test_ids)].get(['clean_memo_proc', 'category'])
-    test = ft_data[ft_data.prism_consumer_id.isin(test_ids)].get(['clean_memo_proc', 'category'])
+    train = ft_data[~ft_data.prism_consumer_id.isin(test_ids)].get(['cleaned_memo_proc', 'category'])
+    test = ft_data[ft_data.prism_consumer_id.isin(test_ids)].get(['cleaned_memo_proc', 'category'])
     
-    train.to_csv(train_fp, index = False, sep = ' ', header = None, quoting = csv.QUOTE_NONE, quotechar = "", escapechar = " ")
-    test.to_csv(test_fp, index = False, sep = ' ', header = None, quoting = csv.QUOTE_NONE, quotechar = "", escapechar = " ")
+    train.to_csv(Path(train_fp), index = False, sep = ' ', header = None, quoting = csv.QUOTE_NONE, quotechar = "", escapechar = " ")
+    test.to_csv(Path(test_fp), index = False, sep = ' ', header = None, quoting = csv.QUOTE_NONE, quotechar = "", escapechar = " ")
 
     return train_fp, test_fp
