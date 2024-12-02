@@ -2,8 +2,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, roc_curve, roc_auc_score
-
-# TODO: in output_metrics or in separate functions, add more metrics like roc-auc, classification_report stuff
+from sklearn.preprocessing import label_binarize
+from .predict_llm import predict_fasttext
+from pathlib import Path
 
 def make_confusion_matrix(y, preds, model_type, train=True):
     """
@@ -29,12 +30,12 @@ def make_confusion_matrix(y, preds, model_type, train=True):
     ax1.set_ylabel('True Labels')
 
     title = 'train' if train else 'test'
-    plt.savefig(f'../../result/{model_type}_{title}_confusion_matrix.png',)
+    plt.savefig(f'result/{model_type}_{title}_confusion_matrix.png',)
 
     plt.show()
 
 
-def classification_report(y_true, y_obs, output_dict=True, zero_div=1.0):
+def make_classification_report(y_true, y_obs, output_dict=True, zero_div=1.0):
     """
     Generate a classification report summarizing the main classification metrics.
 
@@ -60,8 +61,22 @@ def classification_report(y_true, y_obs, output_dict=True, zero_div=1.0):
     """
         
     report = classification_report(y_true, y_obs, output_dict=output_dict, zero_division=zero_div)
+    accuracy = report.pop('accuracy', None)
+    report_df = pd.DataFrame.from_dict(report, orient='index').reset_index().rename(columns={'index': 'class'})
+    report_df.loc['OVERALL_ACCURACY'] = pd.Series({
+        'precision': accuracy,
+        'recall': accuracy,
+        'f1-score': accuracy,
+        'support': accuracy
+    })
+    
+    return report_df
 
-    return report
+
+def make_classification_report_csv(y_true, y_obs, model_type, train=True):
+    report_df = make_classification_report(y_true, y_obs)    
+    report_fp = Path(f'result/{model_type}_train_metrics.csv') if train else Path(f'result/{model_type}_test_metrics.csv')
+    report_df.to_csv(report_fp)
 
 
 def roc_score_curve(X, y_true, y_obs, model, model_type):
@@ -80,7 +95,7 @@ def roc_score_curve(X, y_true, y_obs, model, model_type):
         roc_auc: ROC AUC Scores
 
     Saves:
-        '../../results/* : contains the roc_auc_curve for each category for this model
+        'results/* : contains the roc_auc_curve for each category for this model
         
     """
     labels = y_true.unique()
@@ -89,10 +104,9 @@ def roc_score_curve(X, y_true, y_obs, model, model_type):
 
     
     try:
-        y_scores = log_reg.predict_proba(X_test)
+        y_scores = model.predict_proba(X)
     except:
-        print('Exception made') # remove line in build script
-        y_scores = log_reg.decision_function(X_test)
+        y_scores = model.decision_function(X)
 
 
     fpr = {} # false positive rate
@@ -121,17 +135,11 @@ def roc_score_curve(X, y_true, y_obs, model, model_type):
     plt.title("Multi-Class ROC Curve")
     plt.legend(loc="lower right")
     plt.grid()
-    plt.savefig(f'../../result/{model_type}_roc_auc_curve')
+    plt.savefig(f'result/{model_type}_roc_auc_curve.png')
     plt.show()
 
     return fpr, tpr, roc_auc
 
-def output_metrics(y, preds, model_type, train=True,): 
-    # TODO: add other metrics here or in other functions
-    make_confusion_matrix(y, preds, model_type, train=True)
-
-    
-    return {'Train Accuracy': train_acc, 'Test Accuracy': test_acc}
 
 #######################################
 ###### FASTTEXT Evaluation Below ######
@@ -195,7 +203,7 @@ def roc_score_curve_fasttext(data, labels, unique_labels):
     plt.ylabel('True Positive Rate')
     plt.legend(loc='lower right')
     plt.grid()
-    plt.savefig(f'../../result/fasttext_roc_auc_curve')
+    plt.savefig(f'result/fasttext_roc_auc_curve')
     plt.show()
 
     return fpr, tpr, roc_auc
@@ -205,26 +213,30 @@ def output_metrics_fasttext(train_fp, test_fp, model): # just feed model the fil
     train_data, train_labels, _ = fasttext_data_prep(train_fp)
     test_data, test_labels, unique_labels = fasttext_data_prep(test_fp)
 
-    # feed fastext train dataset too
-    # fpr, tpr, roc_auc = roc_score_curve_fasttext(train_data, train_labels, unique_labels)
-    fpr, tpr, roc_auc = roc_score_curve_fasttext(test_data, test_labels, unique_labels)
-
-    train_preds = []
-    for i in range(len(train_data)):
-        p = model.predict(train_data[i])[0][0]
-        train_preds.append(p)
-
-    test_preds = []
-    for i in range(len(test_data)):
-        p = model.predict(test_data[i])[0][0]
-        test_preds.append(p)
+    # make predictions
+    train_preds = predict_fasttext(model, train_data)
+    test_preds = predict_fasttext(model, test_data)
 
     train_acc = (np.array(train_preds) == np.array(train_labels)).mean()
     test_acc = (np.array(test_preds) == np.array(test_labels)).mean()
     acc = {'Train Accuracy': train_acc, 'Test Accuracy': test_acc}
 
+    # make confusion matrices 
+    print("Creating fastText confusion matrices...")
     make_confusion_matrix(pd.Series(train_labels), train_preds, 'fasttext', train=True)
     make_confusion_matrix(pd.Series(test_labels), test_preds, 'fasttext', train=False)
+    print("Saved fastText confusion matrices to result/fasttext_confusion_matrix.png") 
+
+    print("Creating fastText classifcation reports...")
+    make_classification_report_csv(train_labels, train_preds, 'fasttext', train=True)
+    make_classification_report_csv(test_labels, test_preds, 'fasttext', train=False)
+    print("Saved fastText classifcation reports to result/fasttext_metrics.csv") 
+
+    # make roc curves
+    print("Creating fastText ROC curves...")
+    fpr_train, tpr_train, roc_auc_train = roc_score_curve_fasttext(train_data, train_labels, unique_labels)
+    fpr_test, tpr_test, roc_auc_test = roc_score_curve_fasttext(test_data, test_labels, unique_labels)  
+    print("Saved fastText ROC curves to result/fasttext_roc_auc_curve.png") 
 
     return acc, fpr, tpr, roc_auc
     
