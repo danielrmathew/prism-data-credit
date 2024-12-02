@@ -25,7 +25,7 @@ def make_confusion_matrix(y, preds, model_type, train=True):
     
     sns.heatmap(conf_matrix_df, annot=True, fmt=".3f", cmap="YlGnBu", cbar=True, 
                 linewidths=0.5, linecolor='gray', square=True, annot_kws={"size": 8}, ax=ax1)
-    ax1.set_title('Precision')
+    ax1.set_title('Train Precision') if train else ax1.set_title('Test Precision')
     ax1.set_xlabel('Predicted Labels')
     ax1.set_ylabel('True Labels')
 
@@ -79,7 +79,7 @@ def make_classification_report_csv(y_true, y_obs, model_type, train=True):
     report_df.to_csv(report_fp)
 
 
-def roc_score_curve(X, y_true, y_obs, model, model_type):
+def roc_score_curve(X, y_true, y_obs, model, model_type, train=True):
     """
     Generates a report, roc_scores per category, and roc_auc_curves per category
 
@@ -135,7 +135,7 @@ def roc_score_curve(X, y_true, y_obs, model, model_type):
     plt.title("Multi-Class ROC Curve")
     plt.legend(loc="lower right")
     plt.grid()
-    plt.savefig(f'result/{model_type}_roc_auc_curve.png')
+    plt.savefig(f'result/{model_type}_train_roc_auc_curve.png') if train else plt.savefig(f'result/{model_type}_test_roc_auc_curve.png') 
     plt.show()
 
     return fpr, tpr, roc_auc
