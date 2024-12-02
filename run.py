@@ -9,8 +9,9 @@ from src.build.feature_gen import (
 from src.build.feature_gen_llm import encode_labels, train_test_split_llm, prepare_fasttext_data
 from src.build.train_traditional import fit_model
 from src.build.train_llm import fit_bert, fit_fasttext
-from src.build.evaluate_models import make_confusion_matrix, make_classification_report_csv, roc_score_curve
+from src.build.evaluate_models import make_confusion_matrix, make_classification_report_csv, roc_score_curve, output_metrics_fasttext
 from src.build.predict_traditional import predict
+from src.build.predict_llm import predict_bert, predict_fasttext
 from sklearn.model_selection import train_test_split
 import yaml
 from pathlib import Path
@@ -186,7 +187,7 @@ if __name__ == "__main__":
         # evaluate (all evaluation done in this function)
         acc, fpr, tpr, roc_auc = output_metrics_fasttext(fasttext_train_fp, fasttext_test_fp, fasttext_model)
         
-        
+
         
 
     
