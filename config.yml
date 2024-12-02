@@ -27,7 +27,7 @@ FEATURES:
 MODELS:
     NON_LLM: 
         log_reg:
-            train: False
+            train: True
             predict: True
             hyperparameters:
                 penalty: l2
