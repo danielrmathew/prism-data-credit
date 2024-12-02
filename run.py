@@ -23,8 +23,6 @@ if __name__ == "__main__":
     with open("config.yml", "r") as f:
         config = yaml.safe_load(f)
 
-    print(config)
-
     #################### 
     #### GET CONFIG ####
     ####################
@@ -127,8 +125,8 @@ if __name__ == "__main__":
                 print(f"Saved {model_type} classifcation reports to result/{model_type}_metrics.csv") 
 
                 print(f"Creating {model_type} ROC curves...")
-                roc_score_curve(X_train, y_train, train_preds, model_instance, model_type)
-                roc_score_curve(X_test, y_test, test_preds, model_instance, model_type)
+                roc_score_curve(X_train, y_train, train_preds, model_instance, model_type, train=True)
+                roc_score_curve(X_test, y_test, test_preds, model_instance, model_type, train=False)
                 print(f"Saved {model_type} ROC curves to result/{model_type}_roc_auc_curve.png")
                 
             elif predict_model and not model_path.exists():
