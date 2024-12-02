@@ -29,7 +29,7 @@ def predict_fasttext(model, X):
     """
     
     preds = []
-    for i in range(len(X)):
-        preds.append(model.predict(X[i])[0][0])
+    for text in X:
+        preds.append(model.predict(text)[0][0])
 
     return preds
