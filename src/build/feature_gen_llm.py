@@ -129,3 +129,4 @@ def prepare_fasttext_data(dataset):
     test.to_csv(Path(test_fp), index = False, sep = ' ', header = None, quoting = csv.QUOTE_NONE, quotechar = "", escapechar = " ")
 
     return train_fp, test_fp
+
