@@ -1,7 +1,8 @@
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, roc_curve, roc_auc_score
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, roc_curve, roc_auc_score, auc
 from sklearn.preprocessing import label_binarize
 from .predict_llm import predict_fasttext
 from pathlib import Path
@@ -161,52 +162,66 @@ def fasttext_data_prep(fp):
 
     return data, labels, unique_labels
 
-def roc_score_curve_fasttext(data, labels, unique_labels):    
-    unique_labels = sorted(unique_labels)  # Ensure consistent ordering
+def roc_score_curve_fasttext(data, labels, unique_labels, model, dataset_type="test"):
+    # Ensure consistent ordering and remove prefixes
+    unique_labels = sorted([label.replace('__label__', '') for label in unique_labels])
+    labels = [label.replace('__label__', '') for label in labels]
+    
     label_to_idx = {label: i for i, label in enumerate(unique_labels)}
     true_label_indices = np.array([label_to_idx[label] for label in labels])
     
+    # Predicted probabilities array
     predicted_probs = np.zeros((len(data), len(unique_labels)))
     for i, text in enumerate(data):
-        labels, probs = model.predict(text, k=len(unique_labels))
-        for label, prob in zip(labels, probs):
-            predicted_probs[i, label_to_idx[label]] = prob
+        predicted_labels, probs = model.predict(text, k=len(unique_labels))
+        predicted_labels = [label.replace('__label__', '') for label in predicted_labels]
+
+        for label, prob in zip(predicted_labels, probs):
+            if label in label_to_idx:
+                predicted_probs[i, label_to_idx[label]] = prob
     
     # One-hot encode true labels
     true_label_matrix = np.zeros_like(predicted_probs)
     true_label_matrix[np.arange(len(data)), true_label_indices] = 1
-
-    # Calculate ROC-AUC for each class
+    
+    # ROC-AUC computation
     fpr = {}
     tpr = {}
     roc_auc = {}
     
-    for i, label in enumerate(unique_labels):
-        fpr[label], tpr[label], _ = roc_curve(true_label_matrix[:, i], predicted_probs[:, i])
+    for label in unique_labels:
+        label_idx = label_to_idx[label]
+        if np.sum(true_label_matrix[:, label_idx]) == 0:
+            print(f"Warning: No true instances for label '{label}'. Assigning AUC = 0.0.")
+            fpr[label], tpr[label], roc_auc[label] = [0], [0], 0.0
+            continue
+        
+        fpr[label], tpr[label], _ = roc_curve(true_label_matrix[:, label_idx], predicted_probs[:, label_idx])
         roc_auc[label] = auc(fpr[label], tpr[label])
     
-    # Calculate macro and micro ROC-AUC scores
-    macro_roc_auc = roc_auc_score(true_label_matrix, predicted_probs, multi_class="ovr", average="macro") # undefined function?
-    micro_roc_auc = roc_auc_score(true_label_matrix, predicted_probs, multi_class="ovr", average="micro") # undefined function?
+    # Macro and Micro AUC scores
+    macro_roc_auc = roc_auc_score(true_label_matrix, predicted_probs, multi_class="ovr", average="macro")
+    micro_roc_auc = roc_auc_score(true_label_matrix, predicted_probs, multi_class="ovr", average="micro")
+    roc_auc["micro"] = micro_roc_auc
+    roc_auc["macro"] = macro_roc_auc
 
-    roc_auc  = {"micro": micro_roc_auc, 'macro': macro_roc_auc}
 
-    # Plot ROC curve for each class
     plt.figure(figsize=(10, 8))
     for label in unique_labels:
-        plt.plot(fpr[label], tpr[label], lw=2, label=f'Class {label} (AUC = {roc_auc[label]:.2f})')
+        if label in fpr and label in roc_auc:
+            plt.plot(fpr[label], tpr[label], lw=2, label=f'Class {label} (AUC = {roc_auc[label]:.2f})')
     
-    # Add diagonal
     plt.plot([0, 1], [0, 1], color='gray', linestyle='--')
-    plt.title('Multi-Class ROC Curve')
+    plt.title(f'Multi-Class ROC Curve ({dataset_type.capitalize()} Set)')
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
     plt.legend(loc='lower right')
     plt.grid()
-    plt.savefig(f'result/fasttext_roc_auc_curve')
+    plt.savefig(f'result/fasttext_{dataset_type}_roc_auc_curve.png')  # Save as distinct file
     plt.show()
-
+    
     return fpr, tpr, roc_auc
+
 
 def output_metrics_fasttext(train_fp, test_fp, model): # just feed model the filepaths and trained model -- everything should run from here
 
@@ -234,9 +249,23 @@ def output_metrics_fasttext(train_fp, test_fp, model): # just feed model the fil
 
     # make roc curves
     print("Creating fastText ROC curves...")
-    fpr_train, tpr_train, roc_auc_train = roc_score_curve_fasttext(train_data, train_labels, unique_labels)
-    fpr_test, tpr_test, roc_auc_test = roc_score_curve_fasttext(test_data, test_labels, unique_labels)  
+    fpr_train, tpr_train, roc_auc_train = roc_score_curve_fasttext(train_data, train_labels, unique_labels, model, dataset_type="train")
+    fpr_test, tpr_test, roc_auc_test = roc_score_curve_fasttext(test_data, test_labels, unique_labels, model, dataset_type="test")  
     print("Saved fastText ROC curves to result/fasttext_roc_auc_curve.png") 
 
-    return acc, fpr, tpr, roc_auc
+    return {
+        "accuracy": acc,
+        "roc_auc": {
+            "train": roc_auc_train,
+            "test": roc_auc_test,
+        },
+        "fpr": {
+            "train": fpr_train,
+            "test": fpr_test,
+        },
+        "tpr": {
+            "train": tpr_train,
+            "test": tpr_test,
+        },
+    }
     
