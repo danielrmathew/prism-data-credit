@@ -78,9 +78,26 @@ Install the required dependencies:
 pip install -r requirements.txt
 ```
 ## **3. Configure the Project**
-Modify the config.yaml file to match your local setup. Update file paths, dataset locations, and any other necessary parameters:
+Update the `config.yml` file to match your setup:
+
+---
+
+#### **Dataset Configuration**  
+- **`OUTFLOWS_PATH`**: Path to outflows dataset (default: `data/ucsd-outflows.pqt`).  
+- **`INFLOWS_PATH`**: Path to inflows dataset (default: `data/ucsd-inflows.pqt`).  
+- **`FEATURES`**:  
+  - **`num_tfidf_features`**: Number of TF-IDF features (default: `5000`).  
+  - **`include_date_features`** / **`include_amount_features`**: Set to `True` to include.  
+  - **`SAVE_FILEPATH`**: Path to save features (default: `data/features_data.pkl`).  
+  - **`SAVE_TRAIN_TEST_SPLIT`**: Path for train/test split (optional).  
+
+
+#### **Model Configuration**  
+- **`MODELS`**: Specify models to train/predict and change hyperparameters
+
+After making changes, save the file and run the script.
 
 ## **4. Running the Script**
 ```bash
-python src/build/run.py
+python run.py
 ```
