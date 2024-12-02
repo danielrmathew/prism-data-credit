@@ -80,8 +80,6 @@ pip install -r requirements.txt
 ## **3. Configure the Project**
 Update the `config.yml` file to match your setup:
 
----
-
 #### **Dataset Configuration**  
 - **`OUTFLOWS_PATH`**: Path to outflows dataset (default: `data/ucsd-outflows.pqt`).  
 - **`INFLOWS_PATH`**: Path to inflows dataset (default: `data/ucsd-inflows.pqt`).  

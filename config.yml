@@ -27,8 +27,8 @@ FEATURES:
 MODELS:
     NON_LLM: 
         log_reg:
-            train: True
-            predict: True
+            train: False
+            predict: False
             hyperparameters:
                 penalty: l2
                 C: 1.0
@@ -53,6 +53,6 @@ MODELS:
                 num_epochs: 2
                 weight_decay: 0.01
         fasttext: 
-            train: False
+            train: True
             hyperparameters:
                 ngrams: 2
