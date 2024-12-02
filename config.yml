@@ -13,31 +13,37 @@ FEATURES:
     num_tfidf_features: 5000
     include_date_features: True
     include_amount_features: True
-    # include pkl filepath to save features df, leave empty if you don't want to save it
     SAVE_FILEPATH: data/features_data.pkl
+    # include folderpath to save features train test split (RECOMMENDED), leave empty if you don't want to save it
+    SAVE_TRAIN_TEST_SPLIT: data/train_test_split/
 
 
 ######################
 #    MODEL CONFIG    #
 ######################
 
-# select the models that you would like to be trained
+# select the models you want to train and predict with
 # TODO: add hyperparameters to rest of models
 MODELS:
     NON_LLM: 
         log_reg:
-            train: True
+            train: False
+            predict: True
             hyperparameters:
                 penalty: l2
                 C: 1.0
         random_forest: 
             train: False
+            predict: False
         xgboost: 
             train: False
+            predict: False
         svm: 
             train: False
+            predict: False
         multnb: 
             train: False
+            predict: False
     LLM: 
         bert: 
             train: False
