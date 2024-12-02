@@ -1,4 +1,3 @@
-
 def predict_bert(pipe, X):
     """
     Makes predictions using a finetuned DistilBert model
