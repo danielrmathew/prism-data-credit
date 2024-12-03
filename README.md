@@ -46,7 +46,7 @@ For the purpose of this project, we only work with outflows_with_memo because th
    - **Amount Features**: Categorized even/odd amounts and deciles with one-hot encoding.
 
 3. **Model Development**
-   - **Traditional Models**: Implemented Logistic Regression, Random Forest, and XGBoost for baseline performance and benchmark comparisons.
+   - **Traditional Models**: Implemented Logistic Regression, Random Forest, XGBoost, Multinomial Naive Bayes (MNB), and Support Vector Machine (SVM) models for baseline performance and benchmark comparisons.
    - **LLM-Based Models**: 
      - **DistilBERT**: Leveraged the lightweight and efficient DistilBERT model for NLP tasks, balancing performance and computational cost.
    - **FastText**: Integrated FastText for fast, efficient, and interpretable word embeddings, particularly useful for handling out-of-vocabulary words and generating robust text representations.
