@@ -9,16 +9,15 @@ from src.build.feature_gen import (
 from src.build.feature_gen_llm import encode_labels, train_test_split_llm, prepare_fasttext_data
 from src.build.train_traditional import fit_model
 from src.build.train_llm import fit_bert, fit_fasttext
-from src.build.evaluate_models import make_confusion_matrix, make_classification_report_csv, roc_score_curve, output_metrics_fasttext
+from src.build.evaluate_models import make_confusion_matrix, make_classification_report_csv, roc_score_curve
 from src.build.predict_traditional import predict
-from src.build.predict_llm import predict_bert, predict_fasttext
 from sklearn.model_selection import train_test_split
 import yaml
 from pathlib import Path
 import pickle
 import pandas as pd
 
-BASE_DIR = Path(__file__).resolve().parent
+# BASE_DIR = Path(__file__).resolve().parent
 
 if __name__ == "__main__":
     with open("config.yml", "r") as f:
@@ -42,6 +41,8 @@ if __name__ == "__main__":
     # llm config
     train_bert = config['MODELS']['LLM']['bert']['train']
     train_fasttext = config['MODELS']['LLM']['fasttext']['train']
+    predict_bert = config['MODELS']['LLM']['bert']['predict']
+    predict_fasttext = config['MODELS']['LLM']['fasttext']['predict']
     bert_hp = config['MODELS']['LLM']['bert']['hyperparameters']
     train_fasttext = config['MODELS']['LLM']['fasttext']['train']
     fasttext_ngrams = config['MODELS']['LLM']['fasttext']['hyperparameters']['ngrams']
@@ -135,13 +136,16 @@ if __name__ == "__main__":
                 continue
 
     
-    if train_bert or train_fasttext:
+    if train_bert or train_fasttext or predict_bert or predict_fasttext:
         # generate llm features -- labels are encoded to whole numbers
+        print("Encoding category labels for LLM features...")
         outflows_with_memo_encoded, id2label, label2id = encode_labels(outflows_with_memo)
         # pre_tokenized_split is train and test set with the memos not tokenized, train_dataset and test_dataset are torch.Datasets with memos tokenized
+        print("Splitting LLM features into train and test sets...")
         pre_tokenized_split, (train_dataset, test_dataset) = train_test_split_llm(outflows_with_memo_encoded)
         X_train_llm, X_test_llm, y_train_llm, y_test_llm = pre_tokenized_split
         # decoded categories back to their real labels
+        print("Decoding categories...")
         y_train_llm_cats = [id2label[cat_id] for cat_id in y_train_llm]
         y_test_llm_cats = [id2label[cat_id] for cat_id in y_test_llm]
         
@@ -152,20 +156,21 @@ if __name__ == "__main__":
         print("DistilBert training done, saving to result/models/bert")
         
         # predict
-        print("Making DistilBert train and test inferences...")
-        train_preds_bert = predict_bert(pipe, X_train_llm)
-        test_preds_bert = predict_bert(pipe, X_test_llm)
-
-        # evaluate (TODO: ROC if time)
-        print("Creating DistilBert confusion matrices...")
-        make_confusion_matrix(np.array(y_train_llm), np.array(train_preds_bert), 'bert', train=True)
-        make_confusion_matrix(np.array(y_test_llm), np.array(test_preds_bert), 'bert', train=False)
-        print("Saved DistilBert confusion matrices to result/bert_confusion_matrix.png") 
-
-        print("Creating DistilBert classifcation reports...")
-        make_classification_report_csv(y_train, train_preds, model_type, train=True)
-        make_classification_report_csv(y_test, test_preds, model_type, train=False)
-        print("Saved DistilBert classifcation reports to result/bert_metrics.csv") 
+        if predict_bert:
+            print("Making DistilBert train and test inferences...")
+            train_preds_bert = predict_bert(pipe, X_train_llm)
+            test_preds_bert = predict_bert(pipe, X_test_llm)
+    
+            # evaluate (TODO: ROC if time)
+            print("Creating DistilBert confusion matrices...")
+            make_confusion_matrix(np.array(y_train_llm), np.array(train_preds_bert), 'bert', train=True)
+            make_confusion_matrix(np.array(y_test_llm), np.array(test_preds_bert), 'bert', train=False)
+            print("Saved DistilBert confusion matrices to result/bert_confusion_matrix.png") 
+    
+            print("Creating DistilBert classifcation reports...")
+            make_classification_report_csv(y_train, train_preds, model_type, train=True)
+            make_classification_report_csv(y_test, test_preds, model_type, train=False)
+            print("Saved DistilBert classifcation reports to result/bert_metrics.csv") 
     
         
     if train_fasttext:
@@ -180,14 +185,15 @@ if __name__ == "__main__":
         fasttext_model.save_model('result/models/fasttext.bin')
         
         # predict
-        print("Making fastText train and test inferences")
-        train_preds_fastext = predict_fasttext(fasttext_model, X_train_llm)
-        test_preds_fasttext = predict_fasttext(fasttext_model, X_test_llm)
-
-        # evaluate (all evaluation done in this function)
-        acc, fpr, tpr, roc_auc = output_metrics_fasttext(fasttext_train_fp, fasttext_test_fp, fasttext_model)
+        if predict_fasttext:
+            print("Making fastText train and test inferences")
+            train_preds_fastext = predict_fasttext(fasttext_model, X_train_llm)
+            test_preds_fasttext = predict_fasttext(fasttext_model, X_test_llm)
+    
+            # evaluate (all evaluation done in this function)
+            acc, fpr, tpr, roc_auc = output_metrics_fasttext(fasttext_train_fp, fasttext_test_fp, fasttext_model)
         
-
+        
         
 
     
