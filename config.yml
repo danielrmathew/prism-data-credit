@@ -36,8 +36,8 @@ MODELS:
             train: False
             predict: False
         xgboost: 
-            train: False
-            predict: False
+            train: True
+            predict: True
         svm: 
             train: False
             predict: False
@@ -53,6 +53,6 @@ MODELS:
                 num_epochs: 2
                 weight_decay: 0.01
         fasttext: 
-            train: True
+            train: False
             hyperparameters:
                 ngrams: 2
