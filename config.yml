@@ -46,7 +46,7 @@ MODELS:
             predict: False
     LLM: 
         bert: 
-            train: False
+            train: True
             hyperparameters:
                 learning_rate: 0.00002
                 batch_size: 256
