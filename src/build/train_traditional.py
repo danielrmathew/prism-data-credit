@@ -52,7 +52,7 @@ def fit_model(X_train, y_train, X_test, y_test, model_type):
             grow_policy="lossguide",
             subsample=0.2,
             colsample_bytree=0.2,
-            max_bin=32,
+            max_bin=16,
             min_child_weight=10,
             learning_rate=1,
         )# TODO: hyperparameter config
