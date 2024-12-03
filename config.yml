@@ -52,7 +52,9 @@ MODELS:
                 batch_size: 256
                 num_epochs: 2
                 weight_decay: 0.01
+            predict: True
         fasttext: 
             train: False
             hyperparameters:
                 ngrams: 2
+            predict: False
