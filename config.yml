@@ -46,13 +46,13 @@ MODELS:
             predict: False
     LLM: 
         bert: 
-            train: True
+            train: False
             hyperparameters:
                 learning_rate: 0.00002
                 batch_size: 256
                 num_epochs: 2
                 weight_decay: 0.01
-            predict: True
+            predict: False
         fasttext: 
             train: False
             hyperparameters:
