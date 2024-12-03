@@ -41,9 +41,22 @@ def fit_model(X_train, y_train, X_test, y_test, model_type):
         y_train_encoded = le.fit_transform(y_train)
         y_test_encoded = le.fit_transform(y_test)
 
+        X_train_dense = X_train.sparse.to_dense()
+
         # hyperparameters to consider: n_estimators, max_depth, learning_rate
-        model = XGBClassifier(objective='multi:softmax') # TODO: hyperparameter config
-        model.fit(X_train, y_train_encoded)
+        model = XGBClassifier(
+            n_estimators=5,
+            max_depth=1,
+            max_leaves=0,
+            tree_method="hist",
+            grow_policy="lossguide",
+            subsample=0.2,
+            colsample_bytree=0.2,
+            max_bin=32,
+            min_child_weight=10,
+            learning_rate=1,
+        )# TODO: hyperparameter config
+        model.fit(X_train_dense, y_train_encoded)
 
         return model, le
 
