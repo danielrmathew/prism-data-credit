@@ -16,7 +16,7 @@ from sklearn.model_selection import train_test_split
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 ######################################################################
 
-def fit_bert(X_train, X_test, train_dataset, test_dataset, id2label, label2id, hp):
+def fit_bert(train_dataset, test_dataset, id2label, label2id, hp):
 
     tokenizer = AutoTokenizer.from_pretrained("distilbert/distilbert-base-uncased")
     accuracy = evaluate.load('accuracy')
@@ -32,7 +32,7 @@ def fit_bert(X_train, X_test, train_dataset, test_dataset, id2label, label2id, h
         return accuracy.compute(predictions=predictions, references=labels)
 
     training_args = TrainingArguments( 
-        output_dir="../../result/models/bert",
+        output_dir="result/models/bert",
         learning_rate=hp['learning_rate'],
         per_device_train_batch_size=hp['batch_size'],
         per_device_eval_batch_size=hp['batch_size'],
