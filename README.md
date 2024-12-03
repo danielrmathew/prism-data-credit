@@ -52,8 +52,8 @@ For the purpose of this project, we only work with outflows_with_memo because th
    - **FastText**: Integrated FastText for fast, efficient, and interpretable word embeddings, particularly useful for handling out-of-vocabulary words and generating robust text representations.
 
 4. **Evaluation**
-   - Metrics: accuracy, precision, recall, and confusion matrices.
-   - Visualization: Charts for feature importance, category distribution, and prediction performance.
+   - Metrics: accuracy, precision, recall, f1-score, support
+   - Visualization: Confusion matrices and Multi-Class AUC curves
 
 
 # **Set Up Instructions**
