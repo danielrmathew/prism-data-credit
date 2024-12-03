@@ -99,7 +99,11 @@ if __name__ == "__main__":
             if train_model:
                 # train models
                 print(f"Training {model_type}...")
-                model_instance = fit_model(X_train, y_train, X_test, y_test, model_type)
+                if model_type == 'xgboost':
+                    model_instance, le = fit_model(X_train, y_train, X_test, y_test, model_type)
+                else:
+                    model_instance = fit_model(X_train, y_train, X_test, y_test, model_type)
+                
                 models[model_type] = model_instance # saving model object to dict
                 
                 model_path.parent.mkdir(parents=True, exist_ok=True)
@@ -113,8 +117,12 @@ if __name__ == "__main__":
             if predict_model and model_path.exists():                    
                 # predict
                 print(f"Making {model_type} train and test inferences...")
-                train_preds = predict(X_train, y_train, model_instance)
-                test_preds = predict(X_test, y_test, model_instance)
+                if model_type == 'xgboost':
+                    train_preds = predict(X_train, y_train, model_instance, le)
+                    test_preds = predict(X_test, y_test, model_instance, le)
+                else:
+                    train_preds = predict(X_train, y_train, model_instance)
+                    test_preds = predict(X_test, y_test, model_instance)
 
                 print(f"Creating {model_type} confusion matrices...")
                 make_confusion_matrix(y_train, train_preds, model_type, train=True)
