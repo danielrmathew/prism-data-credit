@@ -36,8 +36,8 @@ MODELS:
             train: False
             predict: False
         xgboost: 
-            train: False
-            predict: False
+            train: True
+            predict: True
         svm: 
             train: False
             predict: False
