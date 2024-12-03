@@ -1,0 +1,15 @@
+pandas
+numpy
+matplotlib
+seaborn 
+scikit-learn
+tensorflow
+torch
+nltk
+xgboost
+fasttext
+gensim
+plotly
+transformers
+tf-keras
+evaluate
