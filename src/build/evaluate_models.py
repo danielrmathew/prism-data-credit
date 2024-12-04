@@ -152,7 +152,7 @@ def roc_score_curve(y, preds_proba, model_type, train=True):
     n_classes = y_binarized.shape[1]
 
     # Create a figure for the plot
-    plt.figure(figsize=(5,5))
+    plt.figure(figsize=(10,8))
     
     # Generate and overlay ROC curves for each class
     for class_id in range(n_classes):
@@ -173,7 +173,8 @@ def roc_score_curve(y, preds_proba, model_type, train=True):
     # Set plot labels and title
     plt.xlabel("False Positive Rate")
     plt.ylabel("True Positive Rate")
-    plt.title("One-vs-Rest ROC Curves for All Classes")
+    plt.title(f"{model_type}: Multi-Class ROC Curve (Train Set)") if train else plt.title(f"{model_type}: Multi-Class ROC Curve (Test Set)")
+    plt.grid()
     plt.legend(fontsize=5, loc="lower right")
     
     # Show the plot
@@ -254,7 +255,7 @@ def roc_score_curve_fasttext(data, labels, unique_labels, model, dataset_type="t
     plt.title(f'{model}: Multi-Class ROC Curve ({dataset_type.capitalize()} Set)')
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
-    plt.legend(loc='lower right')
+    plt.legend(fontsize=5, loc='lower right')
     plt.grid()
     plt.savefig(f'result/fasttext_{dataset_type}_roc_auc_curve.png')  # Save as distinct file
     plt.show()
