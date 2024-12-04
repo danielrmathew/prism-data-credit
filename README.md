@@ -99,3 +99,6 @@ After making changes, save the file and run the script.
 ```bash
 python run.py
 ```
+
+## **5. Output**
+After running the script, you should see new files in the `result` folder: the saved models in `result/models` and the respective model `train/test_metrics.csv`, `train/test_roc_auc_curve.png`, and the `train/test_confusion_matrix.png` files. These files contain information about the model's performance and different accuracy metrics and figures.
