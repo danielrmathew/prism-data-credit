@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from xgboost import XGBClassifier
 
-def predict(X, y, model, le=None):
+def predict(X, y, model, proba=True, le=None):
     """
     Makes predictions using the trained model and evaluates accuracy.
 
@@ -21,5 +21,8 @@ def predict(X, y, model, le=None):
     else:
         preds = model.predict(X)
 
-    return preds
+    if proba:
+        preds_proba = model.predict_proba(X)
+
+    return preds, preds_proba if proba else preds
 
