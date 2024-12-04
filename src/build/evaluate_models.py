@@ -2,7 +2,10 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, roc_curve, roc_auc_score, auc
+from sklearn.metrics import (
+    accuracy_score, classification_report, confusion_matrix, 
+    roc_curve, roc_auc_score, auc, RocCurveDisplay
+)
 from sklearn.preprocessing import label_binarize
 from .predict_llm import predict_fasttext
 from pathlib import Path
@@ -81,67 +84,101 @@ def make_classification_report_csv(y_true, y_obs, model_type, train=True):
     report_df.to_csv(report_fp)
 
 
-def roc_score_curve(X, y_true, y_obs, model, model_type, train=True):
-    """
-    Generates a report, roc_scores per category, and roc_auc_curves per category
+# def roc_score_curve(X, y_true, y_obs, model, model_type, train=True):
+#     """
+#     Generates a report, roc_scores per category, and roc_auc_curves per category
 
-    Args:
-        X (pd.DataFrame): Model Features.
-        y_true (numpy.ndarray / pd.Series): Expected values corresponding to X model features
-        y_obs (numpy.ndarray / pd.Series): Predicted values corresponding to model and X model features
-        model (sklearn model): model use for training and predictions
+#     Args:
+#         X (pd.DataFrame): Model Features.
+#         y_true (numpy.ndarray / pd.Series): Expected values corresponding to X model features
+#         y_obs (numpy.ndarray / pd.Series): Predicted values corresponding to model and X model features
+#         model (sklearn model): model use for training and predictions
 
-    Returns:
-        fpr: false positive rates
-        tpr: true positive rates
-        roc_auc: ROC AUC Scores
+#     Returns:
+#         fpr: false positive rates
+#         tpr: true positive rates
+#         roc_auc: ROC AUC Scores
 
-    Saves:
-        'results/* : contains the roc_auc_curve for each category for this model
+#     Saves:
+#         'results/* : contains the roc_auc_curve for each category for this model
         
-    """
-    labels = y_true.unique()
+#     """
+#     labels = y_true.unique()
 
-    y_test_bin = label_binarize(y_true, classes=labels)
+#     y_test_bin = label_binarize(y_true, classes=labels)
 
     
-    try:
-        y_scores = model.predict_proba(X)
-    except:
-        y_scores = model.decision_function(X)
+#     try:
+#         y_scores = model.predict_proba(X) 
+#     except:
+#         y_scores = model.decision_function(X)
 
 
-    fpr = {} # false positive rate
-    tpr = {} # true positive rate
-    roc_auc = {}
+#     fpr = {} # false positive rate
+#     tpr = {} # true positive rate
+#     roc_auc = {}
     
-    for i, class_label in enumerate(labels):
-        fpr[i], tpr[i], _ = roc_curve(y_test_bin[:, i], y_scores[:, i]) 
-        roc_auc[i] = roc_auc_score(y_test_bin[:, i], y_scores[:, i]) 
+#     for i, class_label in enumerate(labels):
+#         fpr[i], tpr[i], _ = roc_curve(y_test_bin[:, i], y_scores[:, i]) 
+#         roc_auc[i] = roc_auc_score(y_test_bin[:, i], y_scores[:, i]) 
     
-    fpr["micro"], tpr["micro"], _ = roc_curve(y_test_bin.ravel(), y_scores.ravel()) 
-    roc_auc["micro"] = roc_auc_score(y_test_bin, y_scores, average="micro")  
-    roc_auc["macro"] = roc_auc_score(y_test_bin, y_scores, average="macro") 
+#     fpr["micro"], tpr["micro"], _ = roc_curve(y_test_bin.ravel(), y_scores.ravel()) 
+#     roc_auc["micro"] = roc_auc_score(y_test_bin, y_scores, average="micro")  
+#     roc_auc["macro"] = roc_auc_score(y_test_bin, y_scores, average="macro") 
 
-    plt.figure(figsize=(10, 8))
+#     plt.figure(figsize=(10, 8))
     
-    for i, class_label in enumerate(labels):
-        plt.plot(fpr[i], tpr[i], label=f"Class {class_label} (AUC = {roc_auc[i]:.2f})")
+#     for i, class_label in enumerate(labels):
+#         plt.plot(fpr[i], tpr[i], label=f"Class {class_label} (AUC = {roc_auc[i]:.2f})")
     
-    # Plot macro-average ROC curve
-    plt.plot(fpr["micro"], tpr["micro"], label=f"Micro-average (AUC = {roc_auc['micro']:.2f})", linestyle=':', color='red')
-    plt.plot([0, 1], [0, 1], 'k--', label="Random Guess")
+#     # Plot macro-average ROC curve
+#     plt.plot(fpr["micro"], tpr["micro"], label=f"Micro-average (AUC = {roc_auc['micro']:.2f})", linestyle=':', color='red')
+#     plt.plot([0, 1], [0, 1], 'k--', label="Random Guess")
     
+#     plt.xlabel("False Positive Rate")
+#     plt.ylabel("True Positive Rate")
+#     dataset_type = 'Train Set' if train else 'Test Set'
+#     plt.title(f'{model_type}: Multi-Class ROC Curve ({dataset_type})')
+#     plt.legend(loc="lower right")
+#     plt.grid()
+#     plt.savefig(f'result/{model_type}_train_roc_auc_curve.png') if train else plt.savefig(f'result/{model_type}_test_roc_auc_curve.png') 
+#     plt.show()
+
+#     return fpr, tpr, roc_auc
+
+def roc_score_curve(y, preds_proba, model_type, train=True):
+    classes = sorted(pd.Series(y).unique())
+    y_binarized = label_binarize(y, classes=classes)
+    n_classes = y_binarized.shape[1]
+
+    # Create a figure for the plot
+    plt.figure(figsize=(5,5))
+    
+    # Generate and overlay ROC curves for each class
+    for class_id in range(n_classes):
+        RocCurveDisplay.from_predictions(
+            y_binarized[:, class_id],
+            preds_proba[:, class_id],
+            name=f"Class {classes[class_id]} vs the rest",
+            ax=plt.gca(),  # Use the same axes for all plots
+        )
+    RocCurveDisplay.from_predictions(
+        y_binarized.ravel(),
+        preds_proba.ravel(),
+        name="Micro-Average OvR",
+        plot_chance_level=True,
+        ax=plt.gca()
+    )
+    
+    # Set plot labels and title
     plt.xlabel("False Positive Rate")
     plt.ylabel("True Positive Rate")
-    dataset_type = 'Train Set' if train else 'Test Set'
-    plt.title(f'{model_type}: Multi-Class ROC Curve ({dataset_type})')
-    plt.legend(loc="lower right")
-    plt.grid()
+    plt.title("One-vs-Rest ROC Curves for All Classes")
+    plt.legend(fontsize=5, loc="lower right")
+    
+    # Show the plot
     plt.savefig(f'result/{model_type}_train_roc_auc_curve.png') if train else plt.savefig(f'result/{model_type}_test_roc_auc_curve.png') 
     plt.show()
-
-    return fpr, tpr, roc_auc
 
 
 #######################################
