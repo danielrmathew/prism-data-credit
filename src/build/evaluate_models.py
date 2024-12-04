@@ -116,12 +116,12 @@ def roc_score_curve(X, y_true, y_obs, model, model_type, train=True):
     roc_auc = {}
     
     for i, class_label in enumerate(labels):
-        fpr[i], tpr[i], _ = roc_curve(y_test_bin[:, i], y_scores[:, i]) # undefined function?
-        roc_auc[i] = roc_auc_score(y_test_bin[:, i], y_scores[:, i]) # undefined function?
+        fpr[i], tpr[i], _ = roc_curve(y_test_bin[:, i], y_scores[:, i]) 
+        roc_auc[i] = roc_auc_score(y_test_bin[:, i], y_scores[:, i]) 
     
-    fpr["micro"], tpr["micro"], _ = roc_curve(y_test_bin.ravel(), y_scores.ravel()) # undefined function?
-    roc_auc["micro"] = roc_auc_score(y_test_bin, y_scores, average="micro") # undefined function? 
-    roc_auc["macro"] = roc_auc_score(y_test_bin, y_scores, average="macro") # undefined function?
+    fpr["micro"], tpr["micro"], _ = roc_curve(y_test_bin.ravel(), y_scores.ravel()) 
+    roc_auc["micro"] = roc_auc_score(y_test_bin, y_scores, average="micro")  
+    roc_auc["macro"] = roc_auc_score(y_test_bin, y_scores, average="macro") 
 
     plt.figure(figsize=(10, 8))
     
