@@ -118,11 +118,11 @@ if __name__ == "__main__":
                 # predict
                 print(f"Making {model_type} train and test inferences...")
                 if model_type == 'xgboost':
-                    train_preds = predict(X_train, y_train, model_instance, le)
-                    test_preds = predict(X_test, y_test, model_instance, le)
+                    train_preds, train_preds_proba = predict(X_train, y_train, model_instance, le)
+                    test_preds, test_preds_proba = predict(X_test, y_test, model_instance, le)
                 else:
-                    train_preds = predict(X_train, y_train, model_instance)
-                    test_preds = predict(X_test, y_test, model_instance)
+                    train_preds, train_preds_proba = predict(X_train, y_train, model_instance)
+                    test_preds, test_preds_proba = predict(X_test, y_test, model_instance)
 
                 print(f"Creating {model_type} confusion matrices...")
                 make_confusion_matrix(y_train, train_preds, model_type, train=True)
@@ -135,8 +135,8 @@ if __name__ == "__main__":
                 print(f"Saved {model_type} classifcation reports to result/{model_type}_metrics.csv") 
 
                 print(f"Creating {model_type} ROC curves...")
-                roc_score_curve(X_train, y_train, train_preds, model_instance, model_type, train=True)
-                roc_score_curve(X_test, y_test, test_preds, model_instance, model_type, train=False)
+                roc_score_curve(y_train, train_preds_proba, model_type, train=True)
+                roc_score_curve(y_test, test_preds_proba, model_type, train=False)
                 print(f"Saved {model_type} ROC curves to result/{model_type}_roc_auc_curve.png")
                 
             elif predict_model and not model_path.exists():
