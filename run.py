@@ -11,6 +11,8 @@ from src.build.train_traditional import fit_model
 from src.build.train_llm import fit_bert, fit_fasttext
 from src.build.evaluate_models import make_confusion_matrix, make_classification_report_csv, roc_score_curve
 from src.build.predict_traditional import predict
+from src.build.predict_llm import predict_bert, predict_fasttext
+
 from sklearn.model_selection import train_test_split
 import yaml
 from pathlib import Path
@@ -41,8 +43,8 @@ if __name__ == "__main__":
     # llm config
     train_bert = config['MODELS']['LLM']['bert']['train']
     train_fasttext = config['MODELS']['LLM']['fasttext']['train']
-    predict_bert = config['MODELS']['LLM']['bert']['predict']
-    predict_fasttext = config['MODELS']['LLM']['fasttext']['predict']
+    predict_bert_bool = config['MODELS']['LLM']['bert']['predict']
+    predict_fasttext_bool = config['MODELS']['LLM']['fasttext']['predict']
     bert_hp = config['MODELS']['LLM']['bert']['hyperparameters']
     train_fasttext = config['MODELS']['LLM']['fasttext']['train']
     fasttext_ngrams = config['MODELS']['LLM']['fasttext']['hyperparameters']['ngrams']
@@ -144,7 +146,7 @@ if __name__ == "__main__":
                 continue
 
     
-    if train_bert or train_fasttext or predict_bert or predict_fasttext:
+    if train_bert or train_fasttext or predict_bert_bool or predict_fasttext_bool:
         # generate llm features -- labels are encoded to whole numbers
         print("Encoding category labels for LLM features...")
         outflows_with_memo_encoded, id2label, label2id = encode_labels(outflows_with_memo)
@@ -164,7 +166,7 @@ if __name__ == "__main__":
         print("DistilBert training done, saving to result/models/bert")
         
         # predict
-        if predict_bert:
+        if predict_bert_bool:
             print("Making DistilBert train and test inferences...")
             train_preds_bert = predict_bert(pipe, X_train_llm)
             test_preds_bert = predict_bert(pipe, X_test_llm)
@@ -192,7 +194,7 @@ if __name__ == "__main__":
         fasttext_model.save_model('result/models/fasttext.bin')
         
         # predict
-        if predict_fasttext:
+        if predict_fasttext_bool:
             print("Making fastText train and test inferences")
             train_preds_fastext = predict_fasttext(fasttext_model, X_train_llm)
             test_preds_fasttext = predict_fasttext(fasttext_model, X_test_llm)
