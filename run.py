@@ -109,12 +109,12 @@ if __name__ == "__main__":
                 model_path.parent.mkdir(parents=True, exist_ok=True)
                 with open(model_path, 'wb') as f:
                     pickle.dump(model_instance, f)
-                print(f"{model_type} training done, saved to result/{model_type}.pkl")
-            elif not train_model and model_path.exists():
-                with open(model_path, 'rb') as f:
-                    model_instance = pickle.load(f)
+                print(f"{model_type} training done, saved to result/{model_type}.pkl")                
             
-            if predict_model and model_path.exists():                    
+            if predict_model and model_path.exists(): 
+                if not train_model:
+                    with open(model_path, 'rb') as f:
+                        model_instance = pickle.load(f)
                 # predict
                 print(f"Making {model_type} train and test inferences...")
                 if model_type == 'xgboost':
@@ -169,7 +169,6 @@ if __name__ == "__main__":
             train_preds_bert = predict_bert(pipe, X_train_llm)
             test_preds_bert = predict_bert(pipe, X_test_llm)
     
-            # evaluate (TODO: ROC if time)
             print("Creating DistilBert confusion matrices...")
             make_confusion_matrix(np.array(y_train_llm), np.array(train_preds_bert), 'bert', train=True)
             make_confusion_matrix(np.array(y_test_llm), np.array(test_preds_bert), 'bert', train=False)
