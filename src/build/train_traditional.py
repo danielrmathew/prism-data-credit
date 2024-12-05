@@ -3,7 +3,7 @@ from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
-from sklearn.svm import LinearSVC
+from sklearn.svm import LinearSVC, SVC
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 import seaborn as sns
@@ -61,7 +61,7 @@ def fit_model(X_train, y_train, X_test, y_test, model_type):
         return model, le
 
     elif model_type == 'svm':
-        model = LinearSVC(C=0.5, dual='auto', probability=True) # TODO: hyperparameter config
+        model = LinearSVC(C=0.5, dual='auto') # TODO: hyperparameter config
         model.fit(X_train, y_train)
 
 
