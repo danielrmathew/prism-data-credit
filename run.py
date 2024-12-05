@@ -9,7 +9,7 @@ from src.build.feature_gen import (
 from src.build.feature_gen_llm import encode_labels, train_test_split_llm, prepare_fasttext_data
 from src.build.train_traditional import fit_model
 from src.build.train_llm import fit_bert, fit_fasttext
-from src.build.evaluate_models import make_confusion_matrix, make_classification_report_csv, roc_score_curve
+from src.build.evaluate_models import make_confusion_matrix, make_classification_report_csv, roc_score_curve, output_metrics_fasttext
 from src.build.predict_traditional import predict
 from src.build.predict_llm import predict_bert, predict_fasttext
 
@@ -40,6 +40,7 @@ if __name__ == "__main__":
     non_llm_models = config['MODELS']['NON_LLM']
     train_non_llm_models = [dct['train'] for dct in non_llm_models.values()]
     predict_non_llm_models = [dct['predict'] for dct in non_llm_models.values()]
+    log_reg_hp = config['MODELS']['NON_LLM']['log_reg']['hyperparameters']
     # llm config
     train_bert = config['MODELS']['LLM']['bert']['train']
     train_fasttext = config['MODELS']['LLM']['fasttext']['train']
