@@ -101,4 +101,5 @@ python run.py
 ```
 
 ## **5. Output**
-After running the script, you should see new files in the `result` folder: the saved models in `result/models` and the respective model `train_metrics.csv`, `test_metrics.csv`, `train/test_roc_auc_curve.png`, and the `train/test_confusion_matrix.png` files. These files contain information about the model's performance and different accuracy metrics and figures.
+After running the script, you should see new files in the `result` folder: the saved models in `result/models` and the respective model `train_metrics.csv`, `test_metrics.csv`, `traint_roc_auc_curve.png`, `test_roc_auc_curve.png`, and the `train_confusion_matrix.png`, `test_confusion_matrix.png` files. These files contain information about the model's performance and different accuracy metrics and figures.
+
