@@ -8,7 +8,7 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 import seaborn as sns
 
-def fit_model(X_train, y_train, X_test, y_test, model_type):
+def fit_model(X_train, y_train, X_test, y_test, model_type, hp):
     """
     Fits a machine learning model based on the specified type.
 
@@ -34,7 +34,7 @@ def fit_model(X_train, y_train, X_test, y_test, model_type):
         model = LogisticRegression(max_iter=1000, n_jobs=-1).fit(X_train, y_train) # TODO: hyperparameter config
                 
     elif model_type == 'random_forest':
-        model = RandomForestClassifier(n_estimators=100, n_jobs=-1).fit(X_train, y_train) # TODO: hyperparameter config
+        model = RandomForestClassifier(n_estimators=100, probability=True, n_jobs=-1).fit(X_train, y_train) # TODO: hyperparameter config
 
     elif model_type == 'xgboost':
         le = LabelEncoder()
@@ -61,7 +61,7 @@ def fit_model(X_train, y_train, X_test, y_test, model_type):
         return model, le
 
     elif model_type == 'svm':
-        model = LinearSVC(C=0.5, dual='auto',) # TODO: hyperparameter config
+        model = LinearSVC(C=0.5, dual='auto', probability=True) # TODO: hyperparameter config
         model.fit(X_train, y_train)
 
 
