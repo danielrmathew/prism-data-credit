@@ -34,7 +34,7 @@ def fit_model(X_train, y_train, X_test, y_test, model_type):
         model = LogisticRegression(max_iter=1000, n_jobs=-1).fit(X_train, y_train) # TODO: hyperparameter config
                 
     elif model_type == 'random_forest':
-        model = RandomForestClassifier(n_estimators=100, probability=True, n_jobs=-1).fit(X_train, y_train) # TODO: hyperparameter config
+        model = RandomForestClassifier(n_estimators=100, n_jobs=-1).fit(X_train, y_train) # TODO: hyperparameter config
 
     elif model_type == 'xgboost':
         le = LabelEncoder()
