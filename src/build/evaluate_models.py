@@ -74,7 +74,7 @@ def make_classification_report(y_true, y_obs, output_dict=True, zero_div=1.0):
         'f1-score': accuracy,
         'support': accuracy
     })
-    report_df.round(3)
+    report_df = report_df.round(3)
     
     return report_df
 
