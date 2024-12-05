@@ -116,6 +116,7 @@ if __name__ == "__main__":
             
             if predict_model and model_path.exists(): 
                 if not train_model:
+                    print(f"Existing {model_type} model found, loading now...")
                     with open(model_path, 'rb') as f:
                         model_instance = pickle.load(f)
                 # predict
@@ -123,9 +124,12 @@ if __name__ == "__main__":
                 if model_type == 'xgboost':
                     train_preds, train_preds_proba = predict(X_train, y_train, model_instance, le)
                     test_preds, test_preds_proba = predict(X_test, y_test, model_instance, le)
-                else:
+                elif model_type != 'svm':
                     train_preds, train_preds_proba = predict(X_train, y_train, model_instance)
                     test_preds, test_preds_proba = predict(X_test, y_test, model_instance)
+                else:
+                    train_preds = predict(X_train, y_train, model_instance, proba=False)
+                    test_preds = predict(X_test, y_test, model_instance, proba=False)
 
                 print(f"Creating {model_type} confusion matrices...")
                 make_confusion_matrix(y_train, train_preds, model_type, train=True)
@@ -137,10 +141,11 @@ if __name__ == "__main__":
                 make_classification_report_csv(y_test, test_preds, model_type, train=False)
                 print(f"Saved {model_type} classifcation reports to result/{model_type}_metrics.csv") 
 
-                print(f"Creating {model_type} ROC curves...")
-                roc_score_curve(y_train, train_preds_proba, model_type, train=True)
-                roc_score_curve(y_test, test_preds_proba, model_type, train=False)
-                print(f"Saved {model_type} ROC curves to result/{model_type}_roc_auc_curve.png")
+                if model_type != 'svm':
+                    print(f"Creating {model_type} ROC curves...")
+                    roc_score_curve(y_train, train_preds_proba, model_type, train=True)
+                    roc_score_curve(y_test, test_preds_proba, model_type, train=False)
+                    print(f"Saved {model_type} ROC curves to result/{model_type}_roc_auc_curve.png")
                 
             elif predict_model and not model_path.exists():
                 print(f"You have set predict to True for {model_type} with no model trained. Skipping...")
