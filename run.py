@@ -187,7 +187,8 @@ if __name__ == "__main__":
             make_classification_report_csv(y_test, test_preds, model_type, train=False)
             print("Saved DistilBert classifcation reports to result/bert_metrics.csv") 
     
-        
+
+    fasttext_fp = Path('result/models/fasttext.bin')
     if train_fasttext:
         # generate fasttext train file
         print("Creating fastText features")
@@ -197,17 +198,21 @@ if __name__ == "__main__":
         print("Training fastText model_type")
         fasttext_model = fit_fasttext(fasttext_train_fp, ngrams=fasttext_ngrams) 
         print("fastText training done, saving to result/models/fasttext.bin")
-        fasttext_model.save_model('result/models/fasttext.bin')
         
-        # predict
-        if predict_fasttext_bool:
-            print("Making fastText train and test inferences")
-            train_preds_fastext = predict_fasttext(fasttext_model, X_train_llm)
-            test_preds_fasttext = predict_fasttext(fasttext_model, X_test_llm)
+        fasttext_model.save_model(str(fasttext_fp))
+        
+    # predict
+    if predict_fasttext_bool and fasttext_fp.exists():
+        if not train_fasttext:
+            print("Existing fastText model found, loading now...")
+            fasttext_model = fasttext.load_model(str(fasttext_fp))
+        print("Making fastText train and test inferences")
+        train_preds_fastext = predict_fasttext(fasttext_model, X_train_llm)
+        test_preds_fasttext = predict_fasttext(fasttext_model, X_test_llm)
+
+        # evaluate (all evaluation done in this function)
+        acc, fpr, tpr, roc_auc = output_metrics_fasttext(fasttext_train_fp, fasttext_test_fp, fasttext_model)
     
-            # evaluate (all evaluation done in this function)
-            acc, fpr, tpr, roc_auc = output_metrics_fasttext(fasttext_train_fp, fasttext_test_fp, fasttext_model)
-        
         
         
 
