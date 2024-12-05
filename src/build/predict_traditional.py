@@ -24,5 +24,7 @@ def predict(X, y, model, proba=True, le=None):
     if proba:
         preds_proba = model.predict_proba(X)
 
-    return preds, preds_proba if proba else preds
+    if proba:
+        return preds, preds_proba
+    return preds
 
