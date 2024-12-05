@@ -12,6 +12,7 @@ from src.build.train_llm import fit_bert, fit_fasttext
 from src.build.evaluate_models import make_confusion_matrix, make_classification_report_csv, roc_score_curve, output_metrics_fasttext
 from src.build.predict_traditional import predict
 from src.build.predict_llm import predict_bert, predict_fasttext
+import fasttext
 
 from sklearn.model_selection import train_test_split
 import yaml
@@ -206,6 +207,8 @@ if __name__ == "__main__":
         if not train_fasttext:
             print("Existing fastText model found, loading now...")
             fasttext_model = fasttext.load_model(str(fasttext_fp))
+            fasttext_train_fp = 'data/train.txt'
+            fasttext_test_fp = 'data/test.txt'
         print("Making fastText train and test inferences")
         train_preds_fastext = predict_fasttext(fasttext_model, X_train_llm)
         test_preds_fasttext = predict_fasttext(fasttext_model, X_test_llm)
