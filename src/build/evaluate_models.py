@@ -35,7 +35,7 @@ def make_confusion_matrix(y, preds, model_type, train=True):
     ax1.set_ylabel('True Labels')
 
     file_title = 'train' if train else 'test'
-    plt.savefig(f'result/{model_type}_{file_title}_confusion_matrix.png',)
+    plt.savefig(f'result/{model_type}_{file_title}_confusion_matrix.png', bbox_inches='tight')
 
     plt.show()
 
