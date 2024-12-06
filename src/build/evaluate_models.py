@@ -35,7 +35,7 @@ def make_confusion_matrix(y, preds, model_type, train=True):
     ax1.set_ylabel('True Labels')
 
     file_title = 'train' if train else 'test'
-    plt.savefig(f'result/{model_type}_{file_title}_confusion_matrix.png', bbox_inches='tight')
+    plt.savefig(f'result/{model_type}/{model_type}_{file_title}_confusion_matrix.png', bbox_inches='tight')
 
     plt.show()
 
@@ -81,7 +81,7 @@ def make_classification_report(y_true, y_obs, output_dict=True, zero_div=1.0):
 
 def make_classification_report_csv(y_true, y_obs, model_type, train=True):
     report_df = make_classification_report(y_true, y_obs)    
-    report_fp = Path(f'result/{model_type}_train_metrics.csv') if train else Path(f'result/{model_type}_test_metrics.csv')
+    report_fp = Path(f'result/{model_type}_train_metrics.csv') if train else Path(f'result/{model_type}/{model_type}_test_metrics.csv')
     report_df.to_csv(report_fp)
     
 
@@ -117,7 +117,7 @@ def roc_score_curve(y, preds_proba, model_type, train=True):
     plt.legend(fontsize=7, loc="lower right")
     
     # Show the plot
-    plt.savefig(f'result/{model_type}_train_roc_auc_curve.png') if train else plt.savefig(f'result/{model_type}_test_roc_auc_curve.png') 
+    plt.savefig(f'result/{model_type}/{model_type}_train_roc_auc_curve.png') if train else plt.savefig(f'result/{model_type}/{model_type}_test_roc_auc_curve.png') 
     plt.show()
 
 
@@ -196,7 +196,7 @@ def roc_score_curve_fasttext(data, labels, unique_labels, model, dataset_type="t
     plt.ylabel('True Positive Rate')
     plt.legend(fontsize=7, loc='lower right')
     plt.grid()
-    plt.savefig(f'result/fasttext_{dataset_type}_roc_auc_curve.png')  # Save as distinct file
+    plt.savefig(f'result/{model_type}/fasttext_{dataset_type}_roc_auc_curve.png')  # Save as distinct file
     plt.show()
     
     return fpr, tpr, roc_auc
