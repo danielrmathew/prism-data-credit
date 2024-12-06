@@ -1,0 +1,60 @@
+################################################################
+#               CONFIGURATION VARIABLES HERE                   #
+################################################################
+
+######################
+#   DATASET CONFIG   #
+######################
+
+OUTFLOWS_PATH: data/ucsd-outflows.pqt
+INFLOWS_PATH: data/ucsd-inflows.pqt
+
+FEATURES: 
+    num_tfidf_features: 5000
+    include_date_features: True
+    include_amount_features: True
+    SAVE_FILEPATH: data/features_data.pkl
+    # include folderpath to save features train test split (RECOMMENDED), leave empty if you don't want to save it
+    SAVE_TRAIN_TEST_SPLIT: data/train_test_split/
+
+
+######################
+#    MODEL CONFIG    #
+######################
+
+# select the models you want to train and predict with
+# TODO: add hyperparameters to rest of models
+MODELS:
+    NON_LLM: 
+        log_reg:
+            train: False
+            predict: False
+            hyperparameters:
+                penalty: l2
+                C: 1.0
+        random_forest: 
+            train: False
+            predict: False
+        xgboost: 
+            train: True
+            predict: True
+        svm: 
+            train: False
+            predict: False
+        multnb: 
+            train: False
+            predict: False
+    LLM: 
+        bert: 
+            train: False
+            hyperparameters:
+                learning_rate: 0.00002
+                batch_size: 256
+                num_epochs: 2
+                weight_decay: 0.01
+            predict: False
+        fasttext: 
+            train: False
+            hyperparameters:
+                ngrams: 2
+            predict: False
