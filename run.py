@@ -123,8 +123,8 @@ if __name__ == "__main__":
                 # predict
                 print(f"Making {model_type} train and test inferences...")
                 if model_type == 'xgboost':
-                    train_preds, train_preds_proba = predict(X_train, y_train, model_instance, le)
-                    test_preds, test_preds_proba = predict(X_test, y_test, model_instance, le)
+                    train_preds, train_preds_proba = predict(X_train, y_train, model_instance, True, le)
+                    test_preds, test_preds_proba = predict(X_test, y_test, model_instance, True, le)
                 elif model_type != 'svm':
                     train_preds, train_preds_proba = predict(X_train, y_train, model_instance)
                     test_preds, test_preds_proba = predict(X_test, y_test, model_instance)
