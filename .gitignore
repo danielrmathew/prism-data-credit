@@ -1,3 +1,7 @@
 src/build/.ipynb_checkpoints/*
-
 src/notebooks/category_features.csv
+src/notebooks/.ipynb_checkpoints/*
+result/.ipynb_checkpoints/*
+src/.ipynb_checkpoints/*
+data/*
+.ipynb_checkpoints/*
