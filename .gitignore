@@ -1,8 +1,6 @@
 src/build/.ipynb_checkpoints/*
-result/.ipynb_checkpoints/*
-.ipynb_checkpoints/*
 src/notebooks/.ipynb_checkpoints/*
-.gitignore
+result/.ipynb_checkpoints/*
+src/.ipynb_checkpoints/*
 data/*
-result/models/
-q2data
+.ipynb_checkpoints/*
