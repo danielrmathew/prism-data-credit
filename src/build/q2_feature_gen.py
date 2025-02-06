@@ -255,7 +255,7 @@ def feature_gen(cat_map, balanceDF, trxnDF,
     gambling_ftrs = reduce(lambda left, right: pd.merge(left, right, on='prism_consumer_id'), gambling_df)
 
 
-    feature_dfs = [balance_ftrs, category_features, outflows_ftrs, gambling_ftrs,]
+    feature_dfs = [balance_ftrs, balance_deltas_ftrs, category_features, outflows_ftrs, gambling_ftrs,]
     features_all = reduce(lambda left, right: pd.merge(left, right, on='prism_consumer_id'), feature_dfs)
 
     return features_all
