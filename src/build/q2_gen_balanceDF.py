@@ -51,7 +51,7 @@ def calc_balances_all(acctDF, trxnDF, cat_map):
     # Final Formatting for Category Names
 
     cat_dict = cat_map.set_index('category_id')['category'].to_dict()
-    balanceDF['cat_name'] = balanceDF_all.category.apply(lambda x: cat_dict[x])
+    balanceDF['cat_name'] = balanceDF.category.apply(lambda x: cat_dict[x])
 
     return balanceDF
 
