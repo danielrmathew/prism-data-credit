@@ -12,7 +12,7 @@ from sklearn.metrics import roc_auc_score, accuracy_score, confusion_matrix, cla
 from scipy.stats import ks_2samp
 
 
-def calc_balances_all(acctDF, balanceDF, cat_map):
+def calc_balances_all(acctDF, trxnDF, cat_map):
 
     # Grabbing only checking account balances
     check_acct_totals = acctDF[acctDF.account_type == 'CHECKING'].groupby(['prism_consumer_id', 'balance_date']).sum()
@@ -20,7 +20,7 @@ def calc_balances_all(acctDF, balanceDF, cat_map):
     check_acct_totals = check_acct_totals.drop(axis=1,labels='prism_account_id')
     
     # Merge transactions with account balances
-    merged = balanceDF.merge(
+    merged = trxnDF.merge(
         check_acct_totals[['prism_consumer_id', 'balance_date', 'balance']], 
         on='prism_consumer_id', how='left'
     )
