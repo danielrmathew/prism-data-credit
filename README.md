@@ -116,5 +116,11 @@ These files contain information about the model's performance, including various
 ### **Model Metrics Output**  
 The script prints evaluation metrics for each trained model in the following format:  
 ```bash
-<Model Name> metrics: ROC_AUC: <value> Accuracy: <value> Precision: <value> Recall: <value> F1-Score: <value> Confusion Matrix: [[TP FP] [FN TN]]
+<Model Name> metrics:
+ROC_AUC: <value>
+Accuracy: <value>
+Precision: <value>
+Recall: <value>
+F1-Score: <value>
+Confusion Matrix: [[TP FP] [FN TN]]
 ```
