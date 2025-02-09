@@ -27,34 +27,19 @@ The project utilizes several datasets for building features and training models.
 | `'q2-ucsd-trxnDF'`    | Transaction records|
 | `'q2-ucsd-cat-map'`   | Mapping of categories to corresponding cateogryIDs |
 
-## **Features**
-
 ### **Core Capabilities**
 
 1. **Feature Creation**
-   **Transaction Features**: 
-  - Aggregated transaction statistics by category over multiple time windows (14 days, 30 days, 3 months, 6 months, 1 year).
-  - Metrics include mean, median, standard deviation, and transaction count.
-  - Includes category-specific flags for spending thresholds.
-    **Balance Features**: 
-  - Aggregated account balance statistics over different time windows (overall, 14 days, 30 days, 3 months, 6 months, 1 year).
-  - Includes mean, median, standard deviation, and min/max balance.
-  - Computes balance deltas (difference between most recent and earlier balances).
-    **Categorical Features**: 
-  - Transaction categories are mapped and used to generate category-specific features such as spending patterns and transaction counts within time windows.
-    **Amount Features**: 
-  - Categorized amounts into mean, median, and other statistics to track spending behavior across different time periods.
-
-- **Risky Features**: 
-  - Identify and flag transactions related to gambling or other high-risk behaviors.
-  - Track frequency, amount, and types of risky transactions.
-  - Generate indicators of potential risky behavior, such as spending patterns associated with gambling-related categories (e.g., casinos, betting platforms).
-  - Create features that capture fluctuations in spending within gambling-related categories over time.
+- **Transaction Features**: Aggregated transaction stats (mean, median, std, count) by category over time windows (14 days, 30 days, 3 months, 6 months, 1 year), with category-specific spending flags.
+- **Balance Features**: Aggregated balance stats (mean, median, min/max, std) over different time windows, including balance deltas (recent vs earlier balances).
+- **Categorical Features**: Mapped transaction categories for spending patterns and transaction counts within time windows.
+- **Amount Features**: Statistics (mean, median, etc.) of amounts to track spending behavior.
+- **Risky Features**: Flag gambling or high-risk transactions, tracking frequency, amount, and spending fluctuations in related categories (e.g., casinos, betting).
   
 2. **Feature Generation**
-   **Lasso Regularization Features**: 
+- **Lasso Regularization Features**: 
   - Logistic Regression with L1 regularization (Lasso) selects the top features by their non-zero coefficients.
-   **Point-Biserial Correlation Features**: 
+- **Point-Biserial Correlation Features**: 
   - Features are ranked by point-biserial correlation with the target variable.
 
 3. **Model Development**
