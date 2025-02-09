@@ -20,37 +20,68 @@ Credit scores are pivotal in today’s financial landscape, influencing everythi
 
 The project utilizes several datasets for building features and training models. These datasets provide comprehensive information about accounts, consumers, transactions, and category mappings, which are used to build a feature set for prediction tasks. Each dataset serves a different purpose in the data pipeline.
 
-| Column                | Description                                      |
+| Dataset                | Description                                      |
 |-----------------------|--------------------------------------------------|
-| `'q2-ucsd-acctDF'`    | Account-level information, including account IDs |
-| `'q2-ucsd-consDF'`    | Consumer-level information, such as consumer IDs and demographics |
-| `'q2-ucsd-trxnDF'`    | Transaction records, including transaction amounts and dates |
-| `'q2-ucsd-cat-map'`   | Mapping of categories to transaction types |
-
-For the purpose of this project, we only work with outflows_with_memo because that is the subset of the data we were told to work with. This doesn't include rows where memo == category, and thereby includes rows that are pivotal to our prediction task.
+| `'q2-ucsd-acctDF'`    | Account-level information|
+| `'q2-ucsd-consDF'`    | Consumer-level information|
+| `'q2-ucsd-trxnDF'`    | Transaction records|
+| `'q2-ucsd-cat-map'`   | Mapping of categories to corresponding cateogryIDs |
 
 ## **Features**
 
 ### **Core Capabilities**
-1. **Data Cleaning & Preprocessing**
-   - Removes sensitive and irrelevant data like dates, addresses, and email patterns.
-   - Handles text standardization (e.g., lowercase conversion, punctuation removal).
-   - Filters transactions for relevant memos using exclusion criteria.
 
-2. **Feature Engineering**
-   - **NLP Features**: TF-IDF vectorization for transaction descriptions.
-   - **Date Features**: Extracted and one-hot encoded month, weekday, and day-of-month.
-   - **Amount Features**: Categorized even/odd amounts and deciles with one-hot encoding.
+1. **Feature Creation**
+   **Transaction Features**: 
+  - Aggregated transaction statistics by category over multiple time windows (14 days, 30 days, 3 months, 6 months, 1 year).
+  - Metrics include mean, median, standard deviation, and transaction count.
+  - Includes category-specific flags for spending thresholds.
+    **Balance Features**: 
+  - Aggregated account balance statistics over different time windows (overall, 14 days, 30 days, 3 months, 6 months, 1 year).
+  - Includes mean, median, standard deviation, and min/max balance.
+  - Computes balance deltas (difference between most recent and earlier balances).
+    **Categorical Features**: 
+  - Transaction categories are mapped and used to generate category-specific features such as spending patterns and transaction counts within time windows.
+    **Amount Features**: 
+  - Categorized amounts into mean, median, and other statistics to track spending behavior across different time periods.
+
+- **Risky Features**: 
+  - Identify and flag transactions related to gambling or other high-risk behaviors.
+  - Track frequency, amount, and types of risky transactions.
+  - Generate indicators of potential risky behavior, such as spending patterns associated with gambling-related categories (e.g., casinos, betting platforms).
+  - Create features that capture fluctuations in spending within gambling-related categories over time.
+  
+2. **Feature Generation**
+   **Lasso Regularization Features**: 
+  - Logistic Regression with L1 regularization (Lasso) selects the top features by their non-zero coefficients.
+   **Point-Biserial Correlation Features**: 
+  - Features are ranked by point-biserial correlation with the target variable.
 
 3. **Model Development**
-   - **Traditional Models**: Implemented Logistic Regression, Random Forest, XGBoost, Multinomial Naive Bayes (MNB), and Support Vector Machine (SVM) models for baseline performance and benchmark comparisons.
-   - **LLM-Based Models**: 
-     - **DistilBERT**: Leveraged the lightweight and efficient DistilBERT model for NLP tasks, balancing performance and computational cost.
-   - **FastText**: Integrated FastText for fast, efficient, and interpretable word embeddings, particularly useful for handling out-of-vocabulary words and generating robust text representations.
 
-4. **Evaluation**
-   - Metrics: accuracy, precision, recall, f1-score, support
-   - Visualization: Confusion matrices and Multi-Class AUC curves
+The following models are developed and trained using the provided dataset:
+
+- **HistGradientBoostingClassifier**: A gradient boosting model designed for large datasets, fast training, and scalable performance.
+- **CatBoostClassifier**: A gradient boosting algorithm that handles categorical features efficiently.
+- **LightGBMClassifier**: A fast, distributed gradient boosting model that is optimized for large datasets.
+- **XGBoostClassifier**: An efficient implementation of gradient boosting that has been highly optimized for speed and performance.
+- **LogisticRegression**: A simple linear model used for binary classification tasks.
+
+The `train_and_evaluate` function takes in the model type and trains the selected model, tracking the training time.
+
+
+4. **Model Evaluation**
+
+After training, the model's performance is evaluated using the following metrics:
+
+- **ROC AUC**: Measures the model's ability to distinguish between classes.
+- **Accuracy**: The ratio of correct predictions to total predictions.
+- **Precision**: The proportion of positive predictions that are actually correct.
+- **Recall**: The proportion of actual positives that are correctly identified.
+- **F1-Score**: The harmonic mean of precision and recall.
+- **Confusion Matrix**: A matrix showing true positives, true negatives, false positives, and false negatives.
+
+The confusion matrix is visualized using a heatmap to highlight performance across both classes (Negative and Positive). 
 
 
 # **Set Up Instructions**
