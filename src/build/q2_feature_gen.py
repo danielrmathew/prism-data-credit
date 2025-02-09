@@ -5,14 +5,35 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import re
 from functools import reduce
+from pathlib import Path
 
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score, accuracy_score, confusion_matrix, classification_report, log_loss
 from scipy.stats import ks_2samp
+from sklearn.preprocessing import StandardScaler
+from sklearn.compose import ColumnTransformer
 
+def read_data(acct_path, cons_path, trxn_path, cat_map_path):
+    # reading in data
+    acctDF = pd.read_parquet(Path(acct_path))
+    consDF = pd.read_parquet(Path(cons_path))
+    trxnDF = pd.read_parquet(Path(trxn_path))
+    cat_map = pd.read_csv(Path(cat_map_path))
+    
+    # changing column types for processing
+    acctDF.balance_date = pd.to_datetime(acctDF.balance_date)
+    acctDF = acctDF.astype({'prism_consumer_id': int, 'prism_account_id': int})
+    
+    consDF.evaluation_date = pd.to_datetime(consDF.evaluation_date)
+    consDF = consDF.astype({'prism_consumer_id': int})
+    
+    trxnDF.posted_date = pd.to_datetime(trxnDF.posted_date)
+    trxnDF = trxnDF.astype({'prism_consumer_id': int, 'prism_transaction_id': int})
 
-def feature_gen(cat_map, balanceDF, trxnDF, 
+    return acctDF, consDF, trxnDF, cat_map
+    
+def feature_gen(cat_map, balanceDF, trxnDF):
     cat_mappings = dict(zip(cat_map['category_id'], cat_map['category']))
     trxnDF['category_id'] = trxnDF.category
     trxnDF.category = trxnDF.category.replace(cat_mappings)
@@ -260,9 +281,35 @@ def feature_gen(cat_map, balanceDF, trxnDF,
 
     return features_all
 
+def split_features(features_df):
+    X_train, X_test, y_train, y_test = train_test_split(
+        features_df.drop(columns='DQ_TARGET'), final_features_df['DQ_TARGET'], test_size=0.2
+    )
 
+    return X_train, X_test, y_train, y_test
 
+def standardize_features(X_train, X_test):
+    # instantiate StandardScaler() to standardize features, excluding binary features
+    scaler = StandardScaler()
+    exclude_columns_standardize = ['GAMBLING', 'BNPL', 'OVERDRAFT'] # binary features that shouldn't be standardized
+    standardize_features = X_train.columns.difference(exclude_columns_standardize)
+    
+    transformer = ColumnTransformer([
+        ('std_scaler', StandardScaler(), standardize_features)  # Standardize all except excluded ones
+    ], remainder='passthrough')
+    
+    X_train_standardized = transformer.fit_transform(X_train)
+    X_train_standardized = pd.DataFrame(
+        X_train_standardized, columns=list(standardize_features) + exclude_columns_standardize
+    )
 
+    # standardize test features
+    X_test_standardized = transformer.transform(X_test)
+    X_test_standardized = pd.DataFrame(
+        X_test_standardized, columns=list(standardize_features) + exclude_columns_standardize
+    )
+
+    return X_train_standardized, X_test_standardized
 
 
 
