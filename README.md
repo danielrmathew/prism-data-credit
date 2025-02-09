@@ -104,4 +104,17 @@ After making changes, save the file and run the script.
 ```bash
 python q2_run.py
 ```
+## **5. Output**  
 
+After running the script, you should see new files in the `result` folder:  
+
+- The saved models in `result/models`.  
+- The respective model's confusion matrix image (`confusion_matrix.png`).  
+
+These files contain information about the model's performance, including various accuracy metrics and visualizations.  
+
+### **Model Metrics Output**  
+The script prints evaluation metrics for each trained model in the following format:  
+```bash
+<Model Name> metrics: ROC_AUC: <value> Accuracy: <value> Precision: <value> Recall: <value> F1-Score: <value> Confusion Matrix: [[TP FP] [FN TN]]
+```
