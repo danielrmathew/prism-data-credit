@@ -33,7 +33,7 @@ def read_data(acct_path, cons_path, trxn_path, cat_map_path):
 
     return acctDF, consDF, trxnDF, cat_map
     
-def feature_gen(cat_map, balanceDF, trxnDF):
+def feature_gen(cat_map, balanceDF, trxnDF, consDF):
     cat_mappings = dict(zip(cat_map['category_id'], cat_map['category']))
     trxnDF['category_id'] = trxnDF.category
     trxnDF.category = trxnDF.category.replace(cat_mappings)
@@ -167,7 +167,7 @@ def feature_gen(cat_map, balanceDF, trxnDF):
         # Check thresholds
         threshold_flags = df.groupby('prism_consumer_id')['amount'].agg(lambda x: [any(x >= t) for t in thresholds]).apply(pd.Series)
         threshold_flags.columns = [f'{cat_label}_over_{t}' for t in thresholds]
-        threshold_flags = threshold_flags.astype(bool)  # Convert to True/False
+        threshold_flags = threshold_flags.astype(int)  # Convert column to integer
     
         # Merge counts and flags
         result = counts.merge(threshold_flags, on='prism_consumer_id', how='left')
@@ -212,8 +212,9 @@ def feature_gen(cat_map, balanceDF, trxnDF):
     balance_last_year_metrics = balance_last_year.groupby('prism_consumer_id')['amount'].agg(['mean', 'std', 'median', 'min', 'max'])
     balance_last_year_metrics.columns = ['balance_last_1_year_' + x for x in balance_last_year_metrics.columns]
     
-    balance_dfs = [balance_ftrs, balance_last_14_days_metrics, balance_last_30_days_metrics, balance_last_3_months_metrics, balance_last_6_months_metrics, balance_last_year_metrics]
-    balance_ftrs = reduce(lambda left, right: pd.merge(left, right, on='prism_consumer_id'), balance_dfs)
+    balance_dfs = [consDF, balance_ftrs, balance_last_14_days_metrics, balance_last_30_days_metrics, balance_last_3_months_metrics, balance_last_6_months_metrics, balance_last_year_metrics]
+    balance_ftrs = reduce(lambda left, right: pd.merge(left, right, on='prism_consumer_id', how='left'), balance_dfs)
+    balance_ftrs = balance_ftrs.drop(columns=['evaluation_date', 'credit_score', 'DQ_TARGET'])
 
     balance_delta_overall = compute_balance_delta(balanceDF, balanceDF, 'overall')
     balance_delta_14d = compute_balance_delta(balanceDF, balance_last_14_days, '14d')
@@ -223,9 +224,9 @@ def feature_gen(cat_map, balanceDF, trxnDF):
     balance_delta_1y = compute_balance_delta(balanceDF, balance_last_year, '1y')
     
     
-    balance_deltas_dfs = [balance_delta_overall, balance_last_14_days_metrics, balance_last_30_days_metrics, balance_last_3_months_metrics, balance_last_6_months_metrics, balance_last_year_metrics]
-    balance_deltas_ftrs = reduce(lambda left, right: pd.merge(left, right, on='prism_consumer_id'), balance_deltas_dfs)
-
+    balance_deltas_dfs = [consDF, balance_delta_overall, balance_delta_14d, balance_delta_30d, balance_delta_3m, balance_delta_6m, balance_delta_1y]
+    balance_deltas_ftrs = reduce(lambda left, right: pd.merge(left, right, on='prism_consumer_id', how='left'), balance_deltas_dfs)
+    balance_deltas_ftrs = balance_deltas_ftrs.drop(columns=['evaluation_date', 'credit_score', 'DQ_TARGET'])
 
 
     # creating windowed expenses aggregate metrics
@@ -253,9 +254,9 @@ def feature_gen(cat_map, balanceDF, trxnDF):
                             .groupby('prism_consumer_id')['amount'].agg(['mean', 'std', 'median', 'min', 'max'])
     outflows_last_year_agg_df.columns = ['outflows_amt_last_year_' + col for col in outflows_last_year_agg_df.columns]
     
-    outflows_df = [outflows_ftrs, outflows_last_14_days_agg_df, outflows_last_30_days_agg_df, outflows_last_3_months_agg_df, outflows_last_6_months_agg_df, outflows_last_year_agg_df]
-    outflows_ftrs = reduce(lambda left, right: pd.merge(left, right, on='prism_consumer_id'), outflows_df)
-    
+    outflows_df = [consDF, outflows_ftrs, outflows_last_14_days_agg_df, outflows_last_30_days_agg_df, outflows_last_3_months_agg_df, outflows_last_6_months_agg_df, outflows_last_year_agg_df]
+    outflows_ftrs = reduce(lambda left, right: pd.merge(left, right, on='prism_consumer_id', how='left'), outflows_df)
+    outflows_ftrs = outflows_ftrs.drop(columns=['evaluation_date', 'credit_score', 'DQ_TARGET'])
 
     category_features = generate_category_features(trxnDF, cat_map, cat_ok)
 
@@ -272,41 +273,41 @@ def feature_gen(cat_map, balanceDF, trxnDF):
     gambling_stats_6m = compute_threshold_stats(gambling_last_6m, gambling_thresholds, '6m')
     gambling_stats_year = compute_threshold_stats(gambling_last_year, gambling_thresholds, '1y')
     
-    gambling_df = [gambling_stats_all, gambling_stats_month, gambling_stats_6m, gambling_stats_year]
-    gambling_ftrs = reduce(lambda left, right: pd.merge(left, right, on='prism_consumer_id'), gambling_df)
+    gambling_df = [consDF, gambling_stats_all, gambling_stats_month, gambling_stats_6m, gambling_stats_year]
+    gambling_ftrs = reduce(lambda left, right: pd.merge(left, right, on='prism_consumer_id', how='left'), gambling_df)
+    gambling_ftrs = gambling_ftrs.drop(columns=['evaluation_date', 'credit_score', 'DQ_TARGET'])
 
 
-    feature_dfs = [balance_ftrs, balance_deltas_ftrs, category_features, outflows_ftrs, gambling_ftrs,]
-    features_all = reduce(lambda left, right: pd.merge(left, right, on='prism_consumer_id'), feature_dfs)
-
+    feature_dfs = [consDF, balance_ftrs, balance_deltas_ftrs, category_features, outflows_ftrs, gambling_ftrs,]
+    features_all = reduce(lambda left, right: pd.merge(left, right, on='prism_consumer_id', how='left'), feature_dfs)
+    features_all = features_all.drop(columns=['prism_consumer_id', 'evaluation_date', 'credit_score'])
+    features_all = features_all.fillna(0)
     return features_all
 
 def split_features(features_df):
     X_train, X_test, y_train, y_test = train_test_split(
-        features_df.drop(columns='DQ_TARGET'), final_features_df['DQ_TARGET'], test_size=0.2
+        features_df.drop(columns='DQ_TARGET'), features_df['DQ_TARGET'], test_size=0.2
     )
 
     return X_train, X_test, y_train, y_test
 
 def standardize_features(X_train, X_test):
     # instantiate StandardScaler() to standardize features, excluding binary features
-    scaler = StandardScaler()
-    exclude_columns_standardize = ['GAMBLING', 'BNPL', 'OVERDRAFT'] # binary features that shouldn't be standardized
-    standardize_features = X_train.columns.difference(exclude_columns_standardize)
+    exclude_columns_standardize = [col for col in X_train.columns if '_over_' in col] # _over_ columns are threshold columns (binary)
+    standardize_columns = X_train.columns.difference(exclude_columns_standardize)
+    # exclude_columns_standardize = ['GAMBLING', 'BNPL', 'OVERDRAFT'] # binary features that shouldn't be standardized
     
-    transformer = ColumnTransformer([
-        ('std_scaler', StandardScaler(), standardize_features)  # Standardize all except excluded ones
-    ], remainder='passthrough')
-    
+    transformer = ColumnTransformer([('std_scaler', StandardScaler(), standardize_columns)], remainder='passthrough')
+
     X_train_standardized = transformer.fit_transform(X_train)
     X_train_standardized = pd.DataFrame(
-        X_train_standardized, columns=list(standardize_features) + exclude_columns_standardize
+        X_train_standardized, columns=(list(standardize_columns) + exclude_columns_standardize)
     )
 
     # standardize test features
     X_test_standardized = transformer.transform(X_test)
     X_test_standardized = pd.DataFrame(
-        X_test_standardized, columns=list(standardize_features) + exclude_columns_standardize
+        X_test_standardized, columns=(list(standardize_columns) + exclude_columns_standardize)
     )
 
     return X_train_standardized, X_test_standardized

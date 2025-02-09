@@ -5,7 +5,7 @@ from sklearn.feature_selection import SelectFromModel
 
 def get_lasso_features(X_train, y_train, X_test, max_features=50):
     model_l1 = LogisticRegression(penalty='l1', solver='liblinear', C=0.1) # can test different Cs
-    model_l1.fit(X_train_standardized, y_train)
+    model_l1.fit(X_train, y_train)
 
     # get top 50 features after lasso regularization and make new train and test set
     selector = SelectFromModel(model_l1, prefit=True, threshold=-np.inf, max_features=max_features)
