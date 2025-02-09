@@ -1,9 +1,10 @@
 import time
-from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import RandomForestClassifier
+from pathlib import Path
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score, accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import HistGradientBoostingClassifier
@@ -69,6 +70,9 @@ def train_and_evaluate(X_train, y_train, X_test, y_test, model_type):
     plt.xlabel("Predicted Label")
     plt.ylabel("True Label")
     plt.title(f"Confusion Matrix ({model_type})")
-    plt.savefig(f'result/{model_type}/{model_type}_confusion_matrix.png', bbox_inches='tight')
+
+    save_path = Path(f'result/{model_type}/{model_type}_confusion_matrix.png')
+    save_path.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(save_path, bbox_inches='tight')
 
     return model, metrics
