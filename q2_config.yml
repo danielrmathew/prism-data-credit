@@ -1,0 +1,23 @@
+#########################################################################
+#                        CONFIGURATION VARIABLES HERE                   #
+#########################################################################
+
+#####################################################
+#                DATASET CONFIG                     #
+#####################################################
+
+ACCOUNT_DF_PATH: q2data/q2-ucsd-acctDF.pqt
+CONSUMER_DF_PATH: q2data/q2-ucsd-consDF.pqt
+TRANSACTION_DF_PATH: q2data/q2-ucsd-trxnDF.pqt
+CATEGORY_MAP_PATH: q2data/q2-ucsd-cat-map.csv
+
+# options: lasso, point_biserial
+FEATURE_SELECTION: lasso
+
+MODELS:
+    LogisticRegression: False
+    HistGB: False
+    CatBoost: False
+    LightGBM: False
+    XGBoost: False
+
