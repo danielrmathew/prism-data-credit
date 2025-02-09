@@ -18,16 +18,14 @@ Credit scores are pivotal in today’s financial landscape, influencing everythi
 
 ### Dataset Explanation:
 
-The outflows dataset provides a detailed record of consumer transactions, capturing various attributes that contribute to a comprehensive understanding of spending patterns and financial behavior. Each row represents a unique transaction associated with a specific consumer account
+The project utilizes several datasets for building features and training models. These datasets provide comprehensive information about accounts, consumers, transactions, and category mappings, which are used to build a feature set for prediction tasks. Each dataset serves a different purpose in the data pipeline.
 
-|Column	                 |Description|
-|---                     |---        |
-|`'prism_consumer_id'	`  |ID of Prism consumer|
-|`'prism_account_id'`	   |ID of Prism account|
-|`'memo'`	         |Description of the transaction|
-|`'amount'`	         |Transaction amount|
-|`'posted_date'`	     |Date the transaction was posted|
-|`'category'`	             |Category assigned to the transaction|
+| Column                | Description                                      |
+|-----------------------|--------------------------------------------------|
+| `'q2-ucsd-acctDF'`    | Account-level information, including account IDs |
+| `'q2-ucsd-consDF'`    | Consumer-level information, such as consumer IDs and demographics |
+| `'q2-ucsd-trxnDF'`    | Transaction records, including transaction amounts and dates |
+| `'q2-ucsd-cat-map'`   | Mapping of categories to transaction types |
 
 For the purpose of this project, we only work with outflows_with_memo because that is the subset of the data we were told to work with. This doesn't include rows where memo == category, and thereby includes rows that are pivotal to our prediction task.
 
