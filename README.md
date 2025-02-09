@@ -4,7 +4,7 @@ This project aims to enhance credit scoring by using machine learning and NLP to
 
 ## Description
 
-Credit scores are pivotal in today’s financial landscape, influencing everything from rental eligibility to access to health insurance, yet the formula for calculating creditworthiness has long been shrouded in mystery and often overlooks important nuances. Typically, the credit score is determined based on five factors: payment history, the amount owed, new credit, credit history, and credit mix. This structure can place individuals with limited credit history— especially young adults who are just starting out building their credits —at a compounded disadvantage, restricting their access to loans, credit cards, employment opportunities, and insurance. This report aims to address this unfairness by creating a more comprehensive measure of creditworthiness by incorporating detailed account transaction analysis into the equation. To achieve this, we will build a transaction categorization model using NLP techniques, enabling a deeper and fairer evaluation of financial behavior.
+Credit scores are pivotal in today’s financial landscape, influencing everything from rental eligibility to access to health insurance, yet the formula for calculating creditworthiness has long been shrouded in mystery and often overlooks important nuances. Typically, the credit score is determined based on five factors: payment history, the amount owed, new credit, credit history, and credit mix. This structure can place individuals with limited credit history— especially young adults who are just starting out building their credits —at a compounded disadvantage, restricting their access to loans, credit cards, employment opportunities, and insurance. This report aims to address this unfairness by creating a more comprehensive measure of creditworthiness by incorporating detailed account transaction analysis into the equation. To achieve this, we will build a model that generates probability-based scores reflecting the likelihood of delinquency, leveraging detailed bank transaction data to provide a fairer and more transparent assessment of financial responsibility.
 
 
 ## Getting Started
@@ -12,7 +12,6 @@ Credit scores are pivotal in today’s financial landscape, influencing everythi
 ### Executing program
 
 * The dataset has been removed for confidentiality, as it is proprietary data provided by Prism Data.
-* Master.ipynb contains the culmination of our finalized work.
 * For individual contributions, refer to the notebooks labeled with our respective names.
 
 ## Progress
@@ -78,28 +77,31 @@ Install the required dependencies:
 pip install -r requirements.txt
 ```
 ## **3. Configure the Project**
-Update the `config.yml` file to match your setup:
+Update the `q2_config.yml` file to match your setup:
 
-#### **Dataset Configuration**  
-- **`OUTFLOWS_PATH`**: Path to outflows dataset (default: `data/ucsd-outflows.pqt`).  
-- **`INFLOWS_PATH`**: Path to inflows dataset (default: `data/ucsd-inflows.pqt`).  
-- **`FEATURES`**:  
-  - **`num_tfidf_features`**: Number of TF-IDF features (default: `5000`).  
-  - **`include_date_features`** / **`include_amount_features`**: Set to `True` to include.  
-  - **`SAVE_FILEPATH`**: Path to save features (default: `data/features_data.pkl`).  
-  - **`SAVE_TRAIN_TEST_SPLIT`**: Path for train/test split (optional).  
+### **Dataset Configuration**  
+- **`ACCOUNT_DF_PATH`**: Path to account dataset (default: `data/q2-ucsd-acctDF.pqt`).  
+- **`CONSUMER_DF_PATH`**: Path to consumer dataset (default: `data/q2-ucsd-consDF.pqt`).  
+- **`TRANSACTION_DF_PATH`**: Path to transaction dataset (default: `data/q2-ucsd-trxnDF.pqt`).  
+- **`CATEGORY_MAP_PATH`**: Path to category mapping file (default: `data/q2-ucsd-cat-map.csv`).  
 
+### **Feature Selection Configuration**  
+- **`FEATURE_SELECTION`**: Method for feature selection (**options**: `lasso`, `point_biserial`) (default: `lasso`).  
+- **`MAX_FEATURES`**: Maximum number of selected features (default: `50`).  
 
-#### **Model Configuration**  
-- **`MODELS`**: Specify models to train/predict and change hyperparameters
+### **Model Configuration**  
+Set the models you would like to train to True
+- **Models to Train**:  
+  - **Logistic Regression**
+  - **HistGB**
+  - **CatBoost**: 
+  - **LightGBM**:
+  - **XGBoost**: 
 
 After making changes, save the file and run the script.
 
 ## **4. Running the Script**
 ```bash
-python run.py
+python q2_run.py
 ```
-
-## **5. Output**
-After running the script, you should see new files in the `result` folder: the saved models in `result/models` and the respective model `train_metrics.csv`, `test_metrics.csv`, `traint_roc_auc_curve.png`, `test_roc_auc_curve.png`, and the `train_confusion_matrix.png`, `test_confusion_matrix.png` files. These files contain information about the model's performance and different accuracy metrics and figures.
 
