@@ -5,17 +5,28 @@
 #####################################################
 #                DATASET CONFIG                     #
 #####################################################
-
+# Input the paths to the necessary datasets
 ACCOUNT_DF_PATH: q2data/q2-ucsd-acctDF.pqt
 CONSUMER_DF_PATH: q2data/q2-ucsd-consDF.pqt
 TRANSACTION_DF_PATH: q2data/q2-ucsd-trxnDF.pqt
 CATEGORY_MAP_PATH: q2data/q2-ucsd-cat-map.csv
 
+#####################################################
+#           FEATURE SELECTION CONFIG                #
+#####################################################
+# Choose a feature selection method below. 
+# lasso uses L1 regularization to reduce irrelevant feature weights to 0
+# point_biserial uses the point biserial correlation of features to measure the most significant features
 # options: lasso, point_biserial
 FEATURE_SELECTION: lasso
+MAX_FEATURES: 50
 
+#####################################################
+#                  MODEL CONFIG                     #
+#####################################################
+# Set the models you would like to train to True
 MODELS:
-    LogisticRegression: False
+    LogisticRegression: True
     HistGB: False
     CatBoost: False
     LightGBM: False
