@@ -45,11 +45,11 @@ The project utilizes several datasets for building features and training models.
 
 The following models are developed and trained using the provided dataset:
 
-- **HistGradientBoostingClassifier**: A gradient boosting model designed for large datasets, fast training, and scalable performance.
-- **CatBoostClassifier**: A gradient boosting algorithm that handles categorical features efficiently.
-- **LightGBMClassifier**: A fast, distributed gradient boosting model that is optimized for large datasets.
-- **XGBoostClassifier**: An efficient implementation of gradient boosting that has been highly optimized for speed and performance.
-- **LogisticRegression**: A simple linear model used for binary classification tasks.
+- **HistGradientBoostingClassifier**
+- **CatBoostClassifier**
+- **LightGBMClassifier**
+- **XGBoostClassifier**
+- **LogisticRegression**
 
 The `train_and_evaluate` function takes in the model type and trains the selected model, tracking the training time.
 
@@ -107,9 +107,9 @@ Set the models you would like to train to True
 - **Models to Train**:  
   - **Logistic Regression**
   - **HistGB**
-  - **CatBoost**: 
-  - **LightGBM**:
-  - **XGBoost**: 
+  - **CatBoost**
+  - **LightGBM**
+  - **XGBoost**
 
 After making changes, save the file and run the script.
 
