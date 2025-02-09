@@ -11,6 +11,7 @@ if __name__ == "__main__":
     with open("q2_config.yml", "r") as f:
         config = yaml.safe_load(f)
 
+    # LOAD CONFIG VARIABLES
     ACCT_PATH = config['ACCOUNT_DF_PATH']
     CONS_PATH = config['CONSUMER_DF_PATH']
     TRXN_PATH = config['TRANSACTION_DF_PATH']
@@ -25,6 +26,7 @@ if __name__ == "__main__":
     acctDF, consDF, trxnDF, cat_map = read_data(ACCT_PATH, CONS_PATH, TRXN_PATH, CAT_MAP_PATH)
         
     # create balanceDF
+    print("Creating balance dataframe...")
     balanceDF = calc_balances_all(acctDF, trxnDF, cat_map)
 
     # create features dataframe
@@ -38,7 +40,9 @@ if __name__ == "__main__":
 
     # train test split features
     print("Splitting features into train and test sets...")
-    X_train, X_test, y_train, y_test = split_features(features_df)    
+    X_train, X_test, y_train, y_test = split_features(features_df)
+    # standardize features
+    print("Standardizing features...")
     X_train, X_test = standardize_features(X_train, X_test)
 
     # select top X features
