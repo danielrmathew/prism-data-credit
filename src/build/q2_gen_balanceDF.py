@@ -13,7 +13,17 @@ from scipy.stats import ks_2samp
 
 
 def calc_balances_all(acctDF, trxnDF, cat_map):
+    """
+    Calculates the running balance for each transaction and categorizes them with account balances.
 
+    Args:
+        acctDF (pd.DataFrame): A dataframe containing account information.
+        trxnDF (pd.DataFrame): A dataframe containing transaction information.
+        cat_map (pd.DataFrame): A dataframe mapping category IDs to category names.
+
+    Returns:
+        pd.DataFrame: A dataframe containing the calculated running balance for each transaction.
+    """
     # Grabbing only checking account balances
     check_acct_totals = acctDF[acctDF.account_type == 'CHECKING'].groupby(['prism_consumer_id', 'balance_date']).sum()
     check_acct_totals = check_acct_totals.reset_index()

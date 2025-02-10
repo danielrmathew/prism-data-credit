@@ -15,10 +15,27 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.compose import ColumnTransformer
 
 def read_data(acct_path, cons_path, trxn_path, cat_map_path):
+    """
+    Reads in data from specified file paths (account, consumer, transaction, and category map files),
+    processes necessary columns (such as converting dates and ensuring correct data types), and returns 
+    the cleaned DataFrames.
+
+    Args:
+        acct_path (str): Path to the account data file.
+        cons_path (str): Path to the consumer data file.
+        trxn_path (str): Path to the transaction data file.
+        cat_map_path (str): Path to the category mapping data file.
+
+    Returns:
+        - acctDF (pd.DataFrame): processed account data
+        - consDF (pd.DataFrame): processed consumer data
+        - trxnDF (pd.DataFrame): Processed transaction data
+        - cat_map (pd.DataFrame): category mapping data
+    """
     # reading in data
     acctDF = pd.read_parquet(Path(acct_path))
     consDF = pd.read_parquet(Path(cons_path))
-    trxnDF = pd.read_parquet(Path(trxn_path))
+    trxnDF = pd.read_parquet(Path(trxn_path))s
     cat_map = pd.read_csv(Path(cat_map_path))
     
     # changing column types for processing
@@ -34,6 +51,19 @@ def read_data(acct_path, cons_path, trxn_path, cat_map_path):
     return acctDF, consDF, trxnDF, cat_map
     
 def feature_gen(cat_map, balanceDF, trxnDF, consDF):
+    """
+    Generates features for transactions by mapping categories to a more human-readable format and filtering
+    transaction categories based on the list of acceptable categories from 'cat_map'.
+
+    Args:
+        cat_map (pd.DataFrame): DataFrame containing a mapping of category IDs to category names.
+        balanceDF (pd.DataFrame): DataFrame containing balance information for consumers.
+        trxnDF (pd.DataFrame): DataFrame containing transaction data, including the 'category' field to be processed.
+        consDF (pd.DataFrame): DataFrame containing consumer-related information.
+
+    Returns:
+        None
+    """
     cat_mappings = dict(zip(cat_map['category_id'], cat_map['category']))
     trxnDF['category_id'] = trxnDF.category
     trxnDF.category = trxnDF.category.replace(cat_mappings)
@@ -71,6 +101,18 @@ def feature_gen(cat_map, balanceDF, trxnDF, consDF):
         return df.groupby('prism_consumer_id', group_keys=False).apply(filter_group)
 
     def compute_balance_delta(balanceDF, balance_filtered, label):
+        """
+        Computes the change in balance between the last available balance and the earliest balance 
+        within a specified filtered dataset for each consumer.
+
+        Args:
+            balanceDF (pd.DataFrame): DataFrame containing balance information for consumers.
+            balance_filtered (pd.DataFrame): A dataframe containing the filtered balance data.
+            label (str): A label to be used in the column name of the first balance in the filtered dataset.
+
+        Returns:
+            pd.DataFrame: dataframe with the 'prism_consumer_id' and the computed balance delta.
+        """
         # Get last balance per consumer
         last_balance = balanceDF.groupby('prism_consumer_id')['curr_balance'].last().reset_index()
         last_balance = last_balance.rename(columns={'curr_balance': 'curr_balance_last'})
@@ -161,6 +203,17 @@ def feature_gen(cat_map, balanceDF, trxnDF, consDF):
         return final_features
 
     def compute_threshold_stats(df, thresholds, cat_label):
+        """
+        Computes statistics on the number of transactions and checks if transaction amounts exceed specified thresholds for each consumer.
+        Args:
+            df (pd.DataFrame)
+            thresholds (list of float): A list of threshold values to check against the transaction amounts.
+            cat_label (str): A label for the category being analyzed, which is used to name the output columns.
+    
+        Returns:
+            pd.DataFrame: A dataframe with total number of transaction per consumer and binary for whether any transaction exceeeds specified threshold  
+
+        """
         # Count total gambling transactions
         counts = df.groupby('prism_consumer_id').size().reset_index(name=f'{cat_label}_count')
     
@@ -173,7 +226,6 @@ def feature_gen(cat_map, balanceDF, trxnDF, consDF):
         result = counts.merge(threshold_flags, on='prism_consumer_id', how='left')
     
         return result
-
 
 
     # creating relevant outflows df with only expenses
@@ -285,6 +337,20 @@ def feature_gen(cat_map, balanceDF, trxnDF, consDF):
     return features_all
 
 def split_features(features_df):
+    """
+    Splits the features dataframe into 80/20 training and testing sets.
+
+    Args:
+        features_df (pd.DataFrame): The dataframe containing the features and the target column 'DQ_TARGET'.
+
+    Returns:
+        tuple: A tuple containing the following:
+            - X_train (pd.DataFrame)
+            - X_test (pd.DataFrame)
+            - y_train (pd.Series)
+            - y_test (pd.Series
+    
+    """
     X_train, X_test, y_train, y_test = train_test_split(
         features_df.drop(columns='DQ_TARGET'), features_df['DQ_TARGET'], test_size=0.2
     )
@@ -292,6 +358,18 @@ def split_features(features_df):
     return X_train, X_test, y_train, y_test
 
 def standardize_features(X_train, X_test):
+    """
+    Standardizes the feature data, excluding binary features, using StandardScaler.
+
+    Args:
+        X_train (pd.DataFrame): The training set features.
+        X_test (pd.DataFrame): The testing set features.
+
+    Returns:
+        tuple: containing the following:
+            - X_train_standardized (pd.DataFrame): The standardized training set features.
+            - X_test_standardized (pd.DataFrame): The standardized testing set features.
+    """
     # instantiate StandardScaler() to standardize features, excluding binary features
     exclude_columns_standardize = [col for col in X_train.columns if '_over_' in col] # _over_ columns are threshold columns (binary)
     standardize_columns = X_train.columns.difference(exclude_columns_standardize)
