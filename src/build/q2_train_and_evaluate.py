@@ -16,7 +16,29 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 def train_and_evaluate(X_train, y_train, X_test, y_test, model_type):
-    """Trains and evaluates the specified model."""
+    """
+    Trains and evaluates a specified classification model.
+
+    Args:
+        X_train (pd.DataFrame): The feature matrix for the training set.
+        y_train (pd.Series): The target variable for the training set.
+        X_test (pd.DataFrame): The feature matrix for the testing set.
+        y_test (pd.Series): The target variable for the testing set.
+        model_type (str): The type of model to train and evaluate. Supported options are:
+                          "HistGB", "CatBoost", "LightGBM", "XGBoost", "LogisticRegression".
+    Returns:
+        tuple: A tuple containing:
+            - model: The trained model.
+            - metrics (dict): A dictionary of evaluation metrics including:
+                - ROC_AUC
+                - Accuracy
+                - Precision
+                - Recall
+                - F1-Score
+                - Confusion Matrix
+    Raises:
+        ValueError: If an unsupported model type is provided.
+    """
     models = {
         "HistGB": HistGradientBoostingClassifier(),
         "CatBoost": CatBoostClassifier(verbose=0),
