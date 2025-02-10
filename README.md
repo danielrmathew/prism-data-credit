@@ -87,7 +87,7 @@ source .prism_env/bin/activate
 ```
 Install the required dependencies:
 ```bash
-pip install -r requirements.txt
+pip install -r q2_requirements.txt
 ```
 ## **3. Configure the Project**
 Update the `q2_config.yml` file to match your setup:
