@@ -2,26 +2,72 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    color: #6F8FAF;
+    color: #154360;
     background-color: white;
 }
 
 header {
-    background-color: #6082B6;
-    color: white;
+    position: relative;
+    background-image: url('figures/money-background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #2471a3;
     padding: 20px 0;
     text-align: center;
     transition: background-color 0.3s ease;
 }
 
-header:hover {
-    background-color: #6082B6;
+header .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0); 
+    pointer-events: none; 
+}
+
+header .text-box {
+    position: relative;
+    z-index: 1; 
+    background-color: rgba(255, 255, 255, 0.9); 
+    padding: 30px;
+    display: inline-block;
+    border-radius: 2px; 
+}
+
+header h1, header p, header a {
+    margin: 0;
+    padding: 5px 0;
+}
+
+header a {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+    background-color: #2471a3;
+    padding: 10px 15px;
+    border: 1.5px solid white;
+    border-radius: 10px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin-top: 10px;
+}
+
+header a:hover {
+    background-color: white;
+    color: #2471a3;
+}
+
+header h2 {
+    font-style: italic;
 }
 
 .navbar {
     background-color: white;
-    border-bottom: 2px solid #6082B6;
-    position: -webkit-sticky; /* For Safari */
+    border-bottom: 2px solid #77e3f6;
+    position: -webkit-sticky; 
     position: sticky;
     top: 0;
     width: 100%;
@@ -41,14 +87,14 @@ nav ul li {
 
 nav ul li a {
     display: inline-block;
-    color: #6082B6;
+    color: #2471a3;
     padding: 14px 20px;
     text-decoration: none;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 nav ul li a:hover {
-    background-color: #6082B6;
+    background-color: #77e3f6;
     color: white;
 }
 
@@ -81,18 +127,18 @@ section {
     display: inline-flex;
     align-items: center;
     text-decoration: none;
-    color: white;
-    background-color: #6082B6;
+    color: #2e86c1;
+    background-color: #77e3f6;
     padding: 10px 15px;
-    border: 1.5px solid white;
-    border-radius: 10px;
+    border: 2px solid white;
+    border-radius: 3px;
     transition: background-color 0.3s ease, color 0.3s ease;
     margin-top: 10px;
 }
 
 .github-link:hover {
     background-color: white;
-    color: #6082B6;
+    color: #2471a3;
 }
 
 .github-logo {
@@ -131,7 +177,7 @@ section.visible {
     width: 100%;
     margin-top: 10px;
     font-style: italic;
-    color: #6F8FAF;
+    color: #2471a3;
 }
 .improved-model {
     text-align: center;
@@ -146,7 +192,7 @@ section.visible {
 
 .improved-model figcaption {
     font-style: italic;
-    color: #6F8FAF;
+    color: #2471a3;
     margin-top: 10px;
 }
 
