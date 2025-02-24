@@ -108,22 +108,6 @@ nav ul li a:hover {
 }
 
 
-@media (max-width: 768px) {
-    nav ul {
-        flex-direction: column; 
-        align-items: stretch; 
-    }
-
-    nav ul li {
-        width: 100%; 
-        text-align: center;
-    }
-
-    nav ul li a {
-        padding: 12px 0; 
-    }
-}
-
 
 main {
     padding: 20px;
