@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
         threshold: 0.1
     };
 
-    const observer = new IntersectionObserver((entries, observer) => {
+    const observer = new IntersectionObserver(function(entries, observer) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
@@ -17,3 +17,5 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(section);
     });
 });
+
+
