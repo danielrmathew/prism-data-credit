@@ -29,6 +29,10 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.model_selection import cross_val_score, StratifiedKFold
 
+from imblearn.over_sampling import SMOTE
+from imblearn.under_sampling import RandomUnderSampler
+from imblearn.pipeline import Pipeline
+
 from catboost import CatBoostClassifier # pip install
 from lightgbm import LGBMClassifier # pip install
 from xgboost import XGBClassifier 
@@ -36,7 +40,7 @@ import optuna
 
 from q2_feature_gen import standardize_features
 
-def objective(trial, X, y):
+def objective(trial, X_train, y_train, X_val, y_val):
     model_name = trial.suggest_categorical("model", ["HistGB", "LightGBM", "XGBoost", "CatBoost"])
     print(f"Trial {trial.number}: model {model_name}")
     logging.info(f"Trial {trial.number}: model {model_name}")
@@ -90,18 +94,22 @@ def objective(trial, X, y):
             C=trial.suggest_float("C", 0.01, 10, log=True),
             max_iter=trial.suggest_int("max_iter", 100, 500)
         )
+
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_val)
+    y_prob = model.predict_proba(X_val)[:, 1]
+    score = roc_auc_score(y_val, y_prob)
     
-    cv = StratifiedKFold(n_splits=5, shuffle=True)
-    score = np.mean(cross_val_score(model, X, y, cv=cv, scoring='roc_auc'))
+    # cv = StratifiedKFold(n_splits=5, shuffle=True)
+    # score = np.mean(cross_val_score(model, X, y, cv=cv, scoring='roc_auc'))
     
     print(f"Trial {trial.number} - Model: {model_name}, Score: {score:.4f}")
-    logging.info(f"Trial {trial.number} - Model: {model_name}, Score: {score:.4f}")
     
     return score
 
-def run_optimization(X, y, n_trials=50):
+def run_optimization(X_train, y_train, X_val, y_val, n_trials=50):
     study = optuna.create_study(direction="maximize")
-    study.optimize(lambda trial: objective(trial, X, y), n_trials=n_trials)
+    study.optimize(lambda trial: objective(trial, X_train, y_train, X_val, y_val), n_trials=n_trials)
     
     print("Best parameters:", study.best_params)
     return study
@@ -144,10 +152,36 @@ with open("features_df.pkl", "rb") as f:
 
 print("Standardizing features...") 
 
-X_train, X_test, y_train, y_test = split_data(features_df, test_size=0.25)
-X_train_standardized, X_test_standardized = standardize(X_train, X_test)
+X_train, X_test, y_train, y_test = split_data(features_df, test_size=0.5)
+X_val, X_test, y_val, y_test = train_test_split(X_test, y_test, test_size=0.5, stratify=y_test)
 
-study = run_optimization(X_train_standardized, y_train)
+# when dfs are standardized, object columns (mainly boolean columns of binary variables) get converted to floats
+X_train_standardized, X_val_standardized, X_test_standardized = standardize(X_train, X_val, X_test)
+
+print("Resampling data points...")
+
+# Check class counts
+new_0 = int(0.75 * len(y_train))  # Target count for balancing
+new_1 = int(0.25 * len(y_train))
+
+# Ensure SMOTE does not create more than the original number of samples
+smote = SMOTE(sampling_strategy={1: new_1},)
+
+# Undersampling the majority class to match the new minority class count
+under = RandomUnderSampler(sampling_strategy={0: new_0},)
+
+# Combine SMOTE & Undersampling in a pipeline
+resample_pipeline = Pipeline(steps=[('smote', smote), ('under', under)])
+
+# Apply resampling
+X_train_resampled, y_train_resampled = resample_pipeline.fit_resample(X_train_standardized, y_train)
+
+# columns get shuffled after SMOTE, need to reorder them
+X_train_resampled = X_train_resampled[X_train_standardized.columns]
+
+print("Beginning tuning...")
+
+study = run_optimization(X_train_resampled, y_train_resampled, X_val_standardized, y_val)
 
 df = study.trials_dataframe()
 df.to_csv("optuna_trials.csv", index=False)  # Save as CSV
