@@ -35,7 +35,7 @@ def read_data(acct_path, cons_path, trxn_path, cat_map_path):
     # reading in data
     acctDF = pd.read_parquet(Path(acct_path))
     consDF = pd.read_parquet(Path(cons_path))
-    trxnDF = pd.read_parquet(Path(trxn_path))s
+    trxnDF = pd.read_parquet(Path(trxn_path))
     cat_map = pd.read_csv(Path(cat_map_path))
     
     # changing column types for processing
@@ -352,7 +352,7 @@ def split_features(features_df):
     
     """
     X_train, X_test, y_train, y_test = train_test_split(
-        features_df.drop(columns='DQ_TARGET'), features_df['DQ_TARGET'], test_size=0.2
+        features_df.drop(columns='DQ_TARGET'), features_df['DQ_TARGET'], test_size=0.25
     )
 
     return X_train, X_test, y_train, y_test
