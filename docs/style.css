@@ -196,9 +196,7 @@ section.visible {
 }
 
 .improved-model img {
-    max-width: 80%;
-    height: auto;
-    margin: 0 auto;
+    width: 60%;  
 }
 
 .improved-model figcaption {
@@ -207,6 +205,21 @@ section.visible {
     margin-top: 10px;
 }
 
+.catboost-container {
+    display: flex; 
+    align-items: center;
+    justify-content: center
+  }
+
+  .catboost img {
+    max-width: 50%;
+    margin-right: 20px;
+  }
+
+  .catboost-text {
+    max-width: 40%; 
+  }
+  
 .team {
     text-align: center;
     padding: 50px 20px;
