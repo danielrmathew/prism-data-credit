@@ -41,36 +41,90 @@
             </figure>
             <p>Credit scores are pivotal in today’s financial landscape, influencing everything from rental eligibility to access to health insurance, yet the formula for calculating creditworthiness has long been shrouded in mystery and often overlooks important nuances. Typically, the credit score is determined based on five factors: payment history, the amount owed, new credit, credit history, and credit mix. This structure can place individuals with limited credit history— especially young adults who are just starting out building their credits —at a compounded disadvantage, restricting their access to loans, credit cards, employment opportunities, and insurance. This report aims to address this unfairness by creating a more comprehensive measure of creditworthiness by incorporating detailed account transaction analysis into the equation. To achieve this, we will build a model that generates probability-based scores reflecting the likelihood of delinquency, leveraging detailed bank transaction data to provide a fairer and more transparent assessment of financial responsibility.</p>
             <figure class="improved-model">
-                <img src="figures/improved_model.png" alt="Improved Credit Risk Model">
+                <img src="figures/model_pipeline.png" alt="Improved Credit Risk Model">
                 <figcaption>Improved Credit Scoring Model</figcaption>
             </figure>
         </section>
         <section id="methods">
             <h2>Methods</h2>
-            <p>TODO: Add methods</p>
+            
+            <h3>Data Collection and Preparation</h3>
+            <p>We utilized a dataset from Prism Data, containing consumer financial transactions, account balances, and related attributes. As the dataset was preprocessed, minimal cleaning was needed. Our focus was on ensuring consistency, handling missing values, standardizing categorical variables, and optimizing time-series data for modeling.</p>
+            
+            <h3>Feature Engineering</h3>
+            <p>We engineered features to capture financial behavior through transaction history, balance trends, spending patterns, and risk indicators. Our feature generation process included:</p>
+            
+            <ul>
+                <li><strong>Category Mapping:</strong> Transaction categories were standardized by mapping raw category IDs to human-readable names, ensuring consistency.</li>
+                <li><strong>Time Window Filtering:</strong> Transactions were analyzed across multiple time windows—14 days, 30 days, 3 months, 6 months, and 1 year—to capture short- and long-term trends.</li>
+                <li><strong>Aggregated Statistics:</strong> 
+                    <ul>
+                        <li><strong>Transaction-Based Features:</strong> Transaction volume and frequency over different time windows.</li>
+                        <li><strong>Balance-Based Features:</strong> Trends in cumulative balance changes.</li>
+                        <li><strong>Category-Specific Features:</strong> Spending patterns in categories like groceries, entertainment, and bills.</li>
+                        <li><strong>Outflow Features:</strong> Expense trends excluding self-transfers and ATM withdrawals.</li>
+                    </ul>
+                </li>
+                <li><strong>Balance Computation:</strong> Balance trends were tracked by merging transaction data with balance records, computing changes over time.</li>
+                <li><strong>Risk Indicators:</strong> High-risk behaviors were identified through flagged transactions, such as gambling, using threshold-based indicators.</li>
+            </ul>
         </section>
+        
         <section id="models">
             <h2>Models</h2>
-            <p>TODO: Add models</p>
+            <p>We evaluated multiple machine learning models to predict credit risk. Below is a brief description of each model used in our analysis.</p>
+        
+            <h3>Categorical Boosting (CatBoost)</h3>
+            <p>CatBoost is a gradient boosting algorithm designed to handle categorical data efficiently. It utilizes ordered boosting and other optimizations to prevent overfitting and improve performance on structured datasets.</p>
+        
+            <h3>Histogram-based Gradient Boosting (HistGB)</h3>
+            <p>HistGB is a variation of gradient boosting that uses histogram-based binning to speed up training and improve memory efficiency. It is particularly well-suited for large datasets and high-dimensional features.</p>
+        
+            <h3>Light Gradient Boosting Machine (LightGBM)</h3>
+            <p>LightGBM is a gradient boosting framework that builds decision trees using a leaf-wise approach, allowing for faster training and reduced memory usage compared to traditional boosting methods.</p>
+        
+            <h3>Extreme Gradient Boosting (XGBoost)</h3>
+            <p>XGBoost is a widely used gradient boosting algorithm known for its regularization techniques and parallel processing capabilities, making it effective for structured data tasks.</p>
+        
+            <h3>Logistic Regression</h3>
+            <p>Logistic Regression is a simple yet effective linear model for binary classification. It models the probability of an event occurring based on input features and serves as our baseline model for comparison.</p>
         </section>
-        <section id="results">
+        
+    <section id="results">
             <h2>Results</h2>
             <div class="image-container">
                 <img src="figures/results.png" alt="Results">
             </div>
+            <h3>Model Performance</h3>
+    <p>The ROC curves below illustrate the trade-off between the true positive rate and the false positive rate for each model. The AUC scores indicate overall model performance, with higher values reflecting better predictive power.</p>
+
+    <h4>Models Evaluated</h4>
+    <ul>
+        <li><strong>CatBoost</strong> (AUC = 0.76) – Achieved the highest AUC, making it the best-performing model.</li>
+        <li><strong>Histogram-based Gradient Boosting (HistGB)</strong> (AUC = 0.75) – Performed closely to CatBoost.</li>
+        <li><strong>LightGBM</strong> (AUC = 0.75) – Another strong performer with similar results to HistGB.</li>
+        <li><strong>XGBoost</strong> (AUC = 0.73) – Slightly lower performance but still competitive.</li>
+        <li><strong>Logistic Regression</strong> (AUC = 0.67) – Served as a baseline, showing lower predictive capability.</li>
+    </ul>
+
+    <h4>Key Insights</h4>
+    <p>Gradient boosting models (CatBoost, HistGB, LightGBM) outperformed logistic regression, highlighting the effectiveness of tree-based ensemble methods in credit risk prediction. CatBoost achieved the highest AUC, suggesting its suitability for handling categorical data and complex interactions.</p>
+
         </section>
-        
-        
         <section id="conclusion">
             <h2>Conclusion</h2>
-            <p>TODO: Add conclusion</p>
+            <p>Our research demonstrates that integrating detailed bank transaction data into credit scoring models significantly
+                enhances the accuracy of delinquency predictions. By moving beyond traditional credit scoring methods and focusing
+                on comprehensive transactional histories, we can more precisely assess an individual's credit risk. This approach
+                not only improves predictive performance but also offers a fairer and more transparent evaluation of 
+                creditworthiness, providing the opportunity to reduce reliance on conventional credit scoring systems.</p>
         </section>
         
         <section class="team">
             <h2>Our Team</h2>
             <div class="team-container">
                 <div class="team-member">
-                    <img src="figures/akar2.jpeg" alt="Aman Kar">
+                    <img src="figures/akar.jpeg" alt="Aman Kar">
                     <h3>Aman Kar</h3>
                     <a href="https://www.linkedin.com/in/aman-kar" target="_blank" class="linkedin-icon">
                         <i class="fab fa-linkedin"></i>
