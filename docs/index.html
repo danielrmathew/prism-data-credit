@@ -99,31 +99,20 @@
             <p>We evaluated multiple machine learning models to predict credit risk. 
                 Below is a brief description of each model used in our analysis.</p>
         
-            <figure class="catboost-container">
-                <div class="catboost-text">
-                    <h3>Categorical Boosting (CatBoost)</h3>
-                    <p>CatBoost is a gradient boosting algorithm that efficiently handles categorical
-                         data by using ordered boosting and target statistics to prevent overfitting. 
-                         It builds symmetric decision trees, ensuring balanced splits that improve model 
-                         stability and generalization. CatBoost also incorporates regularization techniques 
-                         and optimizations for faster computation.</p>
-                </div>
-                <img src="figures/catboost-diagram.jpg" alt="CatBoost Diagram" class="catboost">
-            </figure>
+                <h3>Baseline Model: Logistic Regression</h3>
+                <p>We started with a logistic regression model as the baseline for predicting credit risk. This simple yet effective linear model serves as our starting point for comparison with more advanced models.</p>
+            
+                <h3>Advanced Modeling Approaches</h3>
+                <p>To improve upon the baseline, we explored and evaluated several advanced machine learning models, including:</p>
+                <ul>
+                    <li><strong>Histogram-based Gradient Boosting (HistGB)</strong>: This method speeds up training by grouping data into bins. It works well for large amounts of data and makes the model faster and more memory-efficient.</li>
+                    <li><strong>Categorical Boosting (CatBoost)</strong>: This is a type of gradient boosting that is good at working with data that includes categories, like "Food and Beverages" or "Rent". It prevents overfitting (the model becoming too specific to the training data) and builds trees that are more balanced, which helps the model make better predictions.</li>
+                    <li><strong>Light Gradient-Boosting Machine (LightGBM)</strong>: This approach uses a method called "leaf-wise" decision trees, meaning it looks at the data in a way that helps it learn faster and use less memory. It's especially good for large datasets.</li>
+                    <li><strong>Extreme Gradient Boosting (XGBoost)</strong>: This is one of the most popular gradient boosting methods. It is known to be good at avoiding mistakes due to regularization, and it can handle large data sets quickly by running in parallel on different processors, making it faster.</li>
+                </ul>
+                
+                Each of these models is an improvement on regular decision trees and uses "boosting" to combine many trees together to improve the model’s accuracy.
 
-            add diagram and format for all models below
-
-            <h3>Histogram-based Gradient Boosting (HistGB)</h3>
-            <p>HistGB is a variation of gradient boosting that uses histogram-based binning to speed up training and improve memory efficiency. It is particularly well-suited for large datasets and high-dimensional features.</p>
-        
-            <h3>Light Gradient Boosting Machine (LightGBM)</h3>
-            <p>LightGBM is a gradient boosting framework that builds decision trees using a leaf-wise approach, allowing for faster training and reduced memory usage compared to traditional boosting methods.</p>
-        
-            <h3>Extreme Gradient Boosting (XGBoost)</h3>
-            <p>XGBoost is a widely used gradient boosting algorithm known for its regularization techniques and parallel processing capabilities, making it effective for structured data tasks.</p>
-        
-            <h3>Logistic Regression</h3>
-            <p>Logistic Regression is a simple yet effective linear model for binary classification. It models the probability of an event occurring based on input features and serves as our baseline model for comparison.</p>
         </section>
         
     <section id="results">
@@ -139,8 +128,8 @@
     <h4>Key Insights</h4>
     <p>Gradient boosting models (CatBoost, HistGB, LightGBM) outperformed logistic regression, highlighting the effectiveness of tree-based ensemble methods in credit risk prediction. CatBoost achieved the highest AUC, suggesting its suitability for handling categorical data and complex interactions.</p>
 
-        </setion>
-        <section id="conclusion">
+    </section>
+    <section id="conclusion">
             <h2>Conclusion</h2>
             <p>Our research highlights that incorporating detailed bank transaction data into credit scoring models results
                  in performance that is comparable to traditional models, all without the necessity of credit history. 
