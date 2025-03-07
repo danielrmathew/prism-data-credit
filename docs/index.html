@@ -35,89 +35,121 @@
         <section id="introduction">
             <h2>Introduction</h2>
             <figure class="image-group">
-                <img src="figures/pie-chart.png" alt="Pie Chart of Traditional Credit Scoring Model (FICO Score)">
-                <img src="figures/dial.png" alt="Dial Representation of Credit Score">
+                <img src="figures/traditional-model.png" alt="Traditional Credit Scoring Model (FICO Score)">
                 <figcaption>Traditional Credit Scoring Model (FICO Score)</figcaption>
             </figure>
-            <p>Credit scores are pivotal in today’s financial landscape, influencing everything from rental eligibility to access to health insurance, yet the formula for calculating creditworthiness has long been shrouded in mystery and often overlooks important nuances. Typically, the credit score is determined based on five factors: payment history, the amount owed, new credit, credit history, and credit mix. This structure can place individuals with limited credit history— especially young adults who are just starting out building their credits —at a compounded disadvantage, restricting their access to loans, credit cards, employment opportunities, and insurance. This report aims to address this unfairness by creating a more comprehensive measure of creditworthiness by incorporating detailed account transaction analysis into the equation. To achieve this, we will build a model that generates probability-based scores reflecting the likelihood of delinquency, leveraging detailed bank transaction data to provide a fairer and more transparent assessment of financial responsibility.</p>
+            <p>Credit scores are pivotal in today’s financial landscape, influencing everything from rental eligibility 
+                to access to health insurance, yet the formula for calculating creditworthiness has long been shrouded
+                in mystery and often overlooks important nuances. Typically, the credit score is determined based on 
+                five factors: payment history, the amount owed, new credit, credit history, and credit mix. This 
+                structure can place individuals with limited credit history— especially young adults who are just 
+                starting out building their credits —at a compounded disadvantage, restricting their access to loans,
+                credit cards, employment opportunities, and insurance. This report aims to address this unfairness 
+                by creating a more comprehensive measure of creditworthiness by incorporating detailed account 
+                transaction analysis into the equation. To achieve this, we will build a model that generates 
+                probability-based scores reflecting the likelihood of delinquency, leveraging detailed bank transaction
+                data to provide a fairer and more transparent assessment of financial responsibility.</p>
             <figure class="improved-model">
-                <img src="figures/model_pipeline.png" alt="Improved Credit Risk Model">
-                <figcaption>Improved Credit Scoring Model</figcaption>
+                <img src="figures/model-pipeline.png" alt="Improved Credit Risk Model">
+                <figcaption>Improved Credit Scoring Model Pipeline</figcaption>
             </figure>
+            We adopted a systematic and iterative approach to model development, emphasizing continuous refinement and enhancement
+            of features alongside model selection and performance evaluation. We began with logistic regression to establish a 
+            baseline and identify key features. As the process evolved, we integrated more advanced algorithms like 
+            HistGradientBoosting (HistGB), CatBoost, LightGBM, and XGBoost, chosen for their ability to handle complex data patterns.
+            Throughout the iterations, we focused on refining and enhancing feature generation, selecting the most relevant ones to 
+            improve the model’s performance. This iterative process allows us to optimize the model’s predictive power.
         </section>
+
         <section id="methods">
             <h2>Methods</h2>
             
             <h3>Data Collection and Preparation</h3>
             <p>We utilized a dataset from Prism Data, containing consumer financial transactions, account balances, and related attributes. As the dataset was preprocessed, minimal cleaning was needed. Our focus was on ensuring consistency, handling missing values, standardizing categorical variables, and optimizing time-series data for modeling.</p>
             
-            <h3>Feature Engineering</h3>
-            <p>We engineered features to capture financial behavior through transaction history, balance trends, spending patterns, and risk indicators. Our feature generation process included:</p>
+            <h3>Feature Generation</h3>
+            <p>We engineered features to capture financial behavior through transaction history, balance trends, 
+                spending patterns, and risk indicators. Our feature generation process included:</p>
             
             <ul>
-                <li><strong>Category Mapping:</strong> Transaction categories were standardized by mapping raw category IDs to human-readable names, ensuring consistency.</li>
-                <li><strong>Time Window Filtering:</strong> Transactions were analyzed across multiple time windows—14 days, 30 days, 3 months, 6 months, and 1 year—to capture short- and long-term trends.</li>
-                <li><strong>Aggregated Statistics:</strong> 
-                    <ul>
-                        <li><strong>Transaction-Based Features:</strong> Transaction volume and frequency over different time windows.</li>
-                        <li><strong>Balance-Based Features:</strong> Trends in cumulative balance changes.</li>
-                        <li><strong>Category-Specific Features:</strong> Spending patterns in categories like groceries, entertainment, and bills.</li>
-                        <li><strong>Outflow Features:</strong> Expense trends excluding self-transfers and ATM withdrawals.</li>
-                    </ul>
-                </li>
-                <li><strong>Balance Computation:</strong> Balance trends were tracked by merging transaction data with balance records, computing changes over time.</li>
-                <li><strong>Risk Indicators:</strong> High-risk behaviors were identified through flagged transactions, such as gambling, using threshold-based indicators.</li>
+                <li><strong>Time Window Analysis:</strong> Transactions were analyzed across multiple time windows—14 
+                    days, 30 days, 3 months, 6 months, and 1 year—to capture short- and long-term trends.</li>
+                <li><strong>Aggregated Statistics:</strong> Summary statistics (minimum, maximum, mean, median, standard 
+                    deviation, sum, count, percent of transactions) are calculated on categorical and balance trends.
+                <li><strong>Risk Indicators:</strong> High-risk behaviors were identified through flagged transactions, 
+                    such as gambling, using threshold-based indicators.</li>
+                <li><strong>Standardization:</strong> Non-categorical features were standardized to ensure consistent 
+                    scaling.</li>
+                <li><strong>Resampling:</strong> SMOTE and undersampling techniques were used to rebalance the training 
+                    data.</li>
+            </ul>
+        
+            <h3>Feature Selection</h3>
+            <p>To refine model input, we performed feature selection using the following techniques:</p>
+            <ul>
+                <li><strong>Correlation Analysis:</strong> Selected top features most correlated with delinquency using Lasso (L1) Regularization.</li>
+                <li><strong>Mutual Information:</strong> Identified features with the highest mutual information score for predictive power.</li>
+                <li><strong>Embedded Method:</strong> Utilized Random Forest to rank and select the most relevant features.</li>
             </ul>
         </section>
         
+        
         <section id="models">
             <h2>Models</h2>
-            <p>We evaluated multiple machine learning models to predict credit risk. Below is a brief description of each model used in our analysis.</p>
+            <p>We evaluated multiple machine learning models to predict credit risk. 
+                Below is a brief description of each model used in our analysis.</p>
         
-            <h3>Categorical Boosting (CatBoost)</h3>
-            <p>CatBoost is a gradient boosting algorithm designed to handle categorical data efficiently. It utilizes ordered boosting and other optimizations to prevent overfitting and improve performance on structured datasets.</p>
-        
-            <h3>Histogram-based Gradient Boosting (HistGB)</h3>
-            <p>HistGB is a variation of gradient boosting that uses histogram-based binning to speed up training and improve memory efficiency. It is particularly well-suited for large datasets and high-dimensional features.</p>
-        
-            <h3>Light Gradient Boosting Machine (LightGBM)</h3>
-            <p>LightGBM is a gradient boosting framework that builds decision trees using a leaf-wise approach, allowing for faster training and reduced memory usage compared to traditional boosting methods.</p>
-        
-            <h3>Extreme Gradient Boosting (XGBoost)</h3>
-            <p>XGBoost is a widely used gradient boosting algorithm known for its regularization techniques and parallel processing capabilities, making it effective for structured data tasks.</p>
-        
-            <h3>Logistic Regression</h3>
-            <p>Logistic Regression is a simple yet effective linear model for binary classification. It models the probability of an event occurring based on input features and serves as our baseline model for comparison.</p>
+                <h3>Baseline Model: Logistic Regression</h3>
+                <p>We started with a logistic regression model as the baseline for predicting credit risk. This simple yet effective linear model serves as our starting point for comparison with more advanced models.</p>
+            
+                <h3>Advanced Modeling Approaches</h3>
+                <p>To improve upon the baseline, we explored and evaluated several advanced machine learning models, including:</p>
+                <ul>
+                    <li><strong>Histogram-based Gradient Boosting (HistGB)</strong>: This method speeds up training by grouping data into bins. It works well for large amounts of data and makes the model faster and more memory-efficient.</li>
+                    <li><strong>Categorical Boosting (CatBoost)</strong>: This is a type of gradient boosting that is good at working with data that includes categories, like "Food and Beverages" or "Rent". It prevents overfitting (the model becoming too specific to the training data) and builds trees that are more balanced, which helps the model make better predictions.</li>
+                    <li><strong>Light Gradient-Boosting Machine (LightGBM)</strong>: This approach uses a method called "leaf-wise" decision trees, meaning it looks at the data in a way that helps it learn faster and use less memory. It's especially good for large datasets.</li>
+                    <li><strong>Extreme Gradient Boosting (XGBoost)</strong>: This is one of the most popular gradient boosting methods. It is known to be good at avoiding mistakes due to regularization, and it can handle large data sets quickly by running in parallel on different processors, making it faster.</li>
+                </ul>
+                
+                Each of these models is an improvement on regular decision trees and uses "boosting" to combine many trees together to improve the model’s accuracy.
+
         </section>
         
     <section id="results">
             <h2>Results</h2>
             <div class="image-container">
-                <img src="figures/results.png" alt="Results">
+
+                <img src="../q2_result/roc_auc_cs_models.png" alt="Results">
+
             </div>
-            <h3>Model Performance</h3>
     <p>The ROC curves below illustrate the trade-off between the true positive rate and the false positive rate for each model. The AUC scores indicate overall model performance, with higher values reflecting better predictive power.</p>
 
-    <h4>Models Evaluated</h4>
-    <ul>
-        <li><strong>CatBoost</strong> (AUC = 0.76) – Achieved the highest AUC, making it the best-performing model.</li>
-        <li><strong>Histogram-based Gradient Boosting (HistGB)</strong> (AUC = 0.75) – Performed closely to CatBoost.</li>
-        <li><strong>LightGBM</strong> (AUC = 0.75) – Another strong performer with similar results to HistGB.</li>
-        <li><strong>XGBoost</strong> (AUC = 0.73) – Slightly lower performance but still competitive.</li>
-        <li><strong>Logistic Regression</strong> (AUC = 0.67) – Served as a baseline, showing lower predictive capability.</li>
-    </ul>
 
     <h4>Key Insights</h4>
     <p>Gradient boosting models (CatBoost, HistGB, LightGBM) outperformed logistic regression, highlighting the effectiveness of tree-based ensemble methods in credit risk prediction. CatBoost achieved the highest AUC, suggesting its suitability for handling categorical data and complex interactions.</p>
 
-        </section>
-        <section id="conclusion">
+    </section>
+    <section id="conclusion">
             <h2>Conclusion</h2>
-            <p>Our research demonstrates that integrating detailed bank transaction data into credit scoring models significantly
-                enhances the accuracy of delinquency predictions. By moving beyond traditional credit scoring methods and focusing
-                on comprehensive transactional histories, we can more precisely assess an individual's credit risk. This approach
-                not only improves predictive performance but also offers a fairer and more transparent evaluation of 
-                creditworthiness, providing the opportunity to reduce reliance on conventional credit scoring systems.</p>
+            <p>Our research highlights that incorporating detailed bank transaction data into credit scoring models results
+                 in performance that is comparable to traditional models, all without the necessity of credit history. 
+                 This innovative approach allows for a more comprehensive and nuanced assessment of an individual’s 
+                 creditworthiness, providing a more holistic view of their financial behavior. By utilizing transactional 
+                 data, we aim to improve the accuracy of credit scoring, offering a more transparent and equitable evaluation 
+                 process. This model addresses existing biases and limitations in traditional credit scoring, especially for 
+                 individuals with limited or no credit history, such as young adults or those from underrepresented groups. 
+                 Ultimately, this approach seeks to enhance fairness and inclusivity within the financial system, increasing 
+                 access to credit opportunities for those who have historically been overlooked or excluded from traditional 
+                 lending practices.</p>
+            <h3>Next Steps</h3>
+            <ul>
+                <li><strong>Expand Dataset:</strong> Train and test on a full-size dataset to evaluate model performance at scale.</li>
+                <li><strong>Model Refinement:</strong> Continuously tune and test additional models, such as deep learning techniques, 
+                    to improve predictive accuracy. Focus on hyperparameter tuning to optimize model performance, experimenting with 
+                    different configurations of parameters like learning rates, regularization factors, and network architectures for 
+                    deep learning models.</li>
+            </ul>
+                
         </section>
         
         <section class="team">
