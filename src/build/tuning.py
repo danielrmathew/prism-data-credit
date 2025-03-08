@@ -41,7 +41,8 @@ import optuna
 from q2_feature_gen import standardize_features
 
 def objective(trial, X_train, y_train, X_val, y_val):
-    model_name = trial.suggest_categorical("model", ["HistGB", "LightGBM", "XGBoost", "CatBoost"])
+    # only tuning catboost for now
+    model_name = trial.suggest_categorical("model", ["CatBoost"]) #"HistGB", "LightGBM", "XGBoost", "CatBoost"])
     print(f"Trial {trial.number}: model {model_name}")
     logging.info(f"Trial {trial.number}: model {model_name}")
     
@@ -58,7 +59,7 @@ def objective(trial, X_train, y_train, X_val, y_val):
         model = CatBoostClassifier(
             learning_rate=trial.suggest_float("lr", 0.001, 0.3, log=True),
             depth=trial.suggest_int("depth", 3, 12),
-            iterations=trial.suggest_int("iterations", 100, 2000),
+            iterations=trial.suggest_int("iterations", 100, 1200),
             l2_leaf_reg=trial.suggest_float("l2_leaf_reg", 1, 20, log=True),
             random_strength=trial.suggest_float("random_strength", 0, 10),
             verbose=0
@@ -145,10 +146,57 @@ def standardize(X_train, *args):
 
     return X_datasets
 
+def get_lasso_features(X_train, y_train):
+    model_l1 = LogisticRegression(penalty='l1', solver='liblinear', C=0.1) # can test different Cs
+    model_l1.fit(X_train, y_train)
+
+    feature_coefs = list(zip(model_l1.feature_names_in_, model_l1.coef_[0]))
+    feature_coefs.sort(key=lambda x: abs(x[1]), reverse=True)
+    return feature_coefs
+
+def extract_category(feature_name):
+    """Extracts the category from a feature name using regex."""
+    match = re.match(r'^([A-Z]+(?:_[A-Z]+)*)', feature_name)
+    return match.group(1) if match else feature_name 
+
+def select_top_features(features, max_features, limit=2):
+    category_dict = defaultdict(list)
+
+    # Organize features by category
+    for feature, coef in features:
+        category = extract_category(feature)  # Extract category using regex
+        category_dict[category].append((feature, coef))
+
+    # Sort each category by absolute coefficient value (descending)
+    for category in category_dict:
+        category_dict[category].sort(key=lambda item: abs(item[1]), reverse=True)
+
+    # Select top max_features, allowing up to 2 features per category
+    selected_features = []
+    category_counts = defaultdict(int)  # Track how many features have been selected per category
+
+    # Flatten sorted features by absolute importance while respecting category limits
+    sorted_features = sorted(
+        [feat for feats in category_dict.values() for feat in feats], 
+        key=lambda item: abs(item[1]), reverse=True
+    )
+
+    for feature, coef in sorted_features:
+        category = extract_category(feature)
+        if len(selected_features) < max_features and category_counts[category] < limit:
+            selected_features.append((feature, coef))
+            category_counts[category] += 1
+
+    return selected_features
+
+def get_feature_selection_datasets(X, selected_features):
+    return X[np.array(selected_features)[:, 0]]
+
 print("Loading features df...")
 
-with open("features_df.pkl", "rb") as f:
+with open("final_features_df.pkl", "rb") as f:
     features_df = pickle.load(f)
+    features_df = features_df[~features_df.DQ_TARGET.isna()]
 
 print("Standardizing features...") 
 
@@ -157,11 +205,18 @@ X_val, X_test, y_val, y_test = train_test_split(X_test, y_test, test_size=0.5, s
 
 # when dfs are standardized, object columns (mainly boolean columns of binary variables) get converted to floats
 X_train_standardized, X_val_standardized, X_test_standardized = standardize(X_train, X_val, X_test)
+feature_coefs = get_lasso_features(X_train_standardized, y_train)
+
+NUM_FEATURES = 400
+selected_features = select_top_features(feature_coefs, NUM_FEATURES, limit=np.inf) # change limit parameter to np.inf to keep redundant features
+X_train_standardized_top_features, X_val_standardized_top_features = \
+    get_feature_selection_datasets(X_train_standardized, selected_features), \
+    get_feature_selection_datasets(X_val_standardized, selected_features), 
 
 print("Resampling data points...")
 
 # Check class counts
-new_0 = int(0.75 * len(y_train))  # Target count for balancing
+new_0 = int(0.75 * len(y_train))  # Target ratio for balancing classes
 new_1 = int(0.25 * len(y_train))
 
 # Ensure SMOTE does not create more than the original number of samples
@@ -181,10 +236,10 @@ X_train_resampled = X_train_resampled[X_train_standardized.columns]
 
 print("Beginning tuning...")
 
-study = run_optimization(X_train_resampled, y_train_resampled, X_val_standardized, y_val)
+study = run_optimization(X_train_resampled, y_train_resampled, X_val_standardized, y_val, n_trials=100)
 
 df = study.trials_dataframe()
-df.to_csv("optuna_trials.csv", index=False)  # Save as CSV
+df.to_csv("optuna_trials_3.csv", index=False)  # Save as CSV
 
 best_params = {
     "best_trial": study.best_trial.number,
@@ -192,7 +247,7 @@ best_params = {
     "best_params": study.best_params
 }
 
-with open("optuna_best_params.json", "w") as f:
+with open("optuna_best_params_3.json", "w") as f:
     json.dump(best_params, f, indent=4)
 
 print("Best parameters saved!")
