@@ -38,22 +38,21 @@
                 <img src="figures/traditional-model.png" alt="Traditional Credit Scoring Model (FICO Score)">
                 <figcaption>Traditional Credit Scoring Model (FICO Score)</figcaption>
             </figure>
-            <p>Credit scores are pivotal in today’s financial landscape, influencing everything from rental eligibility 
-                to access to health insurance, yet the formula for calculating creditworthiness has long been shrouded
-                in mystery and often overlooks important nuances. Typically, the credit score is determined based on 
-                five factors: payment history, the amount owed, new credit, credit history, and credit mix. This 
-                structure can place individuals with limited credit history— especially young adults who are just 
-                starting out building their credits —at a compounded disadvantage, restricting their access to loans,
-                credit cards, employment opportunities, and insurance. This report aims to address this unfairness 
-                by creating a more comprehensive measure of creditworthiness by incorporating detailed account 
-                transaction analysis into the equation. To achieve this, we will build a model that generates 
-                probability-based scores reflecting the likelihood of delinquency, leveraging detailed bank transaction
-                data to provide a fairer and more transparent assessment of financial responsibility.</p>
+            <p>Credit scores are pivotal in today’s financial landscape, influencing everything from rental eligibility to access to 
+                health insurance, yet the formula for calculating creditworthiness has long been shrouded in mystery and often overlooks 
+                important nuances. Typically, the credit score is determined based on five factors: payment history, amount owed, new 
+                credit, credit history, and credit mix. This structure can place individuals with limited credit history, especially 
+                young adults who are just starting out building their credit, at a compounded disadvantage, restricting their access to 
+                loans, credit cards, employment opportunities, and insurance. Our proposed Cash Score model aims to address these limitations by 
+                providing a more comprehensive measure of creditworthiness. The Cash Score model leverages detailed account transaction 
+                data to predicts the probability of defaulting on a loan (as known as loan delinquency). This approach highlights 
+                the potential for transaction-based credit evaluation to more accurately assess financial risk and improve access to credit, 
+                offering a fairer alternative to traditional credit scoring methods.</p>
             <figure class="improved-model">
                 <img src="figures/model-pipeline.png" alt="Improved Credit Risk Model">
                 <figcaption>Improved Credit Scoring Model Pipeline</figcaption>
             </figure>
-            We adopted a systematic and iterative approach to model development, emphasizing continuous refinement and enhancement
+            We adopted an iterative approach to model development, emphasizing continuous refinement and enhancement
             of features alongside model selection and performance evaluation. We began with logistic regression to establish a 
             baseline and identify key features. As the process evolved, we integrated more advanced algorithms like 
             HistGradientBoosting (HistGB), CatBoost, LightGBM, and XGBoost, chosen for their ability to handle complex data patterns.
@@ -113,6 +112,16 @@
                 
                 Each of these models is an improvement on regular decision trees and uses "boosting" to combine many trees together to improve the model’s accuracy.
 
+                <h3>Model Evaluation</h3>
+                <p>We used the following metrics to assess model performance:</p>
+                <ul>
+                    <li><strong>ROC AUC</strong>: Shows how well the model can tell the difference between positive and negative outcomes. Higher values mean the model is better at making this distinction.</li>
+                    <li><strong>Accuracy</strong>: Tells us the percentage of times the model made a correct prediction.</li>
+                    <li><strong>Precision</strong>: Measures how many of the model's positive predictions were actually correct.</li>
+                    <li><strong>Recall</strong>: Shows how many of the actual positive cases were correctly identified by the model.</li>
+                    <li><strong>Confusion Matrix</strong>: A table that helps us see how many predictions were correct and how many were wrong, broken down by type of error (false positive, false negative).</li>
+                </ul>
+
         </section>
         
     <section id="results">
@@ -120,6 +129,7 @@
             <div class="image-container">
 
                 <img src="../q2_result/roc_auc_cs_models.png" alt="Results">
+                <img src="../q2_result/roc_auc_no_cs_models.png" alt="Results">
 
             </div>
     <p>The ROC curves below illustrate the trade-off between the true positive rate and the false positive rate for each model. The AUC scores indicate overall model performance, with higher values reflecting better predictive power.</p>
@@ -143,12 +153,11 @@
                  lending practices.</p>
             <h3>Next Steps</h3>
             <ul>
-                <li><strong>Expand Dataset:</strong> Train and test on a full-size dataset to evaluate model performance at scale.</li>
-                <li><strong>Model Refinement:</strong> Continuously tune and test additional models, such as deep learning techniques, 
-                    to improve predictive accuracy. Focus on hyperparameter tuning to optimize model performance, experimenting with 
-                    different configurations of parameters like learning rates, regularization factors, and network architectures for 
-                    deep learning models.</li>
+                <li><strong>Feature Engineering:</strong> We aim to optimize aggregated feature metrics based on transaction categories and time windows. Additionally, we plan to implement clustering algorithms to identify and select the most relevant features for improved model performance.</li>
+                <li><strong>Model Refinement:</strong> We intend to explore deep learning models, incorporating extended hyperparameter tuning sessions to uncover more complex patterns in the data and improve predictive accuracy.</li>
+                <li><strong>Bias & Fairness:</strong> To ensure equitable credit assessments, we will evaluate the potential for biases in predictions across different demographic groups and implement fairness constraints to mitigate any identified disparities.</li>
             </ul>
+            
                 
         </section>
         
