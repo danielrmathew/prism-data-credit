@@ -116,21 +116,24 @@ main {
 section {
     margin-bottom: 40px;
     padding: 20px;
+    scroll-margin-top: 30px
 }
 
 
 .image-container {
-    max-width: 100%;
+    width: 100%;          
+    display: flex;       
+    justify-content: center; 
+    align-items: center; 
     overflow: hidden;
     text-align: center;
+    padding: 20px 0;    
 }
 
 .image-container img {
-    width: 100%; 
-    max-width: 800px;
-    height: auto; 
-    display: block;
-    margin: 0 auto; 
+    max-width: 500px;     
+    width: 100%;          
+    height: auto;        
 }
 
 
