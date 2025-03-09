@@ -37,13 +37,17 @@ The project utilizes several datasets for building features and training models.
 - **Amount Features**: Statistics (mean, median, etc.) of amounts to track spending behavior.
 - **Risky Features**: Flag gambling or high-risk transactions, tracking frequency, amount, and spending fluctuations in related categories (e.g., casinos, betting).
   
-2. **Feature Generation**
+2. **Feature Selection**
 - **Lasso Regularization Features**: 
   - Logistic Regression with L1 regularization (Lasso) selects the top features by their non-zero coefficients.
 - **Point-Biserial Correlation Features**: 
   - Features are ranked by point-biserial correlation with the target variable.
 
-3. **Model Development**
+3. **Resampling**
+- **SMOTE**
+  - Synthetic data generation and sampling that undersamples the majority class and oversamples the minority class
+
+5. **Model Development**
 
 The following models are developed and trained using the provided dataset:
 
