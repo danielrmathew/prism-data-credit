@@ -407,15 +407,17 @@ def create_features_df(cons_df, acct_df, trxn_df):
     return features_df
 
 def split_data(final_features_df, drop_credit_score=True, test_size=0.25):
-    drop_cols = ['prism_consumer_id', 'DQ_TARGET', 'evaluation_date']
+    drop_cols = ['DQ_TARGET', 'evaluation_date']
     if drop_credit_score:
         drop_cols.append('credit_score')
-        
+    
     X_train, X_test, y_train, y_test = train_test_split(
         final_features_df.drop(columns=drop_cols), 
         final_features_df['DQ_TARGET'], test_size=test_size, stratify=final_features_df['DQ_TARGET']
     )
-    return X_train, X_test, y_train, y_test
+
+    train_ids, test_ids = X_train.pop('prism_consumer_id'), X_test.pop('prism_consumer_id')
+    return X_train, X_test, y_train, y_test, train_ids, test_ids
 
 def standardize(X_train, *args):
     # instantiate StandardScaler() to standardize features, excluding binary features

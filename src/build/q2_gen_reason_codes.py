@@ -1,5 +1,13 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from pathlib import Path
 import shap
-shap.initjs()
+
+def get_shap_values(model, X_train, X_test):
+    explainer = shap.Explainer(model, X_train)
+    shap_values = explainer(X_test, check_additivity=False)
+    return explainer, shap_values
 
 def get_top_reasons(explainer, X, shap_values, i, n=3):
     shap_instance = shap_values[i].values
@@ -23,7 +31,17 @@ def get_reason_codes(explainer, X, shap_values):
     reason_codes_by_consumer = np.array(reason_codes_by_consumer)
     return reason_codes_by_consumer
 
-def plot_reason_codes_distribution(reason_codes_by_consumer):
+def get_probs_with_reason_codes(probs, ids, reason_codes):
+    scores_df = pd.DataFrame({
+        'prism_consumer_id': ids.values, 
+        'prob_with_credit_score': probs[:, 1],
+        'reason_code_with_credit_score_1': reason_codes[:, 0],
+        'reason_code_with_credit_score_2': reason_codes[:, 1],
+        'reason_code_with_credit_score_3': reason_codes[:, 2],
+    })
+    return scores_df
+
+def plot_reason_codes_distribution(reason_codes_by_consumer, model_type):
     reason_codes = reason_codes_by_consumer.ravel()
     unique_reason_codes, reason_codes_counts = np.unique(reason_codes, return_counts=True)
     unique_reason_codes = unique_reason_codes[np.argsort(-reason_codes_counts)][:25]
@@ -41,5 +59,6 @@ def plot_reason_codes_distribution(reason_codes_by_consumer):
     plt.xlabel("Reason Code")
     plt.ylabel("Proportion")
     plt.grid(axis='y', linestyle='--', alpha=0.7)
-    plt.savefig('../../q2_result/reason_codes_distribution.png', dpi=300, bbox_inches='tight')
-    plt.show()
+    reason_codes_fp = Path(f"q2_result/{model_type}/reason_codes_distribution_test.png")
+    reason_codes_fp.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(reason_codes_fp, bbox_inches='tight')

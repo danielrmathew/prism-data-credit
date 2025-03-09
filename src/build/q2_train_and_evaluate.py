@@ -67,7 +67,6 @@ def train_and_evaluate(X_train, y_train, X_test, y_test, model_type):
         cm_fp = Path(f"q2_result/{model_type}/confusion_matrix_{'train' if train else 'test'}")
         cm_fp.parent.mkdir(parents=True, exist_ok=True)  
         plt.savefig(cm_fp, bbox_inches="tight")
-        plt.show()
     
         # Print Metrics
         print(f'{model_type} metrics:')
@@ -100,3 +99,4 @@ def train_and_evaluate(X_train, y_train, X_test, y_test, model_type):
     test_metrics = get_metrics(X_test, y_test)
 
     return model, test_metrics
+    

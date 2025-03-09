@@ -20,15 +20,28 @@ CATEGORY_MAP_PATH: q2data/q2-ucsd-cat-map.csv
 # options: lasso, point_biserial
 FEATURE_SELECTION: lasso
 MAX_FEATURES: 500
+# decided whether or not to use credit score as a feature
+DROP_CREDIT_SCORE: True
 
 #####################################################
 #                  MODEL CONFIG                     #
 #####################################################
-# Set the models you would like to train to True
+# For models you would like to train and generate reason codes for, set the respective parameters to True
+# ONLY set shap to True if train is True
 MODELS:
-    LogisticRegression: True
-    HistGB: True
-    CatBoost: False
-    LightGBM: False
-    XGBoost: False
+    LogisticRegression: 
+        train: True
+        shap: False
+    HistGB: 
+        train: True
+        shap: True
+    CatBoost: 
+        train: False
+        shap: False
+    LightGBM: 
+        train: False
+        shap: False
+    XGBoost: 
+        train: False
+        shap: False
 
