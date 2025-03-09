@@ -102,10 +102,11 @@ Update the `q2_config.yml` file to match your setup:
 
 ### **Feature Selection Configuration**  
 - **`FEATURE_SELECTION`**: Method for feature selection (**options**: `lasso`, `point_biserial`) (default: `lasso`).  
-- **`MAX_FEATURES`**: Maximum number of selected features (default: `50`).  
+- **`MAX_FEATURES`**: Maximum number of selected features (default: `50`).
+- **`DROP_CREDIT_SCORE`**: Whether or not to include credit score as a feature to train on
 
 ### **Model Configuration**  
-Set the models you would like to train to True
+For models you would like to train and generate reason codes for, set the respective parameters to True
 - **Models to Train**:  
   - **Logistic Regression**
   - **HistGB**
@@ -123,8 +124,10 @@ python q2_run.py
 
 After running the script, you should see new files in the `result` folder:  
 
-- The saved models in `result/models`.  
-- The respective model's confusion matrix image (`confusion_matrix.png`).  
+- The saved model and following files in `q2_result/Model/`.  
+- The respective model's confusion matrix image (`confusion_matrix.png`).
+- The respective model's reason code distribution (`reason_code_distribution.png`)
+- The respective model's scores and top 3 reason codes on the test set (`test_scores.csv`)
 
 These files contain information about the model's performance, including various accuracy metrics and visualizations.  
 
