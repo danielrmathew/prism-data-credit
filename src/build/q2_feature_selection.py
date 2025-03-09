@@ -6,6 +6,14 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.feature_selection import SelectFromModel
 
 def get_lasso_features(X_train, y_train):
+    """
+    Returns the feature coefficients of the datasets after training a Logistic Regression model with L1 lasso regularization
+    Args:
+        X_train (pd.DataFrame): the features dataframe 
+        y_train (pd.Series): the dataset labels
+    Returns:
+        list[(str, float)]: a list of tuples (feature, coefficient)
+    """
     model_l1 = LogisticRegression(penalty='l1', solver='liblinear', C=0.1) # can test different Cs
     model_l1.fit(X_train, y_train)
 
@@ -14,11 +22,26 @@ def get_lasso_features(X_train, y_train):
     return feature_coefs
 
 def extract_category(feature_name):
-    """Extracts the category from a feature name using regex."""
+    """
+    Extracts the category from a feature name using regex.
+    Args:
+        feature_name: category label
+    Returns:
+        str: the category in the feature name
+    """
     match = re.match(r'^([A-Z]+(?:_[A-Z]+)*)', feature_name)
     return match.group(1) if match else feature_name 
 
 def select_top_features(feature_coefs, max_features, limit=2):
+    """
+    Gets the top features in the dataset, ranked by the feature coefficient
+    Args:
+        feature_coefs (list[str, float]): the feature coefficients in sorted order
+        max_features: the number of features to select
+        limit (int): the max number of features to grab from a single category, default 2
+    Returns:
+        list: the final selected features 
+    """
     category_dict = defaultdict(list)
 
     # Organize features by category
@@ -49,17 +72,23 @@ def select_top_features(feature_coefs, max_features, limit=2):
     return selected_features
 
 def get_feature_selection_datasets(X, selected_features):
+    """
+    Filters the input dataframe to the selected features.
+    Args:
+        X (pd.DataFrame): features dataframe
+        selected_features (list): the selected features
+    Return:
+        pd.DataFrame: filtered dataframe
+    """
     return X[np.array(selected_features)[:, 0]]
     
 def get_point_biserial_features(X_train, X_test, max_features=50):
     """
     Selects the top features based on their point biserial correlation with the target variable.
-
     Args:
         X_train (pd.DataFrame): The training set features.
         X_test (pd.DataFrame): The testing set features.
         max_features (int): The maximum number of top features to select based on point biserial correlation (default is 50).
-
     Returns:
         tuple: A tuple containing the following:
             - X_train_pb (pd.DataFrame): The training set with top features selected by point biserial correlation.
