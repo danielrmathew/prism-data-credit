@@ -119,8 +119,29 @@ section {
     scroll-margin-top: 30px
 }
 
+.feat-gen-img-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    text-align: center;
+}
 
-.image-container {
+.feat-gen-img-container img {
+    max-width: 45%;
+    height: auto;
+    margin: 0 10px;
+}
+
+.feat-gen-img-container figcaption {
+    width: 100%;
+    margin-top: 10px;
+    font-style: italic;
+    color: #2471a3;
+}
+
+.results-img-container {
     width: 100%;          
     display: flex;       
     justify-content: center; 
@@ -130,7 +151,7 @@ section {
     padding: 20px 0;    
 }
 
-.image-container img {
+.results-img-container img {
     max-width: 500px;     
     width: 100%;          
     height: auto;        
@@ -208,20 +229,79 @@ section.visible {
     margin-top: 10px;
 }
 
-.catboost-container {
-    display: flex; 
-    align-items: center;
-    justify-content: center
-  }
+.container {
+    max-width: 900px;
+    margin: auto;
+    text-align: center;
+}
 
-  .catboost img {
-    max-width: 50%;
-    margin-right: 20px;
-  }
+h2 {
+    color: #333;
+}
 
-  .catboost-text {
-    max-width: 40%; 
-  }
+.accordion-btn {
+    width: 100%;
+    background-color: #2471a3;
+    color: white;
+    padding: 15px;
+    border: none;
+    text-align: left;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.accordion-btn:hover {
+    background-color: #77e3f6;
+}
+
+.panel {
+    display: none;
+    overflow: hidden;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 5px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background: white;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #77e3f6;
+    color: #2471a3;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #d6e4f0;
+}
+
+@media (max-width: 768px) {
+    table {
+        font-size: 14px;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+}
   
 .team {
     text-align: center;

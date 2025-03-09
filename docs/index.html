@@ -62,9 +62,134 @@
 
         <section id="methods">
             <h2>Methods</h2>
+            <h3>Data Description</h3>
+            <p>Our analysis leverages four key datasets that provide insights into consumer accounts, transaction
+                histories, and credit scores. As the datasets were prepared and preprocessed by Prism
+                Data, this minimized the need for extensive data cleaning. Our primary focus in terms of
+                data cleaning was reviewing the data for consistency, addressing any remaining missing
+                values, standardizing categorical variables, and structuring time-series data to optimize it
+                for modeling.</p>
+
+            <p>Below are the heads of the datasets used in this analysis. Click on each section 
+                to expand and view the data, which includes account details, consumer credit scores, transactions,
+                and category mappings.</p>
             
-            <h3>Data Collection and Preparation</h3>
-            <p>We utilized a dataset from Prism Data, containing consumer financial transactions, account balances, and related attributes. As the dataset was preprocessed, minimal cleaning was needed. Our focus was on ensuring consistency, handling missing values, standardizing categorical variables, and optimizing time-series data for modeling.</p>
+    <div class="container">
+        <h2> Key Data Tables</h2>
+
+        <div class="accordion">
+            <button class="accordion-btn">Account Dataset</button>
+            <div class="panel">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>prism_consumer_id</th>
+                            <th>prism_account_id</th>
+                            <th>account_type</th>
+                            <th>balance_date</th>
+                            <th>balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>3,023</td><td>0</td><td>SAVINGS</td><td>2021-08-31</td><td>90.57</td></tr>
+                        <tr><td>3,023</td><td>1</td><td>CHECKING</td><td>2021-08-31</td><td>225.95</td></tr>
+                        <tr><td>4,416</td><td>2</td><td>SAVINGS</td><td>2022-03-31</td><td>15,157.17</td></tr>
+                        <tr><td>4,416</td><td>3</td><td>CHECKING</td><td>2022-03-31</td><td>66.42</td></tr>
+                        <tr><td>4,227</td><td>4</td><td>CHECKING</td><td>2021-07-31</td><td>7,042.90</td></tr>
+                    </tbody>
+                </table>
+                <p>The acctDF.csv dataset contains detailed information about consumer financial accounts, including 
+                    account types, balances, and balance dates. The table above displays a preview of the dataset, 
+                    showing each consumer’s account balances on specific dates.</p>
+            </div>
+        </div>
+
+        <div class="accordion">
+            <button class="accordion-btn">Consumer Dataset</button>
+            <div class="panel">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>prism_consumer_id</th>
+                            <th>evaluation_date</th>
+                            <th>credit_score</th>
+                            <th>DQ_TARGET</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>0</td><td>2021-09-01</td><td>726</td><td>0</td></tr>
+                        <tr><td>1</td><td>2021-07-01</td><td>626</td><td>0</td></tr>
+                        <tr><td>2</td><td>2021-05-01</td><td>680</td><td>0</td></tr>
+                        <tr><td>3</td><td>2021-03-01</td><td>734</td><td>0</td></tr>
+                        <tr><td>4</td><td>2021-10-01</td><td>676</td><td>0</td></tr>
+                    </tbody>
+                </table>
+                <p>This displays a preview of consDF.csv dataset which provides credit scores, evaluation
+                    dates, and delinquency targets for each consumer. This dataset is essential for building a
+                    model of credit risk, as it contains direct indicators of a consumer’s creditworthiness. The
+                    delinquency targets serves as the dependent variable, enabling us to assess our model’s
+                    performance in predicting credit risk.</p>
+            </div>
+        </div>
+
+        <div class="accordion">
+            <button class="accordion-btn">Transaction Dataset</button>
+            <div class="panel">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>prism_consumer_id</th>
+                            <th>prism_transaction_id</th>
+                            <th>category</th>
+                            <th>amount</th>
+                            <th>credit_or_debit</th>
+                            <th>posted_date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>3,023</td><td>0</td><td>4</td><td>0.05</td><td>CREDIT</td><td>2021-04-16</td></tr>
+                        <tr><td>3,023</td><td>1</td><td>12</td><td>481.56</td><td>CREDIT</td><td>2021-04-30</td></tr>
+                        <tr><td>3,023</td><td>2</td><td>4</td><td>0.05</td><td>CREDIT</td><td>2021-05-16</td></tr>
+                        <tr><td>3,023</td><td>3</td><td>4</td><td>0.07</td><td>CREDIT</td><td>2021-06-16</td></tr>
+                        <tr><td>3,023</td><td>4</td><td>4</td><td>0.06</td><td>CREDIT</td><td>2021-07-16</td></tr>
+                    </tbody>
+                </table>
+                <p>The trxnDF.csv dataset records individual transactions, including
+                    transaction categories IDs, amounts, and whether the transaction was a credit or debit.
+                    These transactional data are vital for modeling consumer behavior, such as income sources,
+                    spending habits, and cash flow.</p>
+            </div>
+        </div>
+
+        <div class="accordion">
+            <button class="accordion-btn">Category Mappings</button>
+            <div class="panel">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>category_id</th>
+                            <th>category</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>0</td><td>SELF_TRANSFER</td></tr>
+                        <tr><td>1</td><td>EXTERNAL_TRANSFER</td></tr>
+                        <tr><td>2</td><td>DEPOSIT</td></tr>
+                        <tr><td>3</td><td>PAYCHECK</td></tr>
+                        <tr><td>4</td><td>MISCELLANEOUS</td></tr>
+                    </tbody>
+                </table>
+                <p> The cat_map.csv dataset maps transaction categories to their corresponding cate-
+                    gory IDs, allowing us to classify and interpret the transactions effectively.Table 4 shows an
+                    excerpt of this category mapping.</p>
+            </div>
+        </div>
+    </div>
+    <p>It is important to note that, in compliance with the Equal Credit Opportunity Act (ECOA),
+        we excluded specific transaction categories that could introduce bias in credit decision-making. 
+        Categories related to child dependents, healthcare and medical expenses, unemployment benefits, education,
+        and pensions have been removed to ensure that our model does not unintentionally discriminate based on 
+        protected attributes.</p>
             
             <h3>Feature Generation</h3>
             <p>We engineered features to capture financial behavior through transaction history, balance trends, 
@@ -77,10 +202,28 @@
                     deviation, sum, count, percent of transactions) are calculated on categorical and balance trends.
                 <li><strong>Risk Indicators:</strong> High-risk behaviors were identified through flagged transactions, 
                     such as gambling, using threshold-based indicators.</li>
+    
+                    <figure class="feat-gen-img-container">
+                        <img src="../docs/figures/features-diagram.png" alt="Category-Based Feature Generation Process">
+                        <figcaption>Category-Based Feature Generation Process</figcaption>
+                    </figure>
+                    <p>This diagram showcases our process for generating category-based features. For example, one of
+                        the features created through this process is FOOD_BEVERAGES_last_14_days_mean, which
+                        represents the average transaction amount within the “Food & Beverages” category over
+                        the past 14 days. By analyzing these features, we aim to capture spending habits, identify
+                        fluctuations in financial stability, and differentiate between various financial behaviors.</p>
+
+                <li><strong>Other Notable Features</strong>
+                    <ul>
+                        <li>Sum of balances over time</li>
+                        <li>Net difference between total credits and debits (credit-debit)</li>
+                        <li>Change in balance over consecutive periods (balance delta)</li>
+                        <li>Number of income sources and income standard deviation</li>
+                    </ul>
                 <li><strong>Standardization:</strong> Non-categorical features were standardized to ensure consistent 
-                    scaling.</li>
+                            scaling.</li>
                 <li><strong>Resampling:</strong> SMOTE and undersampling techniques were used to rebalance the training 
-                    data.</li>
+                            data.</li>
             </ul>
         
             <h3>Feature Selection</h3>
@@ -126,10 +269,10 @@
         
     <section id="results">
             <h2>Results</h2>
-            <div class="image-container">
+            <div class="results-img-container">
 
-                <img src="../q2_result/roc_auc_cs_models.png" alt="Results">
-                <img src="../q2_result/roc_auc_no_cs_models.png" alt="Results">
+                <img src="../q2_result/figures/roc_auc_cs_models.png" alt="Results">
+                <img src="../q2_result/figures/roc_auc_no_cs_models.png" alt="Results">
 
             </div>
     <p>The ROC curves below illustrate the trade-off between the true positive rate and the false positive rate for each model. The AUC scores indicate overall model performance, with higher values reflecting better predictive power.</p>

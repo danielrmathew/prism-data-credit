@@ -18,4 +18,24 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+    const buttons = document.querySelectorAll(".accordion-btn");
+
+    buttons.forEach(button => {
+        button.addEventListener("click", function () {
+            const panel = this.nextElementSibling;
+
+            panel.style.display = panel.style.display === "block" ? "none" : "block";
+
+            buttons.forEach(btn => {
+                if (btn !== this) {
+                    btn.nextElementSibling.style.display = "none";
+                }
+            });
+        });
+    });
+});
+
+
+
 
