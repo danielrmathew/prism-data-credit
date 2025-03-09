@@ -77,6 +77,14 @@ def filter_time_window(df, days=None, months=None, years=None):
     return df.groupby('prism_consumer_id', group_keys=False).apply(filter_group)
 
 def compute_balance_delta(balance_filtered, label):
+    """
+    Computes the change in balance for a given dataframe.
+    Args:
+        balance_filtered (pd.DataFrame): dataframe to window over 
+        label (str): the time period that is windowed over
+    Returns:
+        pd.DataFrame: windowed balance delta
+    """
     # Get last balance per consumer
     last_balance = balance_filtered.groupby('prism_consumer_id')['curr_balance'].last().reset_index()
     last_balance = last_balance.rename(columns={'curr_balance': 'curr_balance_last'})
@@ -93,6 +101,14 @@ def compute_balance_delta(balance_filtered, label):
     return df_merged[['prism_consumer_id', f'balance_delta_{label}']]
 
 def calc_balances_all(acctDF, trxnDF):
+    """
+    Creates a balance dataframe (balanceDF) that has the current balance for a consumer after every transaction.
+    Args:
+        acctDF (pd.DataFrame): the account dataframe
+        trxnDF (pd.DataFrame): the transaction dataframe
+    Returns:
+        pd.DataFrame: the dataframe with the running current balance
+    """
     check_acct_totals = acctDF[acctDF.account_type == 'CHECKING'].groupby(['prism_consumer_id', 'balance_date']).sum()
     check_acct_totals = check_acct_totals.reset_index()
     check_acct_totals = check_acct_totals.drop(axis=1,labels='prism_account_id')
@@ -128,6 +144,14 @@ def calc_balances_all(acctDF, trxnDF):
     return result[['prism_consumer_id', 'prism_transaction_id', 'category', 'amount', 'credit_or_debit', 'posted_date', 'curr_balance']].sort_values(by='posted_date', ascending=False)
 
 def create_balance_features(balanceDF, consDF):
+    """
+    Creates balance features of different summary statistics across different time windows.
+    Args:
+        balanceDF (pd.DataFrame): the output of the previous function, has the running balance
+        consDF (pd.DataFrame): the consumer dataframe
+    Returns:
+        pd.DataFrame: features dataframe of balance statistics and deltas 
+    """
     balance_ftrs = balanceDF.groupby('prism_consumer_id')['curr_balance'].agg(['mean', 'std', 'median', 'min', 'max', 'sum'])
     balance_ftrs.columns = ['balance_' + x for x in balance_ftrs.columns]
     balance_last_14_days = filter_time_window(balanceDF, days=14)
@@ -167,6 +191,13 @@ def create_balance_features(balanceDF, consDF):
     return balance_ftrs, balance_deltas_ftrs
 
 def create_inflows_outflows_features(trxn_df):
+    """
+    Creates a features dataframe of statistics for inflows and outflows transactions
+    Args:
+        trxn_df (pd.DataFrame): the transaction dataframe
+    Returns:
+        pd.DataFrame: the features dataframe of inflows and outflows features
+    """
     # creating relevant outflows df with only expenses
     debits_not_expenses = ['SELF_TRANSFER', 'ATM_CASH']
     credits_not_income = ['SELF_TRANSFER', 'LOAN', 'REFUND'] # maybe TAX
@@ -253,6 +284,14 @@ def create_inflows_outflows_features(trxn_df):
     return all_outflows_dfs, all_inflows_dfs
 
 def create_binary_features(acct_df, trxn_df):
+    """
+    Creates a features dataframe of binary features, such as having gambling transactions, overdraft fees, etc.
+    Args:
+        acct_df (pd.DataFrame): the account dataframe
+        trxn_df (pd.DataFrame): the transaction dataframe
+    Returns:
+        pd.DataFrame: a features dataframe of binary features
+    """
     # creating flags for risky categories
     risky_categories = ['GAMBLING', 'BNPL', 'OVERDRAFT'] 
     trxn_category_table = trxn_df.pivot_table(index='prism_consumer_id', columns='category', values='amount', aggfunc='size', fill_value=0)
@@ -267,11 +306,9 @@ def create_binary_features(acct_df, trxn_df):
 def generate_category_features(trxnDF, categories):
     """
     Generates transaction-based features for each selected category over multiple time windows.
-    
-    Parameters:
+    Args:
         trxnDF (pd.DataFrame): DataFrame containing transaction data.
         categories (str or list): One or more transaction categories to filter.
-
     Returns:
         pd.DataFrame: Aggregated features per prism_consumer_id.
     """
@@ -334,6 +371,15 @@ def generate_category_features(trxnDF, categories):
     return final_features
 
 def compute_threshold_stats(df, thresholds, cat_label):
+    """
+    Creates a features dataframe of thresholded stats, like calculating if some transaction went over some threshold
+    Args:
+        df (pd.DataFrame): transaction dataframe
+        thresholds (list): list of thresholds to check
+        cat_label (str): category label
+    Returns:
+        pd.DataFrame: the features dataframe of inflows and outflows features
+    """
     # Count total gambling transactions
     counts = df.groupby('prism_consumer_id').size().reset_index(name=f'{cat_label}_count')
 
@@ -348,6 +394,15 @@ def compute_threshold_stats(df, thresholds, cat_label):
     return result
 
 def create_features_df(cons_df, acct_df, trxn_df):
+    """
+    Creates a complete features dataframe of all the engineered features
+    Args:
+        cons_df (pd.DataFrame): the consumer dataframe
+        acct_df (pd.DataFrame): the account dataframe
+        trxn_df (pd.DataFrame): the transaction dataframe
+    Returns:
+        pd.DataFrame: the final features dataframe
+    """
         
     # creating sum of balances feature
     sum_of_balance_df = pd.DataFrame(acct_df.groupby('prism_consumer_id')['balance'].sum()) \
@@ -407,6 +462,20 @@ def create_features_df(cons_df, acct_df, trxn_df):
     return features_df
 
 def split_data(final_features_df, drop_credit_score=True, test_size=0.25):
+    """
+    Splits the features dataframe into a train and test set
+    Args:
+        final_features_df (pd.DataFrame): the complete features dataframe
+        drop_credit_score (bool): whether or not to drop the credit score feature, default True
+        test_size (float): the proportion of the dataset that is the test set, default 0.25
+    Returns:
+        X_train (pd.DataFrame): the train features
+        X_test (pd.DataFrame): the test features
+        y_train (pd.Series): the train labels
+        y_test (pd.Series): the test labels
+        train_ids (pd.Series): the train consumer ids
+        test_ids (pd.Series): the test consumer ids
+    """
     drop_cols = ['DQ_TARGET', 'evaluation_date']
     if drop_credit_score:
         drop_cols.append('credit_score')
@@ -420,6 +489,14 @@ def split_data(final_features_df, drop_credit_score=True, test_size=0.25):
     return X_train, X_test, y_train, y_test, train_ids, test_ids
 
 def standardize(X_train, *args):
+    """
+    Standardizes the input dataframes
+    Args:
+        X_train (pd.DataFrame): the train features 
+        *args (list[pd.DataFrame]): at least one other dataframe that will be standardized after getting fit from the train df
+    Returns:
+        list[pd.DataFrame]: a list of standardized dataframes
+    """
     # instantiate StandardScaler() to standardize features, excluding binary features
     scaler = StandardScaler()
     exclude_columns_standardize = ['GAMBLING', 'BNPL', 'OVERDRAFT', 'HAS_SAVINGS_ACCT'] # binary features that shouldn't be standardized
@@ -443,6 +520,17 @@ def standardize(X_train, *args):
     return X_datasets
 
 def resample_data(X, y, new_0=0.75, new_1=0.25):
+    """
+    Resamples the datasets to the new class proportions
+    Args:
+        X (pd.DataFrame): features dataframe
+        y (pd.Series): dataset labels
+        new_0 (float): the proportion of the output dataset that is class 0, default 0.75
+        new_1 (float): the proportion of the output dataset that is class 1, default 0.25
+    Returns:
+        X_resampled (pd.DataFrame): the resampled features df
+        y_resampled (pd.Series): the resampled class labels
+    """
     # Check class counts
     new_0 = int(new_0 * len(y))  # Target count for balancing
     new_1 = int(new_1 * len(y))
