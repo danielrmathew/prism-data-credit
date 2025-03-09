@@ -19,7 +19,7 @@ CATEGORY_MAP_PATH: q2data/q2-ucsd-cat-map.csv
 # point_biserial uses the point biserial correlation of features to measure the most significant features
 # options: lasso, point_biserial
 FEATURE_SELECTION: lasso
-MAX_FEATURES: 50
+MAX_FEATURES: 500
 
 #####################################################
 #                  MODEL CONFIG                     #
@@ -27,7 +27,7 @@ MAX_FEATURES: 50
 # Set the models you would like to train to True
 MODELS:
     LogisticRegression: True
-    HistGB: False
+    HistGB: True
     CatBoost: False
     LightGBM: False
     XGBoost: False
