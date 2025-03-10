@@ -49,8 +49,8 @@
                 the potential for transaction-based credit evaluation to more accurately assess financial risk and improve access to credit, 
                 offering a fairer alternative to traditional credit scoring methods.</p>
             <figure class="improved-model">
-                <img src="figures/model-pipeline.png" alt="Improved Credit Risk Model">
-                <figcaption>Improved Credit Scoring Model Pipeline</figcaption>
+                <img src="figures/model-pipeline.png" alt="Cash Score Model Pipeline">
+                <figcaption>Cash Score Model Pipeline</figcaption>
             </figure>
             We adopted an iterative approach to model development, emphasizing continuous refinement and enhancement
             of features alongside model selection and performance evaluation. We began with logistic regression to establish a 
@@ -309,21 +309,26 @@
         </section>
         
     <section id="results">
-            <h2>Results</h2>
+<h2>Results</h2>
 
-            <h3>Feature Importance</h3>
-    
-    <div style="text-align: center;">
+<h3>Feature Importance</h3>
+
+<details>
+    <summary style="cursor: pointer; font-size: 1.1em; font-weight: bold; color: #2471a3;">
+        Click to expand
+    </summary>
+
+    <div style="text-align: center; margin-top: 10px;">
         <img src="figures/shap_values_normal.png" alt="Top SHAP Values" style="width: 40%;">
         <p><strong>Figure:</strong> Top SHAP Values</p>
     </div>
-    
+
     <p>
         SHAP (SHapley Additive exPlanations) is a method used to explain model predictions by attributing each feature's contribution to the final prediction.
     </p>
-    
+
     <p>In our model, SHAP identified the following features to be important in predicting credit delinquency:</p>
-    
+
     <ul>
         <li><strong>sum_acct_balances:</strong> Higher account balances suggest lower delinquency risk.</li>
         <li><strong>HAS_SAVINGS_ACCT:</strong> Having a savings account reduces delinquency risk.</li>
@@ -331,7 +336,9 @@
         <li><strong>OVERDRAFT:</strong> Frequent overdrafts increase delinquency risk.</li>
         <li><strong>LOAN_last_14_days_count:</strong> Recent loans may signal financial stress.</li>
     </ul>
-        
+
+</details>
+
     <h3>Model Performance</h3>
 
     </p>
@@ -428,8 +435,14 @@
         <li>Without credit scores, LightGBM performs best. Compared to CatBoost, the training time is also significantly lower.</li>
     </ul>
     
+    <h3>Futher Analysis: Confusion Matrices</h3>
 
-        <div style="display: flex; justify-content: center; gap: 1rem;">
+    <details>
+        <summary style="cursor: pointer; font-size: 1.1em; font-weight: bold; color: #2471a3;">
+            Click to expand
+        </summary>
+    
+        <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 10px;">
             <div style="text-align: center;">
                 <img src="figures/CatBoost_cash_cm_normal.png" alt="CatBoost Confusion Matrix without Credit Score" style="width: 50%;">
                 <p>CatBoost (w/o Credit Score)</p>
@@ -439,8 +452,8 @@
                 <p>CatBoost (w/ Credit Score)</p>
             </div>
         </div>
-        
-        <div style="display: flex; justify-content: center; gap: 1rem;">
+    
+        <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 10px;">
             <div style="text-align: center;">
                 <img src="figures/LightGBM_cash_cm_normal.png" alt="LightGBM Confusion Matrix without Credit Score" style="width: 50%;">
                 <p>LightGBM (w/o Credit Score)</p>
@@ -450,20 +463,23 @@
                 <p>LightGBM (w/ Credit Score)</p>
             </div>
         </div>
-        
+    
         <p>
             From the confusion matrices, we observe that both CatBoost and LightGBM improve slightly with credit score inclusion. However, they remain highly conservative, predicting very few positive cases. This results in high precision but low recall as seen in the model performance table.
         </p>
-        
+    
         <p><strong>Note:</strong> In these models, "positive" refers to delinquent cases, while "negative" represents non-delinquent cases.</p>
-        
+    
+    </details>
+    
+    <h3>Cash Score vs. Credit Score</h3>
         <div style="display: flex; justify-content: center; gap: 1rem;">
             <div style="text-align: center;">
                 <img src="figures/delinquency_rate_heatmap.png" alt="Delinquency Rate Heatmap" style="width: 35%;">
                 <p>Delinquency Rate Heatmap (Cash Score vs. Credit Score)</p>
             </div>
         </div>
-        The heatmap visually represents delinquency rates using color intensity and numerical values, where darker regions indicate higher delinquency. The bottom-left region, where scores are lowest, shows delinquency reaching 100%, while the top-right region, representing higher scores, exhibits near-zero delinquency. This highlights cash and credit scores as strong indicators of financial risk, with higher scores consistently associated with lower delinquency rates.
+        The heatmap visually represents delinquency rates using color intensity and numerical values, where darker regions indicate higher delinquency. The bottom-left region, where scores are lowest, shows delinquency reaching 100%, while the top-right region, representing higher scores, exhibits near-zero delinquency. This highlights both cash and credit scores as strong indicators of financial risk, with higher scores consistently associated with lower delinquency rates.
 
     </section>
     <section id="conclusion">
@@ -493,6 +509,7 @@
                 <div class="team-member">
                     <img src="figures/akar.jpeg" alt="Aman Kar">
                     <h3>Aman Kar</h3>
+                    <p>akar@ucsd.edu</p>
                     <a href="https://www.linkedin.com/in/aman-kar" target="_blank" class="linkedin-icon">
                         <i class="fab fa-linkedin"></i>
                     </a>
@@ -500,6 +517,7 @@
                 <div class="team-member">
                     <img src="figures/drm.jpeg" alt="Daniel Mathew">
                     <h3>Daniel Mathew</h3>
+                    <p>drmathew@ucsd.edu</p>
                     <a href="https://www.linkedin.com/in/daniel-roy-mathew" target="_blank" class="linkedin-icon">
                         <i class="fab fa-linkedin"></i>
                     </a>
@@ -507,6 +525,7 @@
                 <div class="team-member">
                     <img src="figures/tnp.jpeg" alt="Tracy Pham">
                     <h3>Tracy Pham</h3>
+                    <p>tnp003@ucsd.edu</p>
                     <a href="https://www.linkedin.com/in/tracy-pham-3aa505221/" target="_blank" class="linkedin-icon">
                         <i class="fab fa-linkedin"></i>
                     </a>
