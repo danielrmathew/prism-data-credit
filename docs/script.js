@@ -17,21 +17,15 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(section);
     });
 });
-
 document.querySelectorAll('.accordion-btn, .accordion-item').forEach(item => {
     item.addEventListener('click', function () {
         const panel = this.nextElementSibling;
-        const isVisible = panel.style.display === 'block';
-        
-        // Hide all panels
-        document.querySelectorAll('.panel, .panel-item').forEach(p => {
-            p.style.display = 'none';
-        });
         
         // Toggle the clicked panel
-        panel.style.display = isVisible ? 'none' : 'block';
+        panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
     });
 });
+
 
 
 
