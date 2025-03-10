@@ -449,11 +449,27 @@ def create_features_df(cons_df, acct_df, trxn_df):
     # create balance features
     balanceDF = calc_balances_all(acct_df, trxn_df)
     balance_ftrs, balance_deltas_ftrs = create_balance_features(balanceDF, cons_df)
+
+    gambling_df_all = balanceDF[balanceDF['category'] == 'GAMBLING']
+    gambling_thresholds = [50, 100, 500, 1000]
+    
+    # Filter for different time periods
+    gambling_last_month = filter_time_window(gambling_df_all, months=1)
+    gambling_last_6m = filter_time_window(gambling_df_all, months=6)
+    gambling_last_year = filter_time_window(gambling_df_all, years=1)
+    
+    gambling_stats_all = compute_threshold_stats(gambling_df_all, gambling_thresholds, 'all')
+    gambling_stats_month = compute_threshold_stats(gambling_last_month, gambling_thresholds, '1m')
+    gambling_stats_6m = compute_threshold_stats(gambling_last_6m, gambling_thresholds, '6m')
+    gambling_stats_year = compute_threshold_stats(gambling_last_year, gambling_thresholds, '1y')
+    
+    gambling_df = [cons_df[['prism_consumer_id']], gambling_stats_all, gambling_stats_month, gambling_stats_6m, gambling_stats_year]
+    gambling_ftrs = reduce(lambda left, right: pd.merge(left, right, on='prism_consumer_id', how='left'), gambling_df)
     
     # merging all features into features df
     features_df = reduce(lambda left, right: left.merge(right, on='prism_consumer_id', how='left'), 
                          [cons_df, sum_of_balance_df, credit_minus_debit_df, num_income_source_df, 
-                          num_accounts_df, balance_ftrs, balance_deltas_ftrs, category_features] + 
+                          num_accounts_df, balance_ftrs, balance_deltas_ftrs, category_features, gambling_ftrs] + 
                          all_outflows_dfs + all_inflows_dfs + binary_features_dfs
                         )
     fill_na_cols = features_df.columns.difference(['DQ_TARGET'])
