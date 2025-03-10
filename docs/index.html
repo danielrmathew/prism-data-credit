@@ -73,124 +73,152 @@
             <p>Below are the heads of the datasets used in this analysis. Click on each section 
                 to expand and view the data, which includes account details, consumer credit scores, transactions,
                 and category mappings.</p>
-            
-    <div class="container">
-        <h2> Key Data Tables</h2>
-
-        <div class="accordion">
-            <button class="accordion-btn">Account Dataset</button>
-            <div class="panel">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>prism_consumer_id</th>
-                            <th>prism_account_id</th>
-                            <th>account_type</th>
-                            <th>balance_date</th>
-                            <th>balance</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>3,023</td><td>0</td><td>SAVINGS</td><td>2021-08-31</td><td>90.57</td></tr>
-                        <tr><td>3,023</td><td>1</td><td>CHECKING</td><td>2021-08-31</td><td>225.95</td></tr>
-                        <tr><td>4,416</td><td>2</td><td>SAVINGS</td><td>2022-03-31</td><td>15,157.17</td></tr>
-                        <tr><td>4,416</td><td>3</td><td>CHECKING</td><td>2022-03-31</td><td>66.42</td></tr>
-                        <tr><td>4,227</td><td>4</td><td>CHECKING</td><td>2021-07-31</td><td>7,042.90</td></tr>
-                    </tbody>
-                </table>
-                <p>The acctDF.csv dataset contains detailed information about consumer financial accounts, including 
-                    account types, balances, and balance dates. The table above displays a preview of the dataset, 
-                    showing each consumer’s account balances on specific dates.</p>
-            </div>
-        </div>
-
-        <div class="accordion">
-            <button class="accordion-btn">Consumer Dataset</button>
-            <div class="panel">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>prism_consumer_id</th>
-                            <th>evaluation_date</th>
-                            <th>credit_score</th>
-                            <th>DQ_TARGET</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>0</td><td>2021-09-01</td><td>726</td><td>0</td></tr>
-                        <tr><td>1</td><td>2021-07-01</td><td>626</td><td>0</td></tr>
-                        <tr><td>2</td><td>2021-05-01</td><td>680</td><td>0</td></tr>
-                        <tr><td>3</td><td>2021-03-01</td><td>734</td><td>0</td></tr>
-                        <tr><td>4</td><td>2021-10-01</td><td>676</td><td>0</td></tr>
-                    </tbody>
-                </table>
-                <p>This displays a preview of consDF.csv dataset which provides credit scores, evaluation
-                    dates, and delinquency targets for each consumer. This dataset is essential for building a
-                    model of credit risk, as it contains direct indicators of a consumer’s creditworthiness. The
-                    delinquency targets serves as the dependent variable, enabling us to assess our model’s
-                    performance in predicting credit risk.</p>
-            </div>
-        </div>
-
-        <div class="accordion">
-            <button class="accordion-btn">Transaction Dataset</button>
-            <div class="panel">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>prism_consumer_id</th>
-                            <th>prism_transaction_id</th>
-                            <th>category</th>
-                            <th>amount</th>
-                            <th>credit_or_debit</th>
-                            <th>posted_date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>3,023</td><td>0</td><td>4</td><td>0.05</td><td>CREDIT</td><td>2021-04-16</td></tr>
-                        <tr><td>3,023</td><td>1</td><td>12</td><td>481.56</td><td>CREDIT</td><td>2021-04-30</td></tr>
-                        <tr><td>3,023</td><td>2</td><td>4</td><td>0.05</td><td>CREDIT</td><td>2021-05-16</td></tr>
-                        <tr><td>3,023</td><td>3</td><td>4</td><td>0.07</td><td>CREDIT</td><td>2021-06-16</td></tr>
-                        <tr><td>3,023</td><td>4</td><td>4</td><td>0.06</td><td>CREDIT</td><td>2021-07-16</td></tr>
-                    </tbody>
-                </table>
-                <p>The trxnDF.csv dataset records individual transactions, including
-                    transaction categories IDs, amounts, and whether the transaction was a credit or debit.
-                    These transactional data are vital for modeling consumer behavior, such as income sources,
-                    spending habits, and cash flow.</p>
-            </div>
-        </div>
-
-        <div class="accordion">
-            <button class="accordion-btn">Category Mappings</button>
-            <div class="panel">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>category_id</th>
-                            <th>category</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>0</td><td>SELF_TRANSFER</td></tr>
-                        <tr><td>1</td><td>EXTERNAL_TRANSFER</td></tr>
-                        <tr><td>2</td><td>DEPOSIT</td></tr>
-                        <tr><td>3</td><td>PAYCHECK</td></tr>
-                        <tr><td>4</td><td>MISCELLANEOUS</td></tr>
-                    </tbody>
-                </table>
-                <p> The cat_map.csv dataset maps transaction categories to their corresponding cate-
-                    gory IDs, allowing us to classify and interpret the transactions effectively.Table 4 shows an
-                    excerpt of this category mapping.</p>
-            </div>
-        </div>
-    </div>
-    <p>It is important to note that, in compliance with the Equal Credit Opportunity Act (ECOA),
+                <div class="accordion-container">
+                    <div class="accordion">
+                        <button class="accordion-btn">Account Dataset</button>
+                        <div class="panel">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>prism_consumer_id</th>
+                                        <th>prism_account_id</th>
+                                        <th>account_type</th>
+                                        <th>balance_date</th>
+                                        <th>balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>3,023</td><td>0</td><td>SAVINGS</td><td>2021-08-31</td><td>90.57</td></tr>
+                                    <tr><td>3,023</td><td>1</td><td>CHECKING</td><td>2021-08-31</td><td>225.95</td></tr>
+                                    <tr><td>4,416</td><td>2</td><td>SAVINGS</td><td>2022-03-31</td><td>15,157.17</td></tr>
+                                    <tr><td>4,416</td><td>3</td><td>CHECKING</td><td>2022-03-31</td><td>66.42</td></tr>
+                                    <tr><td>4,227</td><td>4</td><td>CHECKING</td><td>2021-07-31</td><td>7,042.90</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                
+                    <div class="accordion">
+                        <button class="accordion-btn">Consumer Dataset</button>
+                        <div class="panel">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>prism_consumer_id</th>
+                                        <th>evaluation_date</th>
+                                        <th>credit_score</th>
+                                        <th>DQ_TARGET</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>0</td><td>2021-09-01</td><td>726</td><td>0</td></tr>
+                                    <tr><td>1</td><td>2021-07-01</td><td>626</td><td>0</td></tr>
+                                    <tr><td>2</td><td>2021-05-01</td><td>680</td><td>0</td></tr>
+                                    <tr><td>3</td><td>2021-03-01</td><td>734</td><td>0</td></tr>
+                                    <tr><td>4</td><td>2021-10-01</td><td>676</td><td>0</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                
+                    <div class="accordion">
+                        <button class="accordion-btn">Transaction Dataset</button>
+                        <div class="panel">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>prism_consumer_id</th>
+                                        <th>prism_transaction_id</th>
+                                        <th>category</th>
+                                        <th>amount</th>
+                                        <th>credit_or_debit</th>
+                                        <th>posted_date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>3,023</td><td>0</td><td>4</td><td>0.05</td><td>CREDIT</td><td>2021-04-16</td></tr>
+                                    <tr><td>3,023</td><td>1</td><td>12</td><td>481.56</td><td>CREDIT</td><td>2021-04-30</td></tr>
+                                    <tr><td>3,023</td><td>2</td><td>4</td><td>0.05</td><td>CREDIT</td><td>2021-05-16</td></tr>
+                                    <tr><td>3,023</td><td>3</td><td>4</td><td>0.07</td><td>CREDIT</td><td>2021-06-16</td></tr>
+                                    <tr><td>3,023</td><td>4</td><td>4</td><td>0.06</td><td>CREDIT</td><td>2021-07-16</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                
+                    <div class="accordion">
+                        <button class="accordion-btn">Category Mappings</button>
+                        <div class="panel">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>category_id</th>
+                                        <th>category</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>0</td><td>SELF_TRANSFER</td></tr>
+                                    <tr><td>1</td><td>EXTERNAL_TRANSFER</td></tr>
+                                    <tr><td>2</td><td>DEPOSIT</td></tr>
+                                    <tr><td>3</td><td>PAYCHECK</td></tr>
+                                    <tr><td>4</td><td>MISCELLANEOUS</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+    
+    <p>It is important to note that, in compliance with the <strong>Equal Credit Opportunity Act (ECOA)</strong>,
         we excluded specific transaction categories that could introduce bias in credit decision-making. 
         Categories related to child dependents, healthcare and medical expenses, unemployment benefits, education,
         and pensions have been removed to ensure that our model does not unintentionally discriminate based on 
         protected attributes.</p>
             
+        <h3>Exploratory Data Analysis</h3>
+<p>Through exploratory data analysis (EDA), we examined consumer transaction trends and spending patterns to uncover insights that aid in identifying key factors for predicting credit risk. Below are a few examples of EDA conducted to look at temporal trends, transaction frequency, spending categories, and the impact of specific financial behaviors.</p>
+
+<div class="accordion-container">
+    <button class="accordion-item">Balance Over Time of Delinquent vs. Non-Delinquent Consumer</button>
+    <div class="panel-item">
+        <div class="panel-img">
+            <img src="../q2_result/figures/goodbad_diff.png" alt="Balance Over Time of Delinquent vs. Non-Delinquent Consumer">
+        </div>
+        <div class="panel-text">
+            <p>Comparing bank balances over time between a randomly selected delinquent and non-delinquent consumer reveals distinct financial patterns. The delinquent consumer’s balance remains mostly stagnant, with a single large spike that quickly drops. In contrast, the non-delinquent consumer maintains a steady, positive balance with gradual growth, indicating stable income, controlled spending, and savings. This suggests that bank balance trends can serve as a strong predictor of creditworthiness.</p>
+        </div>
+    </div>
+
+    <button class="accordion-item">Distribution of Credit Score by Delinquency Status</button>
+    <div class="panel-item">
+        <div class="panel-img">
+            <img src="../q2_result/figures/ks_cscore.png" alt="Distribution of Credit Score by Delinquency Status">
+        </div>
+        <div class="panel-text">
+            <p>The normal distribution of delinquent credit scores, compared to the left-skewed distribution of non-delinquent credit scores, shows that non-delinquent individuals typically have higher credit scores, while most delinquent individuals fall within the lower middle of the credit score range. This reinforces that credit scores are already a strong indicator of delinquency. This provides a foundation for our model, allowing us to build upon the credit score feature to potentially outperform traditional models at predicting delinquency.</p>
+        </div>
+    </div>
+
+    <button class="accordion-item">Distribution of BNPL Transactions by Delinquency Status</button>
+    <div class="panel-item">
+        <div class="panel-img">
+            <img src="../q2_result/figures/BNPL_last_14_days_mean_distribution.png" alt="Distribution of BNPL_last_14_days_mean">
+        </div>
+        <div class="panel-text">
+            <p>Identifying "Buy Now, Pay Later" (BNPL) as a risky category, we analyzed this category further. The figure reveals that a significantly higher proportion of non-delinquent consumers fall into the lowest bin for mean BNPL transactions. However, delinquent consumers tend to have higher proportions in the upper bins, indicating that they engage in larger BNPL transactions compared to non-delinquent consumers.</p>
+        </div>
+    </div>
+
+    <button class="accordion-item">Tax in the Last 14 Days by Delinquency Status Box Plot</button>
+    <div class="panel-item">
+        <div class="panel-img">
+            <img src="../q2_result/figures/TAX_last_14_days_count_distribution.png" alt="Distribution of TAX_last_14_days_count">
+        </div>
+        <div class="panel-text">
+            <p>The plot reveals a wider range of tax transactions over the last two weeks for non-delinquent consumers, while delinquent consumers show little to no variation in their tax transaction frequency. This suggests that non-delinquent consumers are more active and consistent in handling their tax-related transactions, which could indicate better financial management and stability compared to delinquent consumers.</p>
+        </div>
+    </div>
+</div>
+
             <h3>Feature Generation</h3>
             <p>We engineered features to capture financial behavior through transaction history, balance trends, 
                 spending patterns, and risk indicators. Our feature generation process included:</p>
@@ -200,8 +228,6 @@
                     days, 30 days, 3 months, 6 months, and 1 year—to capture short- and long-term trends.</li>
                 <li><strong>Aggregated Statistics:</strong> Summary statistics (minimum, maximum, mean, median, standard 
                     deviation, sum, count, percent of transactions) are calculated on categorical and balance trends.
-                <li><strong>Risk Indicators:</strong> High-risk behaviors were identified through flagged transactions, 
-                    such as gambling, using threshold-based indicators.</li>
     
                     <figure class="feat-gen-img-container">
                         <img src="../docs/figures/features-diagram.png" alt="Category-Based Feature Generation Process">
@@ -213,21 +239,26 @@
                         the past 14 days. By analyzing these features, we aim to capture spending habits, identify
                         fluctuations in financial stability, and differentiate between various financial behaviors.</p>
 
-                <li><strong>Other Notable Features</strong>
-                    <ul>
-                        <li>Sum of balances over time</li>
-                        <li>Net difference between total credits and debits (credit-debit)</li>
-                        <li>Change in balance over consecutive periods (balance delta)</li>
-                        <li>Number of income sources and income standard deviation</li>
-                    </ul>
+                <li><strong>Risk Indicators:</strong> High-risk behaviors were identified through flagged transactions, 
+                    such as gambling, using threshold-based indicators.</li>
+
+                <li><strong>Balance Features:</strong> Features that reflect balance fluctuations such
+                     as balance deltas, rolling averages, and recent trends were created.
+
+                <li><strong>Income Features:</strong> Income-based features such as the number of income sources and income
+                standard deviation were calculated to assess the diversity and variability of a consumer’s
+                income.</li> 
                 <li><strong>Standardization:</strong> Non-categorical features were standardized to ensure consistent 
                             scaling.</li>
-                <li><strong>Resampling:</strong> SMOTE and undersampling techniques were used to rebalance the training 
-                            data.</li>
+                <li><strong>Resampling:</strong> Our dataset had an imbalance, meaning one class had much more data than 
+                    the other. To fix this, we used Sythethic Minority Over-Sampling Technique (SMOTE) to generate new samples for the smaller group and undersampling
+                     to reduce the larger group. This helped create a more balanced dataset, allowing the model to learn 
+                     patterns more effectively without bias.</li>
             </ul>
-        
+
             <h3>Feature Selection</h3>
-            <p>To refine model input, we performed feature selection using the following techniques:</p>
+            <p>The final dataset contained more than 2,000 features, with the dataframe shape being
+                15000 rows × 2430 columns. To refine model input, we performed feature selection using the following techniques:</p>
             <ul>
                 <li><strong>Correlation Analysis:</strong> Selected top features most correlated with delinquency using Lasso (L1) Regularization.</li>
                 <li><strong>Mutual Information:</strong> Identified features with the highest mutual information score for predictive power.</li>
@@ -269,24 +300,168 @@
         
     <section id="results">
             <h2>Results</h2>
+
+            <h3>Feature Importance</h3>
+    
+    <div style="text-align: center;">
+        <img src="../q2_result/figures/shap_values_normal.png" alt="Top SHAP Values" style="width: 40%;">
+        <p><strong>Figure:</strong> Top SHAP Values</p>
+    </div>
+    
+    <p>
+        SHAP (SHapley Additive exPlanations) is a method used to explain model predictions by attributing each feature's contribution to the final prediction.
+    </p>
+    
+    <p>In our model, SHAP identified the following key features:</p>
+    
+    <ul>
+        <li><strong>sum_acct_balances:</strong> Higher account balances suggest lower delinquency risk.</li>
+        <li><strong>HAS_SAVINGS_ACCT:</strong> Having a savings account reduces delinquency risk.</li>
+        <li><strong>DEPOSIT_last_14_days_count:</strong> Recent deposits indicate financial stability.</li>
+        <li><strong>OVERDRAFT:</strong> Frequent overdrafts increase delinquency risk.</li>
+        <li><strong>LOAN_last_14_days_count:</strong> Recent loans may signal financial stress.</li>
+    </ul>
+    
+    <p>These features were found to be the most important in predicting credit delinquency.</p>
+    
+    <h3>Model Performance</h3>
+
+    </p>
             <div class="results-img-container">
 
-                <img src="../q2_result/figures/roc_auc_cs_models.png" alt="Results">
+                <img src="figures/auc-roc-credit-score.png" alt="Results">
                 <img src="../q2_result/figures/roc_auc_no_cs_models.png" alt="Results">
 
             </div>
     <p>The ROC curves below illustrate the trade-off between the true positive rate and the false positive rate for each model. The AUC scores indicate overall model performance, with higher values reflecting better predictive power.</p>
 
+    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; font-size: 0.9em; width: 100%;">
+        <thead>
+            <tr>
+                <th><strong>Model</strong></th>
+                <th><strong>ROC-AUC</strong></th>
+                <th><strong>Accuracy</strong></th>
+                <th><strong>Precision</strong></th>
+                <th><strong>Recall</strong></th>
+                <th><strong>F1-Score</strong></th>
+                <th><strong>Training</strong></th>
+                <th><strong>Prediction</strong></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Logistic Regression (w/o Credit Score)</td>
+                <td>0.7079</td>
+                <td>0.8445</td>
+                <td>0.2383</td>
+                <td>0.2785</td>
+                <td>0.2568</td>
+                <td>1.3368</td>
+                <td>0.4016</td>
+            </tr>
+            <tr style="background-color: #E0F7FA;">
+                <td>Logistic Regression (w/ Credit Score)</td>
+                <td>0.7241</td>
+                <td>0.8571</td>
+                <td>0.2674</td>
+                <td>0.3548</td>
+                <td>0.3050</td>
+                <td>1.7175</td>
+                <td>0.3315</td>
+            </tr>
+            <tr>
+                <td>LightGBM (w/o Credit Score)</td>
+                <td>0.7796</td>
+                <td>0.8991</td>
+                <td>0.3878</td>
+                <td>0.0802</td>
+                <td>0.1329</td>
+                <td>4.1249</td>
+                <td>0.0931</td>
+            </tr>
+            <tr style="background-color: #E0F7FA;">
+                <td>LightGBM (w/ Credit Score)</td>
+                <td>0.8162</td>
+                <td>0.9068</td>
+                <td>0.4167</td>
+                <td>0.1382</td>
+                <td>0.2076</td>
+                <td>3.9720</td>
+                <td>0.0859</td>
+            </tr>
+            <tr style="font-weight: bold;">
+                <td>CatBoost (w/o Credit Score)</td>
+                <td>0.7704</td>
+                <td>0.9019</td>
+                <td>0.4474</td>
+                <td>0.0717</td>
+                <td>0.1236</td>
+                <td>38.6703</td>
+                <td>0.0788</td>
+            </tr>
+            <tr style="background-color: #E0F7FA; font-weight: bold;">
+                <td>CatBoost (w/ Credit Score)</td>
+                <td>0.8260</td>
+                <td>0.9170</td>
+                <td>0.4681</td>
+                <td>0.1095</td>
+                <td>0.1774</td>
+                <td>40.9512</td>
+                <td>0.0960</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <p><strong>Key Insights:</strong></p>
+    <ul>
+        <li>Adding credit scores improves model performance, helping predict delinquency more accurately.</li>
+        <li>CatBoost is the most accurate model but struggles to detect delinquent cases and takes longer to train.</li>
+        <li>Without credit scores, LightGBM performs best. Compared to CatBoost, the training time is also significantly lower.</li>
+    </ul>
+    
 
-    <h4>Key Insights</h4>
-    <p>Gradient boosting models (CatBoost, HistGB, LightGBM) outperformed logistic regression, highlighting the effectiveness of tree-based ensemble methods in credit risk prediction. CatBoost achieved the highest AUC, suggesting its suitability for handling categorical data and complex interactions.</p>
+        <div style="display: flex; justify-content: center; gap: 1rem;">
+            <div style="text-align: center;">
+                <img src="../q2_result/figures/CatBoost_cash_cm_normal.png" alt="CatBoost Confusion Matrix without Credit Score" style="width: 50%;">
+                <p>CatBoost (w/o Credit Score)</p>
+            </div>
+            <div style="text-align: center;">
+                <img src="../q2_result/figures/CatBoost_cs_cm_normal.png" alt="CatBoost Confusion Matrix with Credit Score" style="width: 50%;">
+                <p>CatBoost (w/ Credit Score)</p>
+            </div>
+        </div>
+        
+        <div style="display: flex; justify-content: center; gap: 1rem;">
+            <div style="text-align: center;">
+                <img src="../q2_result/figures/LightGBM_cash_cm_normal.png" alt="LightGBM Confusion Matrix without Credit Score" style="width: 50%;">
+                <p>LightGBM (w/o Credit Score)</p>
+            </div>
+            <div style="text-align: center;">
+                <img src="../q2_result/figures/LightGBM_cs_cm_normal.png" alt="LightGBM Confusion Matrix with Credit Score" style="width: 50%;">
+                <p>LightGBM (w/ Credit Score)</p>
+            </div>
+        </div>
+        
+        <p>
+            From the confusion matrices, we observe that both CatBoost and LightGBM improve slightly with credit score inclusion. However, they remain highly conservative, predicting very few positive cases. This results in high precision but low recall.
+        </p>
+        
+        <p><strong>Note:</strong> In these models, "positive" refers to delinquent cases, while "negative" represents non-delinquent cases.</p>
+        
+        <div style="display: flex; justify-content: center; gap: 1rem;">
+            <div style="text-align: center;">
+                <img src="../q2_result/figures/delinquency_rate_heatmap.png" alt="Delinquency Rate Heatmap" style="width: 35%;">
+                <p>Delinquency Rate Heatmap (Cash Score vs. Credit Score)</p>
+            </div>
+        </div>
+        The heatmap visually represents delinquency rates using color intensity and numerical values, where darker regions indicate higher delinquency. The bottom-left region, where scores are lowest, shows delinquency reaching 100%, while the top-right region, representing higher scores, exhibits near-zero delinquency. This highlights cash and credit scores as strong indicators of financial risk, with higher scores consistently associated with lower delinquency rates.
 
     </section>
     <section id="conclusion">
             <h2>Conclusion</h2>
             <p>Our research highlights that incorporating detailed bank transaction data into credit scoring models results
                  in performance that is comparable to traditional models, all without the necessity of credit history. 
-                 This innovative approach allows for a more comprehensive and nuanced assessment of an individual’s 
+                 This approach allows for a more comprehensive and nuanced assessment of an individual’s 
                  creditworthiness, providing a more holistic view of their financial behavior. By utilizing transactional 
                  data, we aim to improve the accuracy of credit scoring, offering a more transparent and equitable evaluation 
                  process. This model addresses existing biases and limitations in traditional credit scoring, especially for 
@@ -301,7 +476,6 @@
                 <li><strong>Bias & Fairness:</strong> To ensure equitable credit assessments, we will evaluate the potential for biases in predictions across different demographic groups and implement fairness constraints to mitigate any identified disparities.</li>
             </ul>
             
-                
         </section>
         
         <section class="team">
