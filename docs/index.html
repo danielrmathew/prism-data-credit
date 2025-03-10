@@ -71,8 +71,7 @@
                 for modeling.</p>
 
             <p>Below are the heads of the datasets used in this analysis. Click on each section 
-                to expand and view the data, which includes account details, consumer credit scores, transactions,
-                and category mappings.</p>
+                to expand and view the data:</p>
                 <div class="accordion-container">
                     <div class="accordion">
                         <button class="accordion-btn">Account Dataset</button>
@@ -288,20 +287,15 @@
             <p>We evaluated multiple machine learning models to predict credit risk. 
                 Below is a brief description of each model used in our analysis.</p>
         
-                <h3>Baseline Model: Logistic Regression</h3>
-                <p>We started with a logistic regression model as the baseline for predicting credit risk. This simple yet effective linear model serves as our starting point for comparison with more advanced models.</p>
-            
-                <h3>Advanced Modeling Approaches</h3>
-                <p>To improve upon the baseline, we explored and evaluated several advanced machine learning models, including:</p>
-                <ul>
-                    <li><strong>Histogram-based Gradient Boosting (HistGB)</strong>: This method speeds up training by grouping data into bins. It works well for large amounts of data and makes the model faster and more memory-efficient.</li>
-                    <li><strong>Categorical Boosting (CatBoost)</strong>: This is a type of gradient boosting that is good at working with data that includes categories, like "Food and Beverages" or "Rent". It prevents overfitting (the model becoming too specific to the training data) and builds trees that are more balanced, which helps the model make better predictions.</li>
-                    <li><strong>Light Gradient-Boosting Machine (LightGBM)</strong>: This approach uses a method called "leaf-wise" decision trees, meaning it looks at the data in a way that helps it learn faster and use less memory. It's especially good for large datasets.</li>
-                    <li><strong>Extreme Gradient Boosting (XGBoost)</strong>: This is one of the most popular gradient boosting methods. It is known to be good at avoiding mistakes due to regularization, and it can handle large data sets quickly by running in parallel on different processors, making it faster.</li>
-                </ul>
-                
-                Each of these models is an improvement on regular decision trees and uses "boosting" to combine many trees together to improve the model’s accuracy.
-
+                <h3>Modeling Approaches</h3>
+<ul>
+    <li><strong>Baseline Model: Logistic Regression</strong>: A simple yet effective linear model that serves as the starting point for comparison with more advanced models.</li>
+    <li><strong>Histogram-based Gradient Boosting (HistGB)</strong>: Speeds up training by grouping data into bins, working well for large datasets and making the model faster and more memory-efficient.</li>
+    <li><strong>Categorical Boosting (CatBoost)</strong>: A gradient boosting method specifically designed for categorical data, preventing overfitting and building more balanced trees for better predictions.</li>
+    <li><strong>Light Gradient-Boosting Machine (LightGBM)</strong>: Uses "leaf-wise" decision trees for faster learning and reduced memory usage, making it particularly effective for large datasets.</li>
+    <li><strong>Extreme Gradient Boosting (XGBoost)</strong>: A popular gradient boosting method known for its speed and accuracy. It reduces errors through regularization and handles large datasets efficiently by running in parallel on multiple processors.</li>
+</ul>
+<p>Each of these models (other than Logistic Regression) improves upon regular decision trees by using "boosting" to combine multiple trees, which enhances the model's accuracy.</p>
                 <h3>Model Evaluation</h3>
                 <p>We used the following metrics to assess model performance:</p>
                 <ul>
@@ -328,7 +322,7 @@
         SHAP (SHapley Additive exPlanations) is a method used to explain model predictions by attributing each feature's contribution to the final prediction.
     </p>
     
-    <p>In our model, SHAP identified the following key features:</p>
+    <p>In our model, SHAP identified the following features to be important in predicting credit delinquency:</p>
     
     <ul>
         <li><strong>sum_acct_balances:</strong> Higher account balances suggest lower delinquency risk.</li>
@@ -337,9 +331,7 @@
         <li><strong>OVERDRAFT:</strong> Frequent overdrafts increase delinquency risk.</li>
         <li><strong>LOAN_last_14_days_count:</strong> Recent loans may signal financial stress.</li>
     </ul>
-    
-    <p>These features were found to be the most important in predicting credit delinquency.</p>
-    
+        
     <h3>Model Performance</h3>
 
     </p>
@@ -352,6 +344,7 @@
     <p>The ROC curves below illustrate the trade-off between the true positive rate and the false positive rate for each model. The AUC scores indicate overall model performance, with higher values reflecting better predictive power.</p>
 
     <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; font-size: 0.9em; width: 100%;">
+        <caption><strong>Model Performance Metrics Comparison</strong></caption>
         <thead>
             <tr>
                 <th><strong>Model</strong></th>
@@ -430,8 +423,8 @@
     
     <p><strong>Key Insights:</strong></p>
     <ul>
-        <li>Adding credit scores improves model performance, helping predict delinquency more accurately.</li>
-        <li>CatBoost is the most accurate model but struggles to detect delinquent cases and takes longer to train.</li>
+        <li>Adding credit scores improves model performance, helping predict delinquency more accurately for all models.</li>
+        <li>CatBoost (with credit score as a feature) is the most accurate model, with the highest AUC-ROC score, but struggles to detect delinquent cases and takes longer to train.</li>
         <li>Without credit scores, LightGBM performs best. Compared to CatBoost, the training time is also significantly lower.</li>
     </ul>
     
@@ -459,7 +452,7 @@
         </div>
         
         <p>
-            From the confusion matrices, we observe that both CatBoost and LightGBM improve slightly with credit score inclusion. However, they remain highly conservative, predicting very few positive cases. This results in high precision but low recall.
+            From the confusion matrices, we observe that both CatBoost and LightGBM improve slightly with credit score inclusion. However, they remain highly conservative, predicting very few positive cases. This results in high precision but low recall as seen in the model performance table.
         </p>
         
         <p><strong>Note:</strong> In these models, "positive" refers to delinquent cases, while "negative" represents non-delinquent cases.</p>
