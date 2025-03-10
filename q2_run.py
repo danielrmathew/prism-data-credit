@@ -18,7 +18,7 @@ if __name__ == "__main__":
     CONS_PATH = config['CONSUMER_DF_PATH']
     TRXN_PATH = config['TRANSACTION_DF_PATH']
     CAT_MAP_PATH = config['CATEGORY_MAP_PATH']
-    
+
     FEATURE_SELECTION = config['FEATURE_SELECTION']
     MAX_FEATURES = config['MAX_FEATURES']
     DROP_CREDIT_SCORE = config['DROP_CREDIT_SCORE']
@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
     # create features dataframe
     print("Generating features...")
-    features_fp = Path('q2data/q2_features.csv')
+    features_fp = Path('q2_data/q2_features.csv')
     features_fp.parent.mkdir(parents=True, exist_ok=True)  
     if features_fp.exists():
         print("Found existing features file, reading data...")

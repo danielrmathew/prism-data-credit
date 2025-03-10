@@ -6,10 +6,10 @@
 #                DATASET CONFIG                     #
 #####################################################
 # Input the paths to the necessary datasets
-ACCOUNT_DF_PATH: q2data/q2-ucsd-acctDF.pqt
-CONSUMER_DF_PATH: q2data/q2-ucsd-consDF.pqt
-TRANSACTION_DF_PATH: q2data/q2-ucsd-trxnDF.pqt
-CATEGORY_MAP_PATH: q2data/q2-ucsd-cat-map.csv
+ACCOUNT_DF_PATH: q2_data/q2-ucsd-acctDF.pqt
+CONSUMER_DF_PATH: q2_data/q2-ucsd-consDF.pqt
+TRANSACTION_DF_PATH: q2_data/q2-ucsd-trxnDF.pqt
+CATEGORY_MAP_PATH: q2_data/q2-ucsd-cat-map.csv
 
 #####################################################
 #           FEATURE SELECTION CONFIG                #
