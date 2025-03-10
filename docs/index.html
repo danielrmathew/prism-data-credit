@@ -191,7 +191,7 @@
 <div class="carousel-container">
     <div class="carousel-item">
         <div class="carousel-img">
-            <img src="../../q2_result/figures/goodbad_diff.png" alt="Balance Over Time of Delinquent vs. Non-Delinquent Consumer">
+            <img src="/prism-data-credit/q2_result/figures/goodbad_diff.png" alt="Balance Over Time of Delinquent vs. Non-Delinquent Consumer">
         </div>
         <div class="carousel-text">
             <p>Comparing bank balances over time between a randomly selected delinquent and non-delinquent consumer reveals distinct financial patterns. The delinquent consumer’s balance remains mostly stagnant, with a single large spike that quickly drops. In contrast, the non-delinquent consumer maintains a steady, positive balance with gradual growth, indicating stable income, controlled spending, and savings. This suggests that bank balance trends can serve as a strong predictor of creditworthiness.</p>
@@ -200,7 +200,7 @@
 
     <div class="carousel-item">
         <div class="carousel-img">
-            <img src="../../q2_result/figures/ks_cscore.png" alt="Distribution of Credit Score by Delinquency Status">
+            <img src="/prism-data-credit/q2_result/figures/ks_cscore.png" alt="Distribution of Credit Score by Delinquency Status">
         </div>
         <div class="carousel-text">
             <p>The normal distribution of delinquent credit scores, compared to the left-skewed distribution of non-delinquent credit scores, shows that non-delinquent individuals typically have higher credit scores, while most delinquent individuals fall within the lower middle of the credit score range. This reinforces that credit scores are already a strong indicator of delinquency. This provides a foundation for our model, allowing us to build upon the credit score feature to potentially outperform traditional models at predicting delinquency.</p>
@@ -209,7 +209,7 @@
 
     <div class="carousel-item">
         <div class="carousel-img">
-            <img src="../../q2_result/figures/BNPL_last_14_days_mean_distribution.png" alt="Distribution of BNPL_last_14_days_mean">
+            <img src="prism-data-credit/q2_result/figures/BNPL_last_14_days_mean_distribution.png" alt="Distribution of BNPL_last_14_days_mean">
         </div>
         <div class="carousel-text">
             <p>Identifying "Buy Now, Pay Later" (BNPL) as a risky category, we analyzed this category further. The figure reveals that a significantly higher proportion of non-delinquent consumers fall into the lowest bin for mean BNPL transactions. However, delinquent consumers tend to have higher proportions in the upper bins, indicating that they engage in larger BNPL transactions compared to non-delinquent consumers.</p>
@@ -218,7 +218,7 @@
 
     <div class="carousel-item">
         <div class="carousel-img">
-            <img src="../../q2_result/figures/TAX_last_14_days_count_distribution.png" alt="Distribution of TAX_last_14_days_count">
+            <img src="/prism-data-credit/q2_result/figures/TAX_last_14_days_count_distribution.png" alt="Distribution of TAX_last_14_days_count">
         </div>
         <div class="carousel-text">
             <p>The plot reveals a wider range of tax transactions over the last two weeks for non-delinquent consumers, while delinquent consumers show little to no variation in their tax transaction frequency. This suggests that non-delinquent consumers are more active and consistent in handling their tax-related transactions, which could indicate better financial management and stability compared to delinquent consumers.</p>
@@ -245,7 +245,7 @@
                     deviation, sum, count, percent of transactions) are calculated on categorical and balance trends.
     
                     <figure class="feat-gen-img-container">
-                        <img src="../docs/figures/features-diagram.png" alt="Category-Based Feature Generation Process">
+                        <img src="figures/features-diagram.png" alt="Category-Based Feature Generation Process">
                         <figcaption>Category-Based Feature Generation Process</figcaption>
                     </figure>
                     <p>This diagram showcases our process for generating category-based features. For example, one of
@@ -314,7 +314,7 @@
             <h3>Feature Importance</h3>
     
     <div style="text-align: center;">
-        <img src="../../q2_result/figures/shap_values_normal.png" alt="Top SHAP Values" style="width: 40%;">
+        <img src="/prism-data-credit/q2_result/figures/shap_values_normal.png" alt="Top SHAP Values" style="width: 40%;">
         <p><strong>Figure:</strong> Top SHAP Values</p>
     </div>
     
@@ -338,7 +338,7 @@
             <div class="results-img-container">
 
                 <img src="figures/auc-roc-credit-score.png" alt="Results">
-                <img src="../../q2_result/figures/roc_auc_no_cs_models.png" alt="Results">
+                <img src="/prism-data-credit/q2_result/figures/roc_auc_no_cs_models.png" alt="Results">
 
             </div>
     <p>The ROC curves below illustrate the trade-off between the true positive rate and the false positive rate for each model. The AUC scores indicate overall model performance, with higher values reflecting better predictive power.</p>
@@ -431,22 +431,22 @@
 
         <div style="display: flex; justify-content: center; gap: 1rem;">
             <div style="text-align: center;">
-                <img src="../../q2_result/figures/CatBoost_cash_cm_normal.png" alt="CatBoost Confusion Matrix without Credit Score" style="width: 50%;">
+                <img src="/prism-data-credit/q2_result/figures/CatBoost_cash_cm_normal.png" alt="CatBoost Confusion Matrix without Credit Score" style="width: 50%;">
                 <p>CatBoost (w/o Credit Score)</p>
             </div>
             <div style="text-align: center;">
-                <img src="../../q2_result/figures/CatBoost_cs_cm_normal.png" alt="CatBoost Confusion Matrix with Credit Score" style="width: 50%;">
+                <img src="/prism-data-credit/q2_result/figures/CatBoost_cs_cm_normal.png" alt="CatBoost Confusion Matrix with Credit Score" style="width: 50%;">
                 <p>CatBoost (w/ Credit Score)</p>
             </div>
         </div>
         
         <div style="display: flex; justify-content: center; gap: 1rem;">
             <div style="text-align: center;">
-                <img src="../../q2_result/figures/LightGBM_cash_cm_normal.png" alt="LightGBM Confusion Matrix without Credit Score" style="width: 50%;">
+                <img src="/prism-data-credit/q2_result/figures/LightGBM_cash_cm_normal.png" alt="LightGBM Confusion Matrix without Credit Score" style="width: 50%;">
                 <p>LightGBM (w/o Credit Score)</p>
             </div>
             <div style="text-align: center;">
-                <img src="../../q2_result/figures/LightGBM_cs_cm_normal.png" alt="LightGBM Confusion Matrix with Credit Score" style="width: 50%;">
+                <img src="/prism-data-credit/q2_result/figures/LightGBM_cs_cm_normal.png" alt="LightGBM Confusion Matrix with Credit Score" style="width: 50%;">
                 <p>LightGBM (w/ Credit Score)</p>
             </div>
         </div>
@@ -459,7 +459,7 @@
         
         <div style="display: flex; justify-content: center; gap: 1rem;">
             <div style="text-align: center;">
-                <img src="../../q2_result/figures/delinquency_rate_heatmap.png" alt="Delinquency Rate Heatmap" style="width: 35%;">
+                <img src="/prism-data-credit/q2_result/figures/delinquency_rate_heatmap.png" alt="Delinquency Rate Heatmap" style="width: 35%;">
                 <p>Delinquency Rate Heatmap (Cash Score vs. Credit Score)</p>
             </div>
         </div>
