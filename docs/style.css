@@ -4,6 +4,8 @@ body {
     padding: 0;
     color: #154360;
     background-color: white;
+    border: 7px solid #2471a3; 
+    box-sizing: border-box;
 }
 
 body h2{
@@ -240,14 +242,12 @@ h2 {
     color: #333;
 }
 
-/* Accordion Container Centering */
 .accordion-container {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
 }
 
-/* Accordion Button Styling */
 .accordion-btn, .accordion-item {
     background-color: #2471a3;
     color: #ecf0f1;
@@ -265,8 +265,8 @@ h2 {
 }
 
 .accordion-btn:hover, .accordion-item:hover {
-    background-color: #1f618d;
-    transform: scale(1.03); /* Scale button to 1.03 on hover */
+    background-color: #77e3f6;
+    transform: scale(1.04); 
 }
 
 /* Panel Styling */
@@ -288,13 +288,11 @@ h2 {
     justify-content:center;
 }
 
-/* Text Styling */
 .panel-text p {
     font-size: 16px;
     line-height: 1.6;
 }
 
-/* Table Styling */
 table {
     width: 100%;
     margin-bottom: 15px;
@@ -308,11 +306,10 @@ th, td {
 }
 
 th {
-    background-color: #2471a3;
+    background-color: #0073b1;
     color: #fff;
 }
 
-/* Image Container */
 .panel-img {
     display: flex;
     justify-content: center;
@@ -376,4 +373,47 @@ th {
 
 .team-member a:hover {
     text-decoration: underline;
+}
+
+.carousel-container {
+    position: relative;
+    width: 60%;
+    margin: 0 auto;
+}
+
+.carousel-item {
+    display: none;
+}
+
+.carousel-img img {
+    width: 100%; 
+    height: auto;
+    max-width: 500px; 
+    display: block; 
+    margin: 0 auto; 
+}
+
+.carousel-buttons {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.prev-button, .next-button {
+    padding: 8px 15px; 
+    margin: 5px;
+    background-color: #2471a3;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.prev-button:hover, .next-button:hover {
+    background-color: #77e3f6;
+}
+
+.carousel-indicator {
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px;
+    display: inline-block;
 }

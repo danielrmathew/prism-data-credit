@@ -25,6 +25,23 @@ document.querySelectorAll('.accordion-btn, .accordion-item').forEach(item => {
         panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
     });
 });
+let currentIndex = 0;
+const totalItems = document.querySelectorAll('.carousel-item').length;
+const carouselItems = document.querySelectorAll('.carousel-item');
+const carouselIndicator = document.querySelector('.carousel-indicator');
+
+function moveCarousel(direction) {
+    carouselItems[currentIndex].style.display = 'none';
+    
+    currentIndex = (currentIndex + direction + totalItems) % totalItems;
+
+    carouselItems[currentIndex].style.display = 'block';
+
+    carouselIndicator.textContent = `${currentIndex + 1}/${totalItems}`;
+}
+
+carouselItems[currentIndex].style.display = 'block';
+carouselIndicator.textContent = `${currentIndex + 1}/${totalItems}`;
 
 
 
