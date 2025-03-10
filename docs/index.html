@@ -95,6 +95,8 @@
                                     <tr><td>4,227</td><td>4</td><td>CHECKING</td><td>2021-07-31</td><td>7,042.90</td></tr>
                                 </tbody>
                             </table>
+                            The acctDF.csv dataset provides detailed information about consumer financial accounts,
+                            such as account types, balances, and balance dates.
                         </div>
                     </div>
                 
@@ -118,7 +120,12 @@
                                     <tr><td>4</td><td>2021-10-01</td><td>676</td><td>0</td></tr>
                                 </tbody>
                             </table>
-                        </div>
+                            The consDF.csv dataset which provides credit scores, evaluation
+                            dates, and delinquency targets for each consumer. This dataset is essential for building a
+                            model of credit risk, as it contains direct indicators of a consumer’s creditworthiness. The
+                            delinquency targets serves as the dependent variable, enabling us to assess our model’s per-
+                            formance in predicting credit risk.
+                                                    </div>
                     </div>
                 
                     <div class="accordion">
@@ -143,6 +150,10 @@
                                     <tr><td>3,023</td><td>4</td><td>4</td><td>0.06</td><td>CREDIT</td><td>2021-07-16</td></tr>
                                 </tbody>
                             </table>
+                            The trxnDF.csv dataset records individual transactions, including
+                            transaction category IDs, amounts, and whether the transaction was a credit or debit. These
+                            transactional data are vital for modeling consumer behavior, such as income sources, spend-
+                            ing habits, and cash flow.
                         </div>
                     </div>
                 
@@ -164,6 +175,7 @@
                                     <tr><td>4</td><td>MISCELLANEOUS</td></tr>
                                 </tbody>
                             </table>
+                            The cat_map.csv dataset maps transaction categories to their corresponding category IDs, allowing us to classify and interpret the transactions effectively.
                         </div>
                     </div>
                 </div>
@@ -177,47 +189,51 @@
         <h3>Exploratory Data Analysis</h3>
 <p>Through exploratory data analysis (EDA), we examined consumer transaction trends and spending patterns to uncover insights that aid in identifying key factors for predicting credit risk. Below are a few examples of EDA conducted to look at temporal trends, transaction frequency, spending categories, and the impact of specific financial behaviors.</p>
 
-<div class="accordion-container">
-    <button class="accordion-item">Balance Over Time of Delinquent vs. Non-Delinquent Consumer</button>
-    <div class="panel-item">
-        <div class="panel-img">
+<div class="carousel-container">
+    <div class="carousel-item">
+        <div class="carousel-img">
             <img src="../q2_result/figures/goodbad_diff.png" alt="Balance Over Time of Delinquent vs. Non-Delinquent Consumer">
         </div>
-        <div class="panel-text">
+        <div class="carousel-text">
             <p>Comparing bank balances over time between a randomly selected delinquent and non-delinquent consumer reveals distinct financial patterns. The delinquent consumer’s balance remains mostly stagnant, with a single large spike that quickly drops. In contrast, the non-delinquent consumer maintains a steady, positive balance with gradual growth, indicating stable income, controlled spending, and savings. This suggests that bank balance trends can serve as a strong predictor of creditworthiness.</p>
         </div>
     </div>
 
-    <button class="accordion-item">Distribution of Credit Score by Delinquency Status</button>
-    <div class="panel-item">
-        <div class="panel-img">
+    <div class="carousel-item">
+        <div class="carousel-img">
             <img src="../q2_result/figures/ks_cscore.png" alt="Distribution of Credit Score by Delinquency Status">
         </div>
-        <div class="panel-text">
+        <div class="carousel-text">
             <p>The normal distribution of delinquent credit scores, compared to the left-skewed distribution of non-delinquent credit scores, shows that non-delinquent individuals typically have higher credit scores, while most delinquent individuals fall within the lower middle of the credit score range. This reinforces that credit scores are already a strong indicator of delinquency. This provides a foundation for our model, allowing us to build upon the credit score feature to potentially outperform traditional models at predicting delinquency.</p>
         </div>
     </div>
 
-    <button class="accordion-item">Distribution of BNPL Transactions by Delinquency Status</button>
-    <div class="panel-item">
-        <div class="panel-img">
+    <div class="carousel-item">
+        <div class="carousel-img">
             <img src="../q2_result/figures/BNPL_last_14_days_mean_distribution.png" alt="Distribution of BNPL_last_14_days_mean">
         </div>
-        <div class="panel-text">
+        <div class="carousel-text">
             <p>Identifying "Buy Now, Pay Later" (BNPL) as a risky category, we analyzed this category further. The figure reveals that a significantly higher proportion of non-delinquent consumers fall into the lowest bin for mean BNPL transactions. However, delinquent consumers tend to have higher proportions in the upper bins, indicating that they engage in larger BNPL transactions compared to non-delinquent consumers.</p>
         </div>
     </div>
 
-    <button class="accordion-item">Tax in the Last 14 Days by Delinquency Status Box Plot</button>
-    <div class="panel-item">
-        <div class="panel-img">
+    <div class="carousel-item">
+        <div class="carousel-img">
             <img src="../q2_result/figures/TAX_last_14_days_count_distribution.png" alt="Distribution of TAX_last_14_days_count">
         </div>
-        <div class="panel-text">
+        <div class="carousel-text">
             <p>The plot reveals a wider range of tax transactions over the last two weeks for non-delinquent consumers, while delinquent consumers show little to no variation in their tax transaction frequency. This suggests that non-delinquent consumers are more active and consistent in handling their tax-related transactions, which could indicate better financial management and stability compared to delinquent consumers.</p>
         </div>
     </div>
+
+    <div class="carousel-buttons">
+        <button class="prev-button" onclick="moveCarousel(-1)">Previous</button>
+        <span class="carousel-indicator">1/4</span> <!-- Shows the current image number -->
+        <button class="next-button" onclick="moveCarousel(1)">Next</button>
+    </div>
 </div>
+
+
 
             <h3>Feature Generation</h3>
             <p>We engineered features to capture financial behavior through transaction history, balance trends, 
