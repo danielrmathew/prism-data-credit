@@ -206,7 +206,7 @@ section.visible {
 }
 
 .image-group img {
-    max-width: 45%;
+    max-width: 49%;
     height: auto;
     margin: 0 10px;
 }
@@ -223,7 +223,7 @@ section.visible {
 }
 
 .improved-model img {
-    width: 60%;  
+    width: 50%;  
 }
 
 .improved-model figcaption {
@@ -391,6 +391,9 @@ th {
     max-width: 500px; 
     display: block; 
     margin: 0 auto; 
+    text-align:center;
+    justify-content: center;
+    align-items: center;
 }
 
 .carousel-buttons {
